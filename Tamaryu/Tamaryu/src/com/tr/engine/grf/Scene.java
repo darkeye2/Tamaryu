@@ -59,6 +59,8 @@ public class Scene extends JComponent {
 	 */
 	public void reorderComponents(){
 		
+		//Nick was here
+		
 	}
 	
 	
