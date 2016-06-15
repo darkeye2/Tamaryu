@@ -1,9 +1,12 @@
 package com.tr.img.animation;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.TimerTask;
+
+import javax.swing.BorderFactory;
 
 import com.tr.img.TRImageView;
 import com.tr.img.filter.Filter;
@@ -35,6 +38,7 @@ public class TRAnimationView extends TRImageView implements
 		super();
 		this.setLayout(null);
 		this.setName(name);
+		//this.setBorder(BorderFactory.createLineBorder(Color.blue));
 	}
 
 	public TRAnimationView() {
@@ -186,15 +190,24 @@ public class TRAnimationView extends TRImageView implements
 		return curAniKey;
 	}
 
-	public void paintComponent(Graphics g) {
-		if (deg == 0) {
+	/*public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		/*if (deg == 0) {
 			super.paintComponent(g);
+			g.setColor(Color.blue);
+			g.drawRect(0, 0, getWidth()-1, getHeight()-1);
 		} else {
 			Graphics2D g2d = (Graphics2D) g.create();
-			g2d.rotate(Math.toRadians(deg), ax, ay);
+			g2d.setColor(Color.blue);
+			g2d.fillOval(getAx(), getAy(), 5, 5);
+			System.out.println("Rotation: "+getAx()+", "+getAy());
+			//g2d.rotate(Math.toRadians(deg), 240, 80);
+			g2d.rotate(Math.toRadians(deg), getAx(), getAy());
 			super.paintComponent(g2d);
+			g2d.setColor(Color.blue);
+			g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
 			g2d.dispose();
-		}
-	}
+		}*/
+	//}*/
 
 }

@@ -65,7 +65,15 @@ public class TRComplexAnimationView extends TRAnimationView {
 	
 	/*---  SIZE ---*/
 	
-	public void setWidth(int w){
+	public void setScale(float s){
+		scale = s;
+		for(TRAnimationView av : views.values()){
+			av.setScale(s);
+		}
+		super.setScale(s);
+	}
+	
+	/*public void setWidth(int w){
 		this.setPreferredSize(new Dimension(w, this.getHeight()));
 	}
 	
@@ -81,12 +89,6 @@ public class TRComplexAnimationView extends TRAnimationView {
 		setSize(d.width, d.height);
 	}
 	
-	public void setScale(float s){
-		scale = s;
-		for(TRAnimationView av : views.values()){
-			av.setScale(s);
-		}
-	}
 	
 	public int getWidth(){
 		return (int) (super.getWidth()*this.scale);
@@ -98,7 +100,7 @@ public class TRComplexAnimationView extends TRAnimationView {
 	
 	public Dimension getSize(){
 		return new Dimension(getWidth(), getHeight());
-	}
+	}*/
 	
 	
 	public TRAnimationView getView(String name){

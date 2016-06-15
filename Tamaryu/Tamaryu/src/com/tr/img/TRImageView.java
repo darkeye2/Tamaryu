@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
 import com.tr.img.filter.Filter;
@@ -29,7 +30,7 @@ public class TRImageView extends JComponent {
 
 	// properties
 	protected TRImage img = null;
-	protected int scalingMode = 0;
+	protected int scalingMode = 1;
 	protected Dimension size = new Dimension(0, 0);
 	public int x = 0, y = 0;			//position in other object
 	protected int ax = 0, ay = 0;		//anchor point (rotation point)
@@ -76,19 +77,43 @@ public class TRImageView extends JComponent {
 
 	public Dimension getSize() {
 		if (scalingMode == SCALE_MODE_ORG) {
-			return new Dimension((int) (size.width * scalingFactor),
-					(int) (size.height * scalingFactor));
+			return new Dimension(Math.round(size.width * scalingFactor),
+					Math.round(size.height * scalingFactor));
 		}
 
-		return new Dimension((int) (size.width * scalingFactor),
-				(int) (size.height * scalingFactor));
+		int dw = Math.round(size.width * scalingFactor);
+		int dh = Math.round(size.height * scalingFactor);
+		Dimension d = new Dimension(dw, dh);
+		return d;
+		
 		//return super.getSize();
+	}
+	
+	public Dimension getSize(Dimension d){
+		return this.getSize();
 	}
 	
 	public void setPreferredSize(Dimension d){
 		super.setPreferredSize(d);
 		this.size = d;
 		System.out.println("new size: "+d);
+	}
+	
+	public void setSize(int w, int h){
+		setSize(new Dimension(w,h));
+	}
+	
+	public void setSize(Dimension s){
+		super.setSize(s.width, s.height);
+		this.setPreferredSize(new Dimension(s));
+	}
+	
+	public int getWidth(){
+		return Math.round(scalingFactor*size.width);
+	}
+	
+	public int getHeight(){
+		return Math.round(scalingFactor*size.height);
 	}
 
 	public Dimension getPreferredSize() {
@@ -130,15 +155,15 @@ public class TRImageView extends JComponent {
 	}
 	
 	public Point getAnchor(){
-		return new Point((int)(ax*scalingFactor), (int)(ay*scalingFactor));
+		return new Point(Math.round(ax*scalingFactor), Math.round(ay*scalingFactor));
 	}
 	
 	public int getAx(){
-		return (int)(ax*scalingFactor);
+		return Math.round(ax*scalingFactor);
 	}
 	
 	public int getAy(){
-		return (int)(ay*scalingFactor);
+		return Math.round(ay*scalingFactor);
 	}
 	
 	public void setBounds(int x, int y, int w, int h){
@@ -157,8 +182,12 @@ public class TRImageView extends JComponent {
 			return r;
 		}*/
 		
-		return new Rectangle(Math.round(x*scalingFactor), Math.round(y*scalingFactor),
+		return new Rectangle(Math.round(this.x*scalingFactor), Math.round(this.y*scalingFactor),
 				Math.round(size.width*scalingFactor), Math.round(size.height*scalingFactor));
+	}
+	
+	public Rectangle getBounds(){
+		return getBounds(null);
 	}
 	
 	public void setBounds(Rectangle r){
@@ -232,7 +261,7 @@ public class TRImageView extends JComponent {
 			Graphics2D g2d;
 			if(deg != 0){
 				g2d = (Graphics2D) g.create();
-				g2d.rotate(Math.toRadians(deg), ax, ay);
+				g2d.rotate(Math.toRadians(deg), getAx(), getAy());
 			}else{
 				g2d = (Graphics2D) g;
 			}

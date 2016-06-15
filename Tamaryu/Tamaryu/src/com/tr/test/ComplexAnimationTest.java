@@ -53,6 +53,7 @@ public class ComplexAnimationTest extends JFrame implements ActionListener {
 	public ComplexAnimationTest() {
 		frame = this;
 		// init frame
+		frame.setTitle("Complex Animation Test");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setPreferredSize(new Dimension(800, 600));
 		frame.setLayout(new BorderLayout());
@@ -170,7 +171,7 @@ public class ComplexAnimationTest extends JFrame implements ActionListener {
 			headView.add(mouthView);
 			headView.add(eyeView);
 
-			aniView.setSize(800, 800);
+			aniView.setSize(600, 600);
 			aniView.add(tailView);
 			aniView.add(llegView);
 			aniView.add(bodyView);
@@ -180,9 +181,15 @@ public class ComplexAnimationTest extends JFrame implements ActionListener {
 			aniView.add(rlegView);
 			
 			aniView.setScale(0.5f);
-			aniView.setBounds(300, 200, 600, 600);
-			aniView.setBorder(BorderFactory.createLineBorder(Color.red));
+			aniView.setBounds(400, 400, 600, 600);
+			eyeView.setBorder(BorderFactory.createLineBorder(Color.red));
 			System.out.println(aniView.getBounds(null));
+			System.out.println(aniView.getSize(null));
+			System.out.println(aniView.getHeight());
+			System.out.println(aniView.getWidth());
+			System.out.println(aniView.getPreferredSize());
+			//aniView.setBorder(BorderFactory.createLineBorder(Color.red));
+			//System.out.println(aniView.getBounds(null));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

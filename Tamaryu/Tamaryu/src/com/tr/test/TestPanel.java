@@ -2,6 +2,7 @@ package com.tr.test;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.LayoutManager;
 
 import javax.swing.JComponent;
 
@@ -15,6 +16,10 @@ public class TestPanel extends javax.swing.JPanel {
 		this.bg = b;
 		bg.setScalingMode(TRImageView.SCALE_MODE_FILL);
 		this.setLayout(null);
+	}
+	
+	public void setLayout(LayoutManager l){
+		super.setLayout(null);
 	}
 	
 	public void paintComponent(Graphics g){

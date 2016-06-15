@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -58,7 +59,32 @@ public class Scene extends JComponent {
 	 *  - void paintScene(Graphics2D);
 	 */
 	public void reorderComponents(){
-		//i was here too xD
+		//change component order depending on position
+	}
+	
+	public void updateFOComponents(){
+		//update fade-out components (set new transparency and position)
+	}
+	
+	public void paintScene(Graphics2D g){
+		//if double buffered and buffer still full, return
+		if(this.doubleBuffering && this.bufferReady){
+			return;
+		}
+		
+		//prepare graphics object (set rendering hints)
+		if(!this.doubleBuffering){
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		    g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		}
+		
+		//paint background
+		bg.paintComponent(g);
+		
+		//paint components
+		for(Component c : components){
+			c.paint(g);
+		}
 	}
 	
 	

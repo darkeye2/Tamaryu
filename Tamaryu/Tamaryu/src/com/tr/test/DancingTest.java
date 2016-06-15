@@ -182,36 +182,7 @@ public class DancingTest extends JFrame implements ActionListener {
 		eyeView.loadAnimation("blink", true);
 	}
 
-	public void wink() {
 
-		Runnable r = new Runnable() {
-			public void run() {
-				for (int i = 0; i < 60; i += 10) {
-					rarmView.setRotation(i);
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				for (int i = 60; i >= 0; i -= 10) {
-					rarmView.setRotation(i);
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-
-		Thread t = new Thread(r);
-		t.start();
-
-	}
 
 	public void setColor(Color c) {
 		aniView.removeAllFilter();
@@ -308,7 +279,7 @@ public class DancingTest extends JFrame implements ActionListener {
 			changeEyeColor();
 			break;
 		case 7:
-			wink();
+			//wink();
 			break;
 		case 4:
 			selectColor();
