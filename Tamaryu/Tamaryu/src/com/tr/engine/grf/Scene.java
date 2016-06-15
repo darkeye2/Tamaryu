@@ -58,9 +58,7 @@ public class Scene extends JComponent {
 	 *  - void paintScene(Graphics2D);
 	 */
 	public void reorderComponents(){
-
-		//Nick was here
-		//Nick was here again2
+		//i was here too xD
 	}
 	
 	
