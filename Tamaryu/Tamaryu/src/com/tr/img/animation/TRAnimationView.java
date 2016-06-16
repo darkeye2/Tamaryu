@@ -8,7 +8,7 @@ import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 
-import com.tr.img.TRImageView;
+import com.tr.img.gameobject.TRImageView;
 import com.tr.img.filter.Filter;
 import com.tr.util.GraphicsUtility;
 

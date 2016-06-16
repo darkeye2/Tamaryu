@@ -4,7 +4,7 @@ import java.lang.ref.ReferenceQueue;
 
 import javax.swing.ImageIcon;
 
-import com.tr.img.TRImage;
+import com.tr.img.gameobject.TRImage;
 
 public class TRImageReference extends WeakValue<String, ImageIcon> {
 	private TRImage i;

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import com.tr.img.TRImage;
+import com.tr.img.gameobject.TRImage;
 import com.tr.util.GraphicsUtility;
 import com.tr.util.ImageMetaInfo;
 import com.tr.util.MathUtility;

@@ -1,6 +1,6 @@
 package com.tr.img.animation;
 
-import com.tr.img.TRImage;
+import com.tr.img.gameobject.TRImage;
 import com.tr.img.filter.Filter;
 
 public class TRAnimation {

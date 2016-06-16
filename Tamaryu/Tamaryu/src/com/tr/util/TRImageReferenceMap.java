@@ -2,7 +2,7 @@ package com.tr.util;
 
 import java.util.HashMap;
 
-import com.tr.img.TRImage;
+import com.tr.img.gameobject.TRImage;
 
 public class TRImageReferenceMap extends WeakValueMap<String, TRImageReference> {
 	protected HashMap<String, TRImageReference> map = new HashMap<String, TRImageReference>();

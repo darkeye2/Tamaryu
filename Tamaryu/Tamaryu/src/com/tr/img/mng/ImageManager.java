@@ -3,7 +3,7 @@ package com.tr.img.mng;
 import java.io.IOException;
 import java.util.TimerTask;
 
-import com.tr.img.TRImage;
+import com.tr.img.gameobject.TRImage;
 import com.tr.util.GraphicsUtility;
 import com.tr.util.QueueHashMap;
 import com.tr.util.TRImageReference;

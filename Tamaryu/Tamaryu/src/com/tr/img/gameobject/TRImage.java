@@ -1,4 +1,4 @@
-package com.tr.img;
+package com.tr.img.gameobject;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
