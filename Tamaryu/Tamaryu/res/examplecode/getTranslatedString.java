@@ -1,4 +1,4 @@
-package com.tr.examplecode;
+package examplecode;
 
 import com.tr.util.LanguageTranslator;
 

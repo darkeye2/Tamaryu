@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.TimerTask;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -17,25 +18,27 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.tr.img.TRImage;
-import com.tr.img.TRImageView;
+import com.tr.img.gameobject.TRImage;
+import com.tr.img.gameobject.TRImageView;
 import com.tr.img.animation.TRAnimation;
 import com.tr.img.animation.TRAnimationView;
 import com.tr.img.mng.ImageLoader;
+import com.tr.util.GraphicsUtility;
 
-public class ImageLoaderTest implements ActionListener{
+public class EyeLoaderTest implements ActionListener{
 	private JFrame frame = new JFrame("ImageLoader Test");
 	private JPanel mainP = new JPanel();
 	private JPanel menueP = new JPanel();
 	
 	private ImageLoader il = new ImageLoader();
 	private TRAnimationView aniView;
+	private TRAnimation ani;
 	private TRImageView imgView;
 	private Color background = Color.green;
 	
 	private HashMap<JButton, Integer> buttonMap = new HashMap<JButton, Integer>();
 	
-	public ImageLoaderTest(){
+	public EyeLoaderTest(){
 		//init frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setPreferredSize(new Dimension(800, 600));
@@ -44,12 +47,13 @@ public class ImageLoaderTest implements ActionListener{
 		frame.add(menueP, BorderLayout.EAST);
 		
 		//init path for image loader
-		il.addPath("com/tr/res/img");
+		il.addPath("img");
 
-		loadImg("platzhalter_friends.png");
+		loadSprite("sprite01_eyes", false);
+		blink();
 		
 		mainP.setLayout(new BorderLayout());
-		mainP.add(imgView, BorderLayout.CENTER);
+		mainP.add(aniView, BorderLayout.CENTER);
 		
 		mainP.setBackground(background);
 		menueP.setLayout(new BoxLayout(menueP, BoxLayout.PAGE_AXIS));
@@ -62,6 +66,18 @@ public class ImageLoaderTest implements ActionListener{
 		//show frame
 		frame.pack();
 		frame.setVisible(true);
+	}
+	
+	private void blink(){
+		ani.reset();
+		TimerTask r = new TimerTask(){
+
+			@Override
+			public void run() {
+				blink();
+			}};
+			
+		GraphicsUtility.getTimer().schedule(r, Math.round(Math.random()*5000+500));
 	}
 	
 	private void loadImg(String string) {
@@ -96,9 +112,10 @@ public class ImageLoaderTest implements ActionListener{
 		}
 	}
 	
-	private void loadSprite(){
+	private void loadSprite(String name, boolean auto){
 		try {
-			TRAnimation ani = new TRAnimation(il.loadAll("link"), 15);
+			ani = new TRAnimation(il.loadAll(name), 15);
+			ani.setLoop(auto);
 			if(aniView == null){
 				aniView = new TRAnimationView();
 			}
@@ -190,7 +207,7 @@ public class ImageLoaderTest implements ActionListener{
 		case 4: selectColor(); break;
 		case 1: setImage(); break;
 		case 2: loadGif(); break;
-		case 3: loadSprite(); break;
+		case 3: loadSprite("link", true); break;
 		case 5: loadAll(); break;
 		}
 		update();
@@ -198,6 +215,6 @@ public class ImageLoaderTest implements ActionListener{
 	
 	
 	public static void main(String[] args){
-		new ImageLoaderTest();
+		new EyeLoaderTest();
 	}
 }

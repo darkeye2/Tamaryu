@@ -1,4 +1,4 @@
-package com.tr.test.genetric;
+package com.tr.test.genetic;
 
 import java.awt.Color;
 import java.awt.Dimension;

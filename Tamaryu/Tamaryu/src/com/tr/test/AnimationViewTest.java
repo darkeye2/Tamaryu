@@ -20,7 +20,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.tr.img.TRImage;
+import com.tr.img.gameobject.TRImage;
 import com.tr.img.animation.TRAnimation;
 import com.tr.img.animation.TRAnimationView;
 
@@ -80,7 +80,7 @@ public class AnimationViewTest implements ActionListener{
 	}
 	
 	private void createAnimation() throws IOException{
-		String p = "com/tr/res/img/";
+		String p = "img/";
 		
 		//move down animation
 		TRImage[] moveDown = new TRImage[4];

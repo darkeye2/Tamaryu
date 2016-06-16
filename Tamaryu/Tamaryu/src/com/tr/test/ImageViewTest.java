@@ -23,8 +23,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.tr.img.TRImage;
-import com.tr.img.TRImageView;
+import com.tr.img.gameobject.TRImage;
+import com.tr.img.gameobject.TRImageView;
 
 public class ImageViewTest implements ActionListener{
 	
@@ -47,7 +47,7 @@ public class ImageViewTest implements ActionListener{
 		
 		BufferedImage i = null;
 		try {
-			i = ImageIO.read(ClassLoader.getSystemResource( "com/tr/res/img/platzhalter_friends.png" ));
+			i = ImageIO.read(ClassLoader.getSystemResource( "img/platzhalter_friends.png" ));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -19,8 +19,8 @@ import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.tr.img.TRImage;
-import com.tr.img.TRImageView;
+import com.tr.img.gameobject.TRImage;
+import com.tr.img.gameobject.TRImageView;
 import com.tr.img.animation.TRAnimation;
 import com.tr.img.animation.TRAnimationView;
 import com.tr.img.animation.TRComplexAnimationView;
@@ -67,7 +67,7 @@ public class DancingTest extends JFrame implements ActionListener {
 		frame.add(menueP, BorderLayout.EAST);
 
 		// init path for image loader
-		il.addPath("com/tr/res/img");
+		il.addPath("img");
 		try {
 			bg = new TRImageView(il.load("savanna_bg_night.png"));
 		} catch (IOException e) {

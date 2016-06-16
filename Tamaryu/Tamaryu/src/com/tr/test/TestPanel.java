@@ -6,7 +6,7 @@ import java.awt.LayoutManager;
 
 import javax.swing.JComponent;
 
-import com.tr.img.TRImageView;
+import com.tr.img.gameobject.TRImageView;
 
 public class TestPanel extends javax.swing.JPanel {
 	private static final long serialVersionUID = 1L;

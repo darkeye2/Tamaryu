@@ -18,7 +18,7 @@ import com.tr.util.ImageMetaInfo;
 import com.tr.util.MathUtility;
 
 public class ImageLoader {
-	public static final String DEFAULT_PATH = "res/img/";
+	public static final String DEFAULT_PATH = "img/";
 
 	private static ArrayList<String> imageType = new ArrayList<String>();
 	private static boolean loaded = false;
@@ -392,7 +392,7 @@ public class ImageLoader {
 
 	public static void main(String[] args) {
 		ImageLoader il = new ImageLoader();
-		il.addPath("com/tr/res/img");
+		il.addPath("img");
 
 		System.out.println(il.exists("full_1.png"));
 		System.out.println(il.exists("full_0.png"));

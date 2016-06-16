@@ -17,8 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.tr.img.TRImage;
-import com.tr.img.TRImageView;
+import com.tr.img.gameobject.TRImage;
+import com.tr.img.gameobject.TRImageView;
 import com.tr.img.animation.TRAnimation;
 import com.tr.img.animation.TRAnimationView;
 import com.tr.img.mng.ImageLoader;
@@ -47,7 +47,7 @@ public class ImageManagerTest implements ActionListener{
 		frame.add(menueP, BorderLayout.EAST);
 		
 		//init path for image loader
-		il.addPath("com/tr/res/img");
+		il.addPath("img");
 
 		loadImg("platzhalter_friends.png");
 		

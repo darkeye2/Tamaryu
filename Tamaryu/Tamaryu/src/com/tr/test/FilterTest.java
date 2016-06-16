@@ -24,8 +24,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.tr.img.TRImage;
-import com.tr.img.TRImageView;
+import com.tr.img.gameobject.TRImage;
+import com.tr.img.gameobject.TRImageView;
 import com.tr.img.filter.BrightnessFilter;
 import com.tr.img.filter.ColorChangeFilter;
 import com.tr.img.filter.ColorFilter;
@@ -62,7 +62,7 @@ public class FilterTest implements ActionListener{
 		try {
 			i = ImageIO
 					.read(ClassLoader
-							.getSystemResource("com/tr/res/img/tam1.png"));
+							.getSystemResource("img/tam1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
