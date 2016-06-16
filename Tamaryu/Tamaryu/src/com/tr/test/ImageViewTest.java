@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 
 import com.tr.img.gameobject.TRImage;
 import com.tr.img.gameobject.TRImageView;
+import com.tr.util.LanguageTranslator;
 
 public class ImageViewTest implements ActionListener{
 	
@@ -59,11 +60,11 @@ public class ImageViewTest implements ActionListener{
 		
 		mainP.setBackground(background);
 		menueP.setLayout(new BoxLayout(menueP, BoxLayout.PAGE_AXIS));
-		addButton(new JButton("Hintergrund Farbe"), 1);
-		addButton(new JButton("Bild Ändern"), 2);
-		addButton(new JButton("Skalierung: FIT"), 3);
-		addButton(new JButton("Skalierung: FILL"), 4);
-		addButton(new JButton("Skalierung: ORG"), 5);
+		addButton(new JButton(LanguageTranslator.getString("backgroundcolor")), 1);
+		addButton(new JButton(LanguageTranslator.getString("changeimage")), 2);
+		addButton(new JButton(LanguageTranslator.getString("scaling") + ": FIT"), 3);
+		addButton(new JButton(LanguageTranslator.getString("scaling") + ": FILL"), 4);
+		addButton(new JButton(LanguageTranslator.getString("scaling") + ": ORG"), 5);
 		
 		imgView.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e) {

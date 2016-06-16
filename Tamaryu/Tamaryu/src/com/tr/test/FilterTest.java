@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 
 import com.tr.img.gameobject.TRImage;
 import com.tr.img.gameobject.TRImageView;
+import com.tr.util.LanguageTranslator;
 import com.tr.img.filter.BrightnessFilter;
 import com.tr.img.filter.ColorChangeFilter;
 import com.tr.img.filter.ColorFilter;
@@ -75,22 +76,22 @@ public class FilterTest implements ActionListener{
 		
 		mainP.setBackground(background);
 		menueP.setLayout(new BoxLayout(menueP, BoxLayout.PAGE_AXIS));
-		addButton(new JButton("Hintergrund Farbe"), 1);
-		addButton(new JButton("Bild Ändern"), 2);
-		addButton(new JButton("Reset Filter"), 3);
-		addButton(new JButton("Farbfilter"), 4);
-		addButton(new JButton("FF (RGB Fast)"), 5);
-		addButton(new JButton("Farbfilter (RGB)"), 11);
-		addButton(new JButton("Farbfilter (HSV)"), 12);
-		addButton(new JButton("Farbfilter (HSL)"), 16);
-		addButton(new JButton("Kontrast"), 6);
-		addButton(new JButton("Helligkeit"), 7);
-		addButton(new JButton("Graustufen"), 8);
-		addButton(new JButton("Negativ"), 9);
-		addButton(new JButton("Overlay"), 13);
-		addButton(new JButton("Pixelation"), 10);
-		addButton(new JButton("Edge Detect"), 14);
-		addButton(new JButton("Stroke"), 15);
+		addButton(new JButton(LanguageTranslator.getString("backgroundcolor")), 1);
+		addButton(new JButton(LanguageTranslator.getString("changeimage")), 2);
+		addButton(new JButton(LanguageTranslator.getString("resetfilter")), 3);
+		addButton(new JButton(LanguageTranslator.getString("colorfilter")), 4);
+		addButton(new JButton(LanguageTranslator.getString("colorfilter") + " (RGB Fast)"), 5);
+		addButton(new JButton(LanguageTranslator.getString("colorfilter") + " (RGB)"), 11);
+		addButton(new JButton(LanguageTranslator.getString("colorfilter") + " (HSV)"), 12);
+		addButton(new JButton(LanguageTranslator.getString("colorfilter") + " (HSL)"), 16);
+		addButton(new JButton(LanguageTranslator.getString("contrast")), 6);
+		addButton(new JButton(LanguageTranslator.getString("brightness")), 7);
+		addButton(new JButton(LanguageTranslator.getString("grayscale")), 8);
+		addButton(new JButton(LanguageTranslator.getString("negative")), 9);
+		addButton(new JButton(LanguageTranslator.getString("overlay")), 13);
+		addButton(new JButton(LanguageTranslator.getString("pixelation")), 10);
+		addButton(new JButton(LanguageTranslator.getString("edgedetect")), 14);
+		addButton(new JButton(LanguageTranslator.getString("stroke")), 15);
 		
 		imgView.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e) {

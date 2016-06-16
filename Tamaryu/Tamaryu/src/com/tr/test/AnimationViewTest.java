@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.tr.img.gameobject.TRImage;
+import com.tr.util.LanguageTranslator;
 import com.tr.img.animation.TRAnimation;
 import com.tr.img.animation.TRAnimationView;
 
@@ -54,17 +55,17 @@ public class AnimationViewTest implements ActionListener{
 		
 		mainP.setBackground(background);
 		menueP.setLayout(new BoxLayout(menueP, BoxLayout.PAGE_AXIS));
-		addButton(new JButton("Hintergrund Farbe"), 1);
-		addButton(new JButton("Start"), 2);
-		addButton(new JButton("Stop"), 3);
-		addButton(new JButton("Pause"), 4);
-		addButton(new JButton("Skalierung: FIT"), 5);
-		addButton(new JButton("Skalierung: FILL"), 6);
-		addButton(new JButton("Skalierung: ORG"), 7);
-		addButton(new JButton("Move Up"), 8);
-		addButton(new JButton("Move Down"), 9);
-		addButton(new JButton("Move Right"), 10);
-		addButton(new JButton("Move Left"), 11);
+		addButton(new JButton(LanguageTranslator.getString("backgroundcolor")), 1);
+		addButton(new JButton(LanguageTranslator.getString("start")), 2);
+		addButton(new JButton(LanguageTranslator.getString("stop")), 3);
+		addButton(new JButton(LanguageTranslator.getString("pause")), 4);
+		addButton(new JButton(LanguageTranslator.getString("scaling") + ": FIT"), 5);
+		addButton(new JButton(LanguageTranslator.getString("scaling") + ": FILL"), 6);
+		addButton(new JButton(LanguageTranslator.getString("scaling") + ": ORG"), 7);
+		addButton(new JButton(LanguageTranslator.getString("moveup")), 8);
+		addButton(new JButton(LanguageTranslator.getString("movedown")), 9);
+		addButton(new JButton(LanguageTranslator.getString("moveright")), 10);
+		addButton(new JButton(LanguageTranslator.getString("moveleft")), 11);
 		
 		aniView.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e) {

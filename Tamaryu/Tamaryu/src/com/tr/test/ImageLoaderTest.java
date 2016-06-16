@@ -22,6 +22,7 @@ import com.tr.img.gameobject.TRImageView;
 import com.tr.img.animation.TRAnimation;
 import com.tr.img.animation.TRAnimationView;
 import com.tr.img.mng.ImageLoader;
+import com.tr.util.LanguageTranslator;
 
 public class ImageLoaderTest implements ActionListener{
 	private JFrame frame = new JFrame("ImageLoader Test");
@@ -53,11 +54,11 @@ public class ImageLoaderTest implements ActionListener{
 		
 		mainP.setBackground(background);
 		menueP.setLayout(new BoxLayout(menueP, BoxLayout.PAGE_AXIS));
-		addButton(new JButton("Hintergrund"), 4);
-		addButton(new JButton("Bild Laden"), 1);
-		addButton(new JButton("Gif Animation"), 2);
-		addButton(new JButton("Sheet Animation"), 3);
-		addButton(new JButton("Load All"), 5);
+		addButton(new JButton(LanguageTranslator.getString("background")), 4);
+		addButton(new JButton(LanguageTranslator.getString("loadimage")), 1);
+		addButton(new JButton(LanguageTranslator.getString("gifanimation")), 2);
+		addButton(new JButton(LanguageTranslator.getString("sheetanimation")), 3);
+		addButton(new JButton(LanguageTranslator.getString("loadall")), 5);
 		
 		//show frame
 		frame.pack();

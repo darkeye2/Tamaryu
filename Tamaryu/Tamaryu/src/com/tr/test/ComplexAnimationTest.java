@@ -27,6 +27,7 @@ import com.tr.img.animation.TRComplexAnimationView;
 import com.tr.img.filter.HSLColorFilter;
 import com.tr.img.mng.ImageLoader;
 import com.tr.util.GraphicsUtility;
+import com.tr.util.LanguageTranslator;
 
 public class ComplexAnimationTest extends JFrame implements ActionListener {
 	private JFrame frame;
@@ -80,13 +81,13 @@ public class ComplexAnimationTest extends JFrame implements ActionListener {
 
 		mainP.setBackground(background);
 		menueP.setLayout(new BoxLayout(menueP, BoxLayout.PAGE_AXIS));
-		addButton(new JButton("Hintergrund"), 4);
-		addButton(new JButton("Farbe"), 1);
-		addButton(new JButton("Augenfarbe"), 6);
-		addButton(new JButton("Augen Schlie�en"), 2);
-		addButton(new JButton("Blinzeln"), 3);
-		addButton(new JButton("Augen �ffnen"), 5);
-		addButton(new JButton("Winken"), 7);
+		addButton(new JButton(LanguageTranslator.getString("background")), 4);
+		addButton(new JButton(LanguageTranslator.getString("color")), 1);
+		addButton(new JButton(LanguageTranslator.getString("eyecolor")), 6);
+		addButton(new JButton(LanguageTranslator.getString("closeeyes")), 2);
+		addButton(new JButton(LanguageTranslator.getString("blink")), 3);
+		addButton(new JButton(LanguageTranslator.getString("openeyes")), 5);
+		addButton(new JButton(LanguageTranslator.getString("wavehand")), 7);
 
 		// show frame
 		frame.pack();

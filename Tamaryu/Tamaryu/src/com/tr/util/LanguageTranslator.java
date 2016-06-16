@@ -23,6 +23,6 @@ public final class LanguageTranslator
 	
 	public static String getString(String key)
 	{
-		return ResourceBundle.getBundle("com/tr/localization/Bundle").getString(key);
+		return ResourceBundle.getBundle("localization/Bundle").getString(key);
 	}
 }
