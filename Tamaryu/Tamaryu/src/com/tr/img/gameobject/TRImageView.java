@@ -58,16 +58,10 @@ public class TRImageView extends JComponent {
 
 	public void setScalingMode(int mode) {
 		this.scalingMode = mode;
-		if (scalingMode == SCALE_MODE_ORG) {
-			size = new Dimension(img.width, img.height);
-		}
 	}
 
 	public void setImage(TRImage i) {
 		this.img = i;
-		if (scalingMode == SCALE_MODE_ORG) {
-			size = new Dimension(img.width, img.height);
-		}
 	}
 
 	public void setScale(float s) {
@@ -77,8 +71,8 @@ public class TRImageView extends JComponent {
 
 	public Dimension getSize() {
 		if (scalingMode == SCALE_MODE_ORG) {
-			return new Dimension(Math.round(size.width * scalingFactor),
-					Math.round(size.height * scalingFactor));
+			return new Dimension(Math.round(img.width * scalingFactor),
+					Math.round(img.height * scalingFactor));
 		}
 
 		int dw = Math.round(size.width * scalingFactor);
@@ -118,8 +112,8 @@ public class TRImageView extends JComponent {
 
 	public Dimension getPreferredSize() {
 		if (scalingMode == SCALE_MODE_ORG) {
-			return new Dimension(Math.round(size.width * scalingFactor),
-					Math.round(size.height * scalingFactor));
+			return new Dimension(Math.round(img.width * scalingFactor),
+					Math.round(img.height * scalingFactor));
 		}
 		
 		return new Dimension(Math.round(size.width * scalingFactor),
@@ -181,6 +175,11 @@ public class TRImageView extends JComponent {
 			r.y = Math.round(r.y *scalingFactor);
 			return r;
 		}*/
+		if(this.scalingMode == SCALE_MODE_ORG){
+			return new Rectangle(Math.round(this.x*scalingFactor), Math.round(this.y*scalingFactor),
+					Math.round(img.width * scalingFactor),
+					Math.round(img.height * scalingFactor));
+		}
 		
 		return new Rectangle(Math.round(this.x*scalingFactor), Math.round(this.y*scalingFactor),
 				Math.round(size.width*scalingFactor), Math.round(size.height*scalingFactor));

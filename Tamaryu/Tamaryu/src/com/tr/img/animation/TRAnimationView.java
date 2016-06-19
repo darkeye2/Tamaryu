@@ -1,12 +1,7 @@
 package com.tr.img.animation;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.TimerTask;
-
-import javax.swing.BorderFactory;
 
 import com.tr.img.gameobject.TRImageView;
 import com.tr.img.filter.Filter;

@@ -30,6 +30,7 @@ import com.tr.util.GraphicsUtility;
 import com.tr.util.LanguageTranslator;
 
 public class ComplexAnimationTest extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 1L;
 	private JFrame frame;
 	private TestPanel mainP;
 	private JPanel menueP = new JPanel();
