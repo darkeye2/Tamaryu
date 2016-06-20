@@ -46,7 +46,7 @@ public class Scene extends JComponent implements ComponentListener {
 
 	// rendering properties
 	protected boolean doubleBuffering = false;
-	protected boolean useRenderingThread = true;
+	protected boolean useRenderingThread = false;
 	protected boolean autoRepaint = true;
 	protected boolean smoothScrolling = true;
 	protected boolean fadeoutText = true;
