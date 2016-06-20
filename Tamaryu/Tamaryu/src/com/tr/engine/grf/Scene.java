@@ -152,7 +152,6 @@ public class Scene extends JComponent implements ComponentListener {
 	 */
 	public void reorderComponents() {
 		// change component order depending on position
-		//test
 	}
 
 	public void updateFOComponents() {
