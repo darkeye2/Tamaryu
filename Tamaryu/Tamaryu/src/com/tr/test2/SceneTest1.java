@@ -28,7 +28,7 @@ import com.tr.test.AnimationViewTest;
 import com.tr.util.LanguageTranslator;
 
 public class SceneTest1 implements ActionListener{
-	private JFrame frame = new JFrame("Animation View Test");
+	private JFrame frame = new JFrame("Scene Test");
 	private Scene mainP;
 	private JPanel menueP = new JPanel();
 	

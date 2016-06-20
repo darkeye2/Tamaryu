@@ -53,14 +53,8 @@ public class DancingTest extends JFrame implements ActionListener {
 	private HashMap<JButton, Integer> buttonMap = new HashMap<JButton, Integer>();
 
 	public DancingTest() {
-		frame = this;new TimerTask(){
+		frame = this;
 
-			@Override
-			public void run() {
-				blink();
-				GraphicsUtility.getTimer().schedule(tt, Math.round( Math.random()*500+300));
-				
-			}};
 		// init frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setPreferredSize(new Dimension(800, 600));
