@@ -130,8 +130,16 @@ public class TRImageView extends JComponent {
 		return Math.round(x*scalingFactor);
 	}
 	
+	public int getOrcX(){
+		return x;
+	}
+	
 	public int getY(){
 		return Math.round(y*scalingFactor);
+	}
+	
+	public int getOrcY(){
+		return y;
 	}
 	
 	public void setPosition(int x, int y){
