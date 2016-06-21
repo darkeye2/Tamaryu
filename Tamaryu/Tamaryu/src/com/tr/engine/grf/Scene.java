@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.TimerTask;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+
+import com.tr.util.GraphicsUtility;
 
 public class Scene extends JComponent implements ComponentListener {
 	private static final long serialVersionUID = 1L;
@@ -47,14 +50,14 @@ public class Scene extends JComponent implements ComponentListener {
 	// rendering properties
 	protected boolean doubleBuffering = false;
 	protected boolean useRenderingThread = false;
-	protected boolean autoRepaint = true;
+	protected boolean autoRepaint = false;
 	protected boolean smoothScrolling = true;
 	protected boolean fadeoutText = true;
 	
 	// rendering controlls
 	protected int targetFps = 25;				//fps, the rendering thread tries to reach
 	protected int possibleFps = 25;				//maximal possible fps, calculated.
-	protected int sleepTime = 1000/25;			//sleep time at targetFps
+	protected int sleepTime = 40;			//sleep time at targetFps
 	protected long renderingStart = 0;			//start time of rendering method
 	protected long renderingStop = 0;			//stop time of rendering method
 	protected int renderingOverflow = 0;		//sleep = sleepTime - renderingOverflow
@@ -67,11 +70,18 @@ public class Scene extends JComponent implements ComponentListener {
 	protected int lastFps = 0;					//last calculated fps
 
 	// rendering components
-	protected BufferedImage preRenderedImage;
+	protected volatile BufferedImage preRenderedImage;
+	protected volatile BufferedImage preRenderedImage2;
+	protected volatile BufferedImage renderedImage;
+	protected volatile Object renderLock = new Object();
 	protected Graphics2D prGraphics = null;
-	protected boolean bufferReady = false;
+	protected Graphics2D prGraphics2 = null;
+	protected volatile boolean bufferReady = false;
 	protected Thread renderingThread = null;
 	protected TimerTask repaintTask = null;
+	
+	// debug components
+	protected JLabel debugLabel = new JLabel();
 
 	// components
 	protected ArrayList<Component> components = new ArrayList<Component>();
@@ -79,6 +89,11 @@ public class Scene extends JComponent implements ComponentListener {
 	public Scene(ITRBackground bg, int stageWidth, int stageHeight) {
 		this.bg = bg;
 		this.stageSize = new Dimension(stageWidth, stageHeight);
+		this.setLayout(null);
+		
+		debugLabel.setBounds(5, 5, getWidth(), 25);
+		debugLabel.setOpaque(false);
+		super.add(debugLabel);
 
 		// rendering properties
 		if (this.doubleBuffering) {
@@ -95,12 +110,111 @@ public class Scene extends JComponent implements ComponentListener {
 					RenderingHints.VALUE_ANTIALIAS_ON);
 			this.prGraphics.setRenderingHint(RenderingHints.KEY_RENDERING,
 					RenderingHints.VALUE_RENDER_QUALITY);
-			bufferReady = false;
+			//bufferReady = false;
 		}
 
 		// component listener
 		this.addComponentListener(this);
 	}
+	
+	
+	
+	/**
+	 * METHODS FOR RENDERING CONTROLL
+	 * Set and get render properties.
+	 *  - public void setTargetFPS(int)
+	 *  - public int getTargetFPS()
+	 *  - public int getLastFPS();
+	 *  - public int getPossibleFPS()
+	 *  - public void setDoubleBuffering(boolean)
+	 *  - public boolean isDoubleBuffered()
+	 *  - public void useRenderingThread(boolean)
+	 *  - public boolean isRenderingThreadUsed()
+	 *  - public void setAutoRepaint(boolean)
+	 *  - public boolean isAutoRepainting()
+	 *  - public void setTextFading(boolean)
+	 *  - public boolean isTextFading()
+	 *  - public void setSmoothScrolling(boolean)
+	 *  - public boolean isSmoothScrolling()
+	 */
+	public void setTargetFPS(int fps){
+		this.targetFps = fps;
+		this.possibleFps = fps;
+		this.sleepTime = Math.round(1000f/fps);
+	}
+	
+	public int getTargetFPS(){
+		return this.targetFps;
+	}
+	
+	public int getLastFPS(){
+		return this.lastFps;
+	}
+	
+	public int getPossibleFPS(){
+		return this.possibleFps;
+	}
+	
+	public void setDoubleBuffering(boolean enable){
+		super.setDoubleBuffered(true);
+		this.doubleBuffering = enable;
+		
+		this.reinitBuffer();
+		
+		if(this.doubleBuffering && this.useRenderingThread && this.renderingThread == null){
+			this.createRenderingThread();
+			this.renderingThread.start();
+		}
+	}
+	
+	public boolean isDoubleBuffered(){
+		return this.doubleBuffering;
+	}
+	
+	public void useRenderingThread(boolean enable){
+		if(enable && !this.useRenderingThread){
+			this.createRenderingThread();
+			this.useRenderingThread = enable;
+			this.renderingThread.start();
+		}
+		
+		this.useRenderingThread = enable;
+	}
+	
+	public boolean isRenderingThreadUsed(){
+		return this.useRenderingThread;
+	}
+	
+	public void setAutoRepaint(boolean enable){
+		if(enable && !this.autoRepaint){
+			this.createRepaintTask();
+			GraphicsUtility.getTimer().schedule(this.repaintTask, this.sleepTime, this.sleepTime);
+		}
+		
+		this.autoRepaint = enable;
+	}
+	
+	public boolean isAutoRepainting(){
+		return this.autoRepaint;
+	}
+	
+	public void setTextFading(boolean enable){
+		this.fadeoutText = enable;
+	}
+	
+	public boolean isTextFading(){
+		return this.fadeoutText;
+	}
+	
+	public void setSmoothScrolling(boolean enable){
+		this.smoothScrolling = enable;
+	}
+	
+	public boolean isSmoothScrolling(){
+		return this.smoothScrolling;
+	}
+	
+	
 
 	/**
 	 * METHODS FOR CREATING WORKER THREADS o. TASKS
@@ -110,24 +224,33 @@ public class Scene extends JComponent implements ComponentListener {
 	 *  - void createRenderingThread();
 	 *  - void createRepaintTask();
 	 */
-	public void createRenderingThread(){
+	protected void createRenderingThread(){
 		renderingThread = new Thread(new Runnable(){
 
 			@Override
 			public void run() {
 				while(doubleBuffering && useRenderingThread){
-					render(prGraphics);
+					if(!bufferReady){
+						render(prGraphics);
+						renderedImage = preRenderedImage;
+						bufferReady = true;
+					}else{
+						render(prGraphics2);
+						renderedImage = preRenderedImage2;
+						bufferReady = false;
+					}
 					try {
-						Thread.sleep(sleepTime - renderingOverflow);
+						Thread.sleep(Math.max(0, sleepTime - renderingOverflow));
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
+				renderingThread = null;
 				
 			}});
 	}
 	
-	public void createRepaintTask(){
+	protected void createRepaintTask(){
 		repaintTask = new TimerTask(){
 
 			@Override
@@ -145,11 +268,38 @@ public class Scene extends JComponent implements ComponentListener {
 	 * METHODS FOR PREPARE RENDERING AND RENDER SCENE 
 	 * Following methods are used for preparing the scene 
 	 * for rendering and draw it on a graphics object 
+	 *  - void reinitBuffer();
 	 *  - void reorderComponents();
 	 *  - void updateFOComponents(); 
 	 *  - void paintScene(Graphics2D);
 	 *  - void render(Graphics2D ?); ({@link #render(Graphics2D g) render})
 	 */
+	public void reinitBuffer(){
+		if (this.doubleBuffering) {
+			this.preRenderedImage = new BufferedImage(this.getWidth(),
+					this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			if (this.preRenderedImage.getGraphics() != null) {
+				this.prGraphics = (Graphics2D) this.preRenderedImage
+						.getGraphics();
+			} else {
+				this.prGraphics = (Graphics2D) this.preRenderedImage
+						.createGraphics();
+			}
+			
+			this.preRenderedImage2 = new BufferedImage(this.getWidth(),
+					this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			if (this.preRenderedImage2.getGraphics() != null) {
+				this.prGraphics2 = (Graphics2D) this.preRenderedImage2
+						.getGraphics();
+			} else {
+				this.prGraphics2 = (Graphics2D) this.preRenderedImage2
+						.createGraphics();
+			}
+			
+			bufferReady = false;
+		}
+	}
+	
 	public void reorderComponents() {
 		// change component order depending on position
 	}
@@ -160,9 +310,9 @@ public class Scene extends JComponent implements ComponentListener {
 
 	public void paintScene(Graphics2D g) {
 		// if double buffered and buffer still full, return
-		if (this.doubleBuffering && this.bufferReady) {
+		/*if (this.doubleBuffering && this.bufferReady) {
 			return;
-		}
+		}*/
 
 		// prepare graphics object (set rendering hints)
 		if (!this.doubleBuffering) {
@@ -178,11 +328,13 @@ public class Scene extends JComponent implements ComponentListener {
 
 		// paint components
 		for (Component c : components) {
+			g.translate(c.getX(), c.getY());
 			c.paint(g);
+			g.translate(-c.getX(), -c.getY());
 		}
 
 		if (this.doubleBuffering) {
-			this.bufferReady = true;
+			//this.bufferReady = true;
 		}
 	}
 	
@@ -202,12 +354,13 @@ public class Scene extends JComponent implements ComponentListener {
 	public void render(Graphics2D g){
 		//rendering start time
 		this.renderingStart = System.currentTimeMillis();
+		debugLabel.setText("FPS: "+lastFps+"          Target: "+possibleFps+" / "+targetFps);
 		
 		//update cur fps counter
 		this.fpsCounter++;
 		this.elapsedTime = (this.measureTimeStop = System.currentTimeMillis()) - this.measureTimeStart;
 		if( this.elapsedTime >= 500){
-			this.lastFps  =  (int) ( this.fpsCounter / this.elapsedTime );
+			this.lastFps  =  Math.round( this.fpsCounter*1000f / this.elapsedTime );
 			
 			if(this.elapsedTime > 1200){
 				this.fpsCounter = 0;
@@ -224,7 +377,7 @@ public class Scene extends JComponent implements ComponentListener {
 			}
 		}else{
 			//render
-			this.paintScene(this.prGraphics);
+			this.paintScene(g);
 			
 			//calculate rendering time
 			this.renderingOverflow = (int) ((this.renderingStop = System.currentTimeMillis()) - this.renderingStart);
@@ -276,10 +429,7 @@ public class Scene extends JComponent implements ComponentListener {
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		if (this.doubleBuffering) {
-			if (this.bufferReady) {
-				g2d.drawImage(preRenderedImage, 0, 0, this);
-				this.bufferReady = false;
-			}
+			g2d.drawImage(renderedImage, 0, 0, this);
 		} else {
 			this.render(g2d);
 		}
@@ -307,19 +457,9 @@ public class Scene extends JComponent implements ComponentListener {
 
 	@Override
 	public void componentResized(ComponentEvent arg0) {
+		debugLabel.setBounds(5, 5, getWidth(), 25);
 		// rendering properties
-		if (this.doubleBuffering) {
-			this.preRenderedImage = new BufferedImage(this.getWidth(),
-					this.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			if (this.preRenderedImage.getGraphics() != null) {
-				this.prGraphics = (Graphics2D) this.preRenderedImage
-						.getGraphics();
-			} else {
-				this.prGraphics = (Graphics2D) this.preRenderedImage
-						.createGraphics();
-			}
-			bufferReady = false;
-		}
+		this.reinitBuffer();
 
 		// TODO Auto-generated method stub
 		((JComponent) bg).setBounds(0, 0, this.getWidth(), this.getHeight());

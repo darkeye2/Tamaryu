@@ -52,7 +52,7 @@ public class TestBackground extends TRImageView implements ITRBackground {
 	public void setTime(int hh, int mm, int ss) {
 		long time = System.currentTimeMillis();
 		curTime = (int) (time%dnCyclus);
-		System.out.println(curTime);
+		//System.out.println(curTime);
 		if(curTime > imgTimes[0] && curTime < imgTimes[1]){
 			setImage(imgs[0]);
 		}else if(curTime > imgTimes[1]){

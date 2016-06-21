@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -23,7 +24,11 @@ import javax.swing.JPanel;
 import com.tr.engine.grf.Scene;
 import com.tr.img.animation.TRAnimation;
 import com.tr.img.animation.TRAnimationView;
+import com.tr.img.animation.TRComplexAnimationView;
+import com.tr.img.filter.HSLColorFilter;
 import com.tr.img.gameobject.TRImage;
+import com.tr.img.gameobject.TRImageView;
+import com.tr.img.mng.ImageLoader;
 import com.tr.test.AnimationViewTest;
 import com.tr.util.LanguageTranslator;
 
@@ -32,8 +37,21 @@ public class SceneTest1 implements ActionListener{
 	private Scene mainP;
 	private JPanel menueP = new JPanel();
 	
-	private TRAnimationView aniView;
+	//private TRAnimationView aniView;
+	private ImageLoader il = new ImageLoader();
 	private Color background = Color.green;
+	
+	// animation components
+	private TRAnimationView headmView, bodyView, tailView, larmView, rarmView,
+			llegView, rlegView, mouthView, hornView, eyeView;
+	private TRAnimation headDefault, bodyDefault, tailDefault, rarmDefault,
+			larmDefault, rlegDefault, llegDefault, mouthDefault, hornDefault,
+			eyeDefault, eyeClosed, eyeBlink;
+	private TRComplexAnimationView headView = new TRComplexAnimationView("head");
+	
+	private TRImageView bg;
+
+	private TRComplexAnimationView aniView = new TRComplexAnimationView();
 	
 	private HashMap<JButton, Integer> buttonMap = new HashMap<JButton, Integer>();
 	
@@ -46,26 +64,19 @@ public class SceneTest1 implements ActionListener{
 		frame.add(mainP, BorderLayout.CENTER);
 		frame.add(menueP, BorderLayout.EAST);
 
-		try {
-			createAnimation();
-			aniView.loadAnimation("MOVE_UP", true);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		il.addPath("img");
+		loadAnimation();
 		mainP.add(aniView);
+		aniView.setAutoRepaint(false);
 		
 		menueP.setLayout(new BoxLayout(menueP, BoxLayout.PAGE_AXIS));
-		addButton(new JButton(LanguageTranslator.getString("backgroundcolor")), 1);
-		addButton(new JButton(LanguageTranslator.getString("start")), 2);
-		addButton(new JButton(LanguageTranslator.getString("stop")), 3);
-		addButton(new JButton(LanguageTranslator.getString("pause")), 4);
-		addButton(new JButton(LanguageTranslator.getString("scaling") + ": FIT"), 5);
-		addButton(new JButton(LanguageTranslator.getString("scaling") + ": FILL"), 6);
-		addButton(new JButton(LanguageTranslator.getString("scaling") + ": ORG"), 7);
-		addButton(new JButton(LanguageTranslator.getString("moveup")), 8);
-		addButton(new JButton(LanguageTranslator.getString("movedown")), 9);
-		addButton(new JButton(LanguageTranslator.getString("moveright")), 10);
-		addButton(new JButton(LanguageTranslator.getString("moveleft")), 11);
+		addButton(new JButton(LanguageTranslator.getString("background")), 4);
+		addButton(new JButton(LanguageTranslator.getString("color")), 1);
+		addButton(new JButton(LanguageTranslator.getString("eyecolor")), 6);
+		addButton(new JButton(LanguageTranslator.getString("closeeyes")), 2);
+		addButton(new JButton(LanguageTranslator.getString("blink")), 3);
+		addButton(new JButton(LanguageTranslator.getString("openeyes")), 5);
+		addButton(new JButton(LanguageTranslator.getString("wavehand")), 7);
 		
 		aniView.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e) {
@@ -78,49 +89,202 @@ public class SceneTest1 implements ActionListener{
 		//show frame
 		frame.pack();
 		frame.setVisible(true);
+		
+		mainP.setTargetFPS(50);
+		mainP.setAutoRepaint(true);
+		mainP.setDoubleBuffering(true);
+		mainP.useRenderingThread(true);
 	}
 	
-	private void createAnimation() throws IOException{
-		String p = "img/";
-		
-		//move down animation
-		TRImage[] moveDown = new TRImage[4];
-		moveDown[0] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveDown_1.png" ))));
-		moveDown[1] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveDown_2.png" ))));
-		moveDown[2] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveDown_3.png" ))));
-		moveDown[3] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveDown_2.png" ))));
-		
-		//move left animation
-		TRImage[] moveLeft = new TRImage[4];
-		moveLeft[0] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveLeft_1.png" ))));
-		moveLeft[1] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveLeft_2.png" ))));
-		moveLeft[2] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveLeft_3.png" ))));
-		moveLeft[3] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveLeft_2.png" ))));
+	private void loadAnimation() {
+		try {
+			headDefault = new TRAnimation(il.loadAll("head_1.png"), 5);
+			bodyDefault = new TRAnimation(il.loadAll("body_1.png"), 5);
+			larmDefault = new TRAnimation(il.loadAll("arm_l_1.png"), 5);
+			rarmDefault = new TRAnimation(il.loadAll("arm_r_1.png"), 5);
+			llegDefault = new TRAnimation(il.loadAll("leg_l_1.png"), 5);
+			rlegDefault = new TRAnimation(il.loadAll("leg_r_1.png"), 5);
+			tailDefault = new TRAnimation(il.loadAll("sprite01_tail_1"), 5);
+			mouthDefault = new TRAnimation(il.loadAll("mouth_1.png"), 5);
+			hornDefault = new TRAnimation(il.loadAll("horn_1.png"), 5);
+			eyeDefault = new TRAnimation(
+					new TRImage[] { il.load("sprite01_eyes_1") }, 5);
+			eyeClosed = new TRAnimation(
+					new TRImage[] { il.load("sprite01_eyes_2") }, 5);
+			eyeBlink = new TRAnimation(new TRImage[] {
+					il.load("sprite01_eyes_1"), il.load("sprite01_eyes_2"),
+					il.load("sprite01_eyes_1") }, 15, false);
+
+			larmView = new TRAnimationView("left_arm");
+			larmView.addAnimation("default", larmDefault, true);
+			larmView.setBounds(0, 0, 600, 600);
+
+			rarmView = new TRAnimationView("right_arm");
+			rarmView.addAnimation("default", rarmDefault, true);
+			rarmView.setBounds(0, 0, 600, 600);
+			rarmView.setAnchor(300, 320);
+
+			rlegView = new TRAnimationView("right_leg");
+			rlegView.addAnimation("default", rlegDefault, true);
+			rlegView.setBounds(0, 0, 600, 600);
+
+			tailView = new TRAnimationView("tail");
+			tailView.addAnimation("default", tailDefault, true);
+			tailView.setBounds(400, 420, 200, 180);
+			tailView.setPosition(300, 360);
+
+			headmView = new TRAnimationView("head");
+			headmView.addAnimation("default", headDefault, true);
+			headmView.setBounds(0, 0, 600, 600);
+
+			hornView = new TRAnimationView("horn");
+			hornView.addAnimation("default", hornDefault, true);
+			hornView.setBounds(0, 0, 600, 600);
+
+			mouthView = new TRAnimationView("mouth");
+			mouthView.addAnimation("default", mouthDefault, true);
+			mouthView.setBounds(0, 0, 600, 600);
+
+			eyeView = new TRAnimationView("eye");
+			eyeView.addAnimation("closed", eyeClosed);
+			eyeView.addAnimation("blink", eyeBlink);
+			eyeView.addAnimation("default", eyeDefault, true);
+			eyeView.setBounds(150, 250, 190, 100);
+			eyeView.setPosition(160, 80);
+
+			bodyView = new TRAnimationView("body");
+			bodyView.addAnimation("default", bodyDefault, true);
+			bodyView.setBounds(0, 0, 600, 600);
+
+			llegView = new TRAnimationView("left_leg");
+			llegView.addAnimation("default", llegDefault, true);
+			llegView.setBounds(0, 0, 600, 600);
+
+			headView.add(hornView);
+			headView.add(headmView);
+			headView.add(mouthView);
+			headView.add(eyeView);
+
+			aniView.setSize(600, 600);
+			aniView.add(tailView);
+			aniView.add(llegView);
+			aniView.add(bodyView);
+			aniView.add(headView);
+			aniView.add(larmView);
+			aniView.add(rarmView);
+			aniView.add(rlegView);
 			
-		//move right animation
-		TRImage[] moveRight = new TRImage[4];
-		moveRight[0] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveRight_1.png" ))));
-		moveRight[1] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveRight_2.png" ))));
-		moveRight[2] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveRight_3.png" ))));
-		moveRight[3] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveRight_2.png" ))));
+			aniView.setScale(0.5f);
+			aniView.setBounds(400, 400, 600, 600);
+			eyeView.setBorder(BorderFactory.createLineBorder(Color.red));
+			System.out.println(aniView.getBounds(null));
+			System.out.println(aniView.getSize(null));
+			System.out.println(aniView.getHeight());
+			System.out.println(aniView.getWidth());
+			System.out.println(aniView.getPreferredSize());
+			//aniView.setBorder(BorderFactory.createLineBorder(Color.red));
+			//System.out.println(aniView.getBounds(null));
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void closeEyes() {
+		eyeView.loadAnimation("closed", true);
+	}
+
+	public void openEyes() {
+		eyeView.loadAnimation("default", true);
+	}
+
+	public void blink() {
+		eyeView.loadAnimation("blink", true);
+	}
+
+	public void wink() {
+
+		Runnable r = new Runnable() {
+			public void run() {
+				for (int i = 0; i < 60; i += 10) {
+					rarmView.setRotation(i);
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+				for (int i = 60; i >= 0; i -= 10) {
+					rarmView.setRotation(i);
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		Thread t = new Thread(r);
+		t.start();
+
+	}
+
+	public void setColor(Color c) {
+		aniView.removeAllFilter();
+		aniView.addFilter(new HSLColorFilter(c));
 		
-		//move down animation
-		TRImage[] moveUp = new TRImage[4];
-		moveUp[0] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveUp_1.png" ))));
-		moveUp[1] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveUp_2.png" ))));
-		moveUp[2] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveUp_3.png" ))));
-		moveUp[3] = new TRImage("TEST", 1, new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( p+"moveUp_2.png" ))));
+		//aniView.getView("head").get("eye").removeAllFilter();
+		((TRComplexAnimationView) aniView.getView("head")).getView("eye").get("default").getImage(0).removeAllFilter();
+		((TRComplexAnimationView) aniView.getView("head")).getView("eye").get("blink").getImage(0).removeAllFilter();
+		((TRComplexAnimationView) aniView.getView("head")).getView("eye").get("blink").getImage(2).removeAllFilter();
 		
-		TRAnimation downAni = new TRAnimation(moveDown, 10);
-		TRAnimation upAni = new TRAnimation(moveUp, 10);
-		TRAnimation rightAni = new TRAnimation(moveRight, 10);
-		TRAnimation leftAni = new TRAnimation(moveLeft, 10);
-		
-		aniView = new TRAnimationView();
-		aniView.addAnimation("MOVE_DOWN", downAni);
-		aniView.addAnimation("MOVE_UP", upAni);
-		aniView.addAnimation("MOVE_RIGHT", rightAni);
-		aniView.addAnimation("MOVE_LEFT", leftAni);
+		/*headDefault.removeAllFilter();
+		headDefault.addFilter(new HSLColorFilter(c));
+		tailDefault.removeAllFilter();
+		tailDefault.addFilter(new HSLColorFilter(c));
+		rlegDefault.removeAllFilter();
+		rlegDefault.addFilter(new HSLColorFilter(c));
+		llegDefault.removeAllFilter();
+		llegDefault.addFilter(new HSLColorFilter(c));
+		rarmDefault.removeAllFilter();
+		rarmDefault.addFilter(new HSLColorFilter(c));
+		larmDefault.removeAllFilter();
+		larmDefault.addFilter(new HSLColorFilter(c));
+		bodyDefault.removeAllFilter();
+		bodyDefault.addFilter(new HSLColorFilter(c));
+		mouthDefault.removeAllFilter();
+		mouthDefault.addFilter(new HSLColorFilter(c));*/
+	}
+
+	public void setEyeColor(Color c) {
+		((TRComplexAnimationView) aniView.getView("head")).getView("eye").get("default").getImage(0).removeAllFilter();
+		((TRComplexAnimationView) aniView.getView("head")).getView("eye").get("blink").getImage(0).removeAllFilter();
+		((TRComplexAnimationView) aniView.getView("head")).getView("eye").get("blink").getImage(2).removeAllFilter();
+		((TRComplexAnimationView) aniView.getView("head")).getView("eye").get("default").getImage(0).addFilter(new HSLColorFilter(c));
+		((TRComplexAnimationView) aniView.getView("head")).getView("eye").get("blink").getImage(0).addFilter(new HSLColorFilter(c));
+		((TRComplexAnimationView) aniView.getView("head")).getView("eye").get("blink").getImage(2).addFilter(new HSLColorFilter(c));
+
+		/*eyeView.removeAllFilter();
+		eyeView.addFilter(new HSLColorFilter(c));*/
+	}
+
+	public void changeEyeColor() {
+		Color c = JColorChooser.showDialog(frame, "Drachen Farbe", background);
+		setEyeColor(c);
+
+		//update();
+	}
+
+	public void changeColor() {
+		Color c = JColorChooser.showDialog(frame, "Drachen Farbe", background);
+		setColor(c);
+
+		//update();
 	}
 	
 	private void addButton(JButton b, int id){
@@ -138,11 +302,11 @@ public class SceneTest1 implements ActionListener{
                 "Background Color",
                 background);
 		
-		update();
+		//update();
 	}
 
 	
-	private void update(){
+	/*private void update(){
 		//mainP.setBackground(background);
 		mainP.validate();
 		mainP.repaint();
@@ -150,24 +314,34 @@ public class SceneTest1 implements ActionListener{
 		frame.repaint();
 		aniView.setBackground(Color.red);
 		aniView.repaint();
-	}	
+	}*/	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		switch(buttonMap.get(e.getSource())){
-		case 1: selectColor(); break;
-		case 2: aniView.startAnimation(); break;
-		case 3: aniView.stopAnimation(); break;
-		case 4: aniView.pauseAnimation(); break;
-		case 5: aniView.setScalingMode(0); break;
-		case 6: aniView.setScalingMode(1); break;
-		case 7: aniView.setScalingMode(2); break;
-		case 8: aniView.loadAnimation("MOVE_UP", true); break;
-		case 9: aniView.loadAnimation("MOVE_DOWN", true); break;
-		case 10: aniView.loadAnimation("MOVE_RIGHT", true); break;
-		case 11: aniView.loadAnimation("MOVE_LEFT", true); break;
+		switch (buttonMap.get(e.getSource())) {
+		case 1:
+			changeColor();
+			break;
+		case 2:
+			closeEyes();
+			break;
+		case 3:
+			blink();
+			break;
+		case 5:
+			openEyes();
+			break;
+		case 6:
+			changeEyeColor();
+			break;
+		case 7:
+			wink();
+			break;
+		case 4:
+			selectColor();
+			break;
 		}
-		update();
+		//update();
 	}
 	
 	
