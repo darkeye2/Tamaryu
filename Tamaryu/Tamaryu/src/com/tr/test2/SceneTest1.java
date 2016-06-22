@@ -120,7 +120,7 @@ public class SceneTest1 implements ActionListener {
 			llegDefault = new TRAnimation(new TRImage[] { il.load("sprite01_legl_1") }, 5);
 			// rlegDefault = new TRAnimation(il.loadAll("leg_r_1.png"), 5);
 			rlegDefault = new TRAnimation(new TRImage[] { il.load("sprite01_legr_1") }, 5);
-			tailDefault = new TRAnimation(new TRImage[]{il.load("sprite01_tail_hardfix_1")}, 5);
+			tailDefault = new TRAnimation(new TRImage[] { il.load("sprite01_tail_hardfix_1") }, 5);
 			tailMove = new TRAnimation(il.loadAll("sprite01_tail_hardfix_1"), 5);
 			mouthDefault = new TRAnimation(il.loadAll("mouth_1.png"), 5);
 			rlegMove = new TRAnimation(il.loadAll("sprite01_legr"), 5);
@@ -240,8 +240,10 @@ public class SceneTest1 implements ActionListener {
 				};
 				GraphicsUtility.getTimer().schedule(moveTask, Math.round(Math.random() * maxPause + minPause), 17);
 			}
+			int oldTargetX = target.x;
 			target = new Point((int) Math.round(Math.random() * mainP.getWidth()),
 					(int) Math.round(Math.random() * mainP.getHeight()));
+			if target.x <
 		} else {
 			if (!rlegView.getAnimationKey().equalsIgnoreCase("move")) {
 				rlegView.loadAnimation("move", true);
