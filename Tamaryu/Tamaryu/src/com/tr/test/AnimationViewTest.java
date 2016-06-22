@@ -67,6 +67,11 @@ public class AnimationViewTest implements ActionListener{
 		addButton(new JButton(LanguageTranslator.getString("moveright")), 10);
 		addButton(new JButton(LanguageTranslator.getString("moveleft")), 11);
 		
+		frame.setFocusable(true);
+		frame.addKeyListener(new TREventListenerTest());
+		//geht noch nicht		frame.addMouseListener(new TREventListenerTest());
+		
+		
 		aniView.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e) {
 			    System.out.println("Is Transparent: "+aniView.isTransparent(e.getX(), e.getY()));
