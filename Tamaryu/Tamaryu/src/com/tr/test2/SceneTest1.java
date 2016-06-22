@@ -117,7 +117,7 @@ public class SceneTest1 implements ActionListener {
 			bodyDefault = new TRAnimation(il.loadAll("body_1.png"), 5);
 			larmDefault = new TRAnimation(il.loadAll("arm_l_1.png"), 5);
 			rarmDefault = new TRAnimation(il.loadAll("arm_r_1.png"), 5);
-			llegDefault = new TRAnimation(il.loadAll("leg_l_1.png"), 5);
+			llegDefault = new TRAnimation(new TRImage[] { il.load("sprite01_legl_1") }, 5);
 			// rlegDefault = new TRAnimation(il.loadAll("leg_r_1.png"), 5);
 			rlegDefault = new TRAnimation(new TRImage[] { il.load("sprite01_legr_1") }, 5);
 			tailDefault = new TRAnimation(new TRImage[]{il.load("sprite01_tail_hardfix_1")}, 5);
@@ -177,7 +177,7 @@ public class SceneTest1 implements ActionListener {
 			llegView = new TRAnimationView("left_leg");
 			llegView.addAnimation("default", llegDefault, true);
 			llegView.addAnimation("move", llegMove, false);
-			llegView.setBounds(0, 0, 600, 600);
+			llegView.setBounds(0, 310, 300, 300);
 
 			headView.add(hornView);
 			headView.add(headmView);
