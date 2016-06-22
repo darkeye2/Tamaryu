@@ -4,12 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -30,12 +32,19 @@ import com.tr.img.gameobject.TRImage;
 import com.tr.img.gameobject.TRImageView;
 import com.tr.img.mng.ImageLoader;
 import com.tr.test.AnimationViewTest;
+import com.tr.util.GraphicsUtility;
 import com.tr.util.LanguageTranslator;
 
 public class SceneTest1 implements ActionListener{
 	private JFrame frame = new JFrame("Scene Test");
 	private Scene mainP;
 	private JPanel menueP = new JPanel();
+	private Point target = new Point(200,200);
+	
+	private TimerTask moveTask;
+	private int maxPause = 5000;
+	private int minPause = 1000;
+	private int speed = 2;
 	
 	//private TRAnimationView aniView;
 	private ImageLoader il = new ImageLoader();
@@ -46,7 +55,7 @@ public class SceneTest1 implements ActionListener{
 			llegView, rlegView, mouthView, hornView, eyeView;
 	private TRAnimation headDefault, bodyDefault, tailDefault, rarmDefault,
 			larmDefault, rlegDefault, llegDefault, mouthDefault, hornDefault,
-			eyeDefault, eyeClosed, eyeBlink;
+			eyeDefault, eyeClosed, eyeBlink, rlegMove;
 	private TRComplexAnimationView headView = new TRComplexAnimationView("head");
 	
 	private TRImageView bg;
@@ -60,7 +69,7 @@ public class SceneTest1 implements ActionListener{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setPreferredSize(new Dimension(800, 600));
 		frame.setLayout(new BorderLayout());
-		mainP = new Scene(new TestBackground(), 0,0);
+		mainP = new Scene(new TestBackground(), 800,600);
 		frame.add(mainP, BorderLayout.CENTER);
 		frame.add(menueP, BorderLayout.EAST);
 
@@ -94,6 +103,15 @@ public class SceneTest1 implements ActionListener{
 		mainP.setAutoRepaint(true);
 		mainP.setDoubleBuffering(true);
 		mainP.useRenderingThread(true);
+		
+		moveTask = new TimerTask(){
+
+			@Override
+			public void run() {
+				slide();
+				
+			}};
+		GraphicsUtility.getTimer().schedule(moveTask, Math.round(Math.random()*maxPause+minPause),17);
 	}
 	
 	private void loadAnimation() {
@@ -106,6 +124,7 @@ public class SceneTest1 implements ActionListener{
 			rlegDefault = new TRAnimation(il.loadAll("leg_r_1.png"), 5);
 			tailDefault = new TRAnimation(il.loadAll("sprite01_tail_1"), 5);
 			mouthDefault = new TRAnimation(il.loadAll("mouth_1.png"), 5);
+			rlegMove = new TRAnimation(null,5);
 			hornDefault = new TRAnimation(il.loadAll("horn_1.png"), 5);
 			eyeDefault = new TRAnimation(
 					new TRImage[] { il.load("sprite01_eyes_1") }, 5);
@@ -126,6 +145,7 @@ public class SceneTest1 implements ActionListener{
 
 			rlegView = new TRAnimationView("right_leg");
 			rlegView.addAnimation("default", rlegDefault, true);
+			rlegView.addAnimation("move", rlegMove, false);
 			rlegView.setBounds(0, 0, 600, 600);
 
 			tailView = new TRAnimationView("tail");
@@ -174,7 +194,7 @@ public class SceneTest1 implements ActionListener{
 			aniView.add(rarmView);
 			aniView.add(rlegView);
 			
-			aniView.setScale(0.5f);
+			aniView.setPreScale(0.5f);
 			aniView.setBounds(400, 400, 600, 600);
 			eyeView.setBorder(BorderFactory.createLineBorder(Color.red));
 			System.out.println(aniView.getBounds(null));
@@ -201,6 +221,48 @@ public class SceneTest1 implements ActionListener{
 
 	public void blink() {
 		eyeView.loadAnimation("blink", true);
+	}
+	
+	public void slide(){
+		int x = aniView.getOrcX();
+		int y = aniView.getOrcY();
+		if(x == target.x && y == target.y){
+			if(moveTask != null){
+				moveTask.cancel();
+				rlegView.loadAnimation("default", true);
+				moveTask = new TimerTask(){
+
+					@Override
+					public void run() {
+						slide();
+						
+					}};
+				GraphicsUtility.getTimer().schedule(moveTask, Math.round(Math.random()*maxPause+minPause),17);
+			}
+			target = new Point((int)Math.round(Math.random()*mainP.getWidth()),
+					(int)Math.round(0.3f*Math.random()*mainP.getHeight()));
+		}else{
+			if(!rlegView.getAnimationKey().equalsIgnoreCase("move")){
+				rlegView.loadAnimation("move", true);
+			}
+			if(target.x > mainP.getWidth() || target.y > mainP.getHeight()){
+				target = new Point((int)Math.round(Math.random()*mainP.getWidth()),
+						(int)Math.round(Math.random()*mainP.getHeight()));
+			}
+			if(x < target.x){
+				x += Math.min(speed, Math.abs(target.x - x));
+			}
+			if(x > target.x){
+				x -= Math.min(speed, Math.abs(target.x - x));
+			}
+			if(y < target.y){
+				y += Math.min(speed, Math.abs(target.y - y));
+			}
+			if(y > target.y){
+				y -= Math.min(speed, Math.abs(target.y - y));
+			}
+		}
+		aniView.setPosition(x, y);
 	}
 
 	public void wink() {

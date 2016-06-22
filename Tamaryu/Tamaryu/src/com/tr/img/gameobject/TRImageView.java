@@ -36,6 +36,7 @@ public class TRImageView extends JComponent {
 	protected int ax = 0, ay = 0;		//anchor point (rotation point)
 	protected float deg = 0;			//rotation degree (rotating around ax and ay);
 	protected float scalingFactor = 1f;
+	protected float preScale = 1f;
 
 	public TRImageView(TRImage img, int scalingMode, int width, int height) {
 		this.img = img;
@@ -68,15 +69,20 @@ public class TRImageView extends JComponent {
 		this.scalingFactor = s;
 		repaint();
 	}
+	
+	public void setPreScale(float s){
+		this.preScale = s;
+		repaint();
+	}
 
 	public Dimension getSize() {
 		if (scalingMode == SCALE_MODE_ORG) {
-			return new Dimension(Math.round(img.width * scalingFactor),
-					Math.round(img.height * scalingFactor));
+			return new Dimension(Math.round(img.width * scalingFactor * preScale),
+					Math.round(img.height * scalingFactor * preScale));
 		}
 
-		int dw = Math.round(size.width * scalingFactor);
-		int dh = Math.round(size.height * scalingFactor);
+		int dw = Math.round(size.width * scalingFactor * preScale);
+		int dh = Math.round(size.height * scalingFactor * preScale);
 		Dimension d = new Dimension(dw, dh);
 		return d;
 		
@@ -103,31 +109,31 @@ public class TRImageView extends JComponent {
 	}
 	
 	public int getWidth(){
-		return Math.round(scalingFactor*size.width);
+		return Math.round(scalingFactor*size.width * preScale);
 	}
 	
 	public int getHeight(){
-		return Math.round(scalingFactor*size.height);
+		return Math.round(scalingFactor*size.height * preScale);
 	}
 
 	public Dimension getPreferredSize() {
 		if (scalingMode == SCALE_MODE_ORG) {
-			return new Dimension(Math.round(img.width * scalingFactor),
-					Math.round(img.height * scalingFactor));
+			return new Dimension(Math.round(img.width * scalingFactor * preScale),
+					Math.round(img.height * scalingFactor * preScale));
 		}
 		
-		return new Dimension(Math.round(size.width * scalingFactor),
-				Math.round(size.height * scalingFactor));
+		return new Dimension(Math.round(size.width * scalingFactor * preScale),
+				Math.round(size.height * scalingFactor * preScale));
 
 		//return super.getPreferredSize();
 	}
 	
 	public Point getPosition(){
-		return new Point(Math.round(x*scalingFactor),Math.round(y*scalingFactor));
+		return new Point(Math.round(x*scalingFactor * preScale),Math.round(y*scalingFactor * preScale));
 	}
 	
 	public int getX(){
-		return Math.round(x*scalingFactor);
+		return Math.round(x*scalingFactor * preScale);
 	}
 	
 	public int getOrcX(){
@@ -135,7 +141,7 @@ public class TRImageView extends JComponent {
 	}
 	
 	public int getY(){
-		return Math.round(y*scalingFactor);
+		return Math.round(y*scalingFactor * preScale);
 	}
 	
 	public int getOrcY(){
@@ -157,19 +163,19 @@ public class TRImageView extends JComponent {
 	}
 	
 	public Point getAnchor(){
-		return new Point(Math.round(ax*scalingFactor), Math.round(ay*scalingFactor));
+		return new Point(Math.round(ax*scalingFactor * preScale), Math.round(ay*scalingFactor * preScale));
 	}
 	
 	public int getAx(){
-		return Math.round(ax*scalingFactor);
+		return Math.round(ax*scalingFactor * preScale);
 	}
 	
 	public int getAy(){
-		return Math.round(ay*scalingFactor);
+		return Math.round(ay*scalingFactor * preScale);
 	}
 	
 	public void setBounds(int x, int y, int w, int h){
-		super.setBounds(Math.round(scalingFactor*x), Math.round(scalingFactor*y), w, h);
+		super.setBounds(Math.round(scalingFactor*x * preScale), Math.round(scalingFactor*y * preScale), w, h);
 		setPosition(x,y);
 		size.width = w;
 		size.height = h;
@@ -184,13 +190,13 @@ public class TRImageView extends JComponent {
 			return r;
 		}*/
 		if(this.scalingMode == SCALE_MODE_ORG){
-			return new Rectangle(Math.round(this.x*scalingFactor), Math.round(this.y*scalingFactor),
-					Math.round(img.width * scalingFactor),
-					Math.round(img.height * scalingFactor));
+			return new Rectangle(Math.round(this.x*scalingFactor * preScale), Math.round(this.y*scalingFactor * preScale),
+					Math.round(img.width * scalingFactor * preScale),
+					Math.round(img.height * scalingFactor * preScale));
 		}
 		
-		return new Rectangle(Math.round(this.x*scalingFactor), Math.round(this.y*scalingFactor),
-				Math.round(size.width*scalingFactor), Math.round(size.height*scalingFactor));
+		return new Rectangle(Math.round(this.x*scalingFactor * preScale), Math.round(this.y*scalingFactor * preScale),
+				Math.round(size.width*scalingFactor * preScale), Math.round(size.height*scalingFactor * preScale));
 	}
 	
 	public Rectangle getBounds(){
