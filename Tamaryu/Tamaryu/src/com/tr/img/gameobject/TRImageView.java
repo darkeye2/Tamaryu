@@ -74,6 +74,10 @@ public class TRImageView extends JComponent {
 		this.preScale = s;
 		repaint();
 	}
+	
+	public float getPreScale(){
+		return this.preScale;
+	}
 
 	public Dimension getSize() {
 		if (scalingMode == SCALE_MODE_ORG) {
