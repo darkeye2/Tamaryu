@@ -52,7 +52,7 @@ public class SceneTest1 implements ActionListener {
 	private TRAnimationView headmView, bodyView, tailView, larmView, rarmView, llegView, rlegView, mouthView, hornView,
 			eyeView;
 	private TRAnimation headDefault, bodyDefault, tailDefault, rarmDefault, larmDefault, rlegDefault, llegDefault,
-			mouthDefault, hornDefault, eyeDefault, eyeClosed, eyeBlink, rlegMove, tailMove;
+			mouthDefault, hornDefault, eyeDefault, eyeClosed, eyeBlink, rlegMove, llegMove, tailMove;
 	private TRComplexAnimationView headView = new TRComplexAnimationView("head");
 
 	private TRImageView bg;
@@ -124,6 +124,7 @@ public class SceneTest1 implements ActionListener {
 			tailMove = new TRAnimation(il.loadAll("sprite01_tail_hardfix_1"), 5);
 			mouthDefault = new TRAnimation(il.loadAll("mouth_1.png"), 5);
 			rlegMove = new TRAnimation(il.loadAll("sprite01_legr"), 5);
+			llegMove = new TRAnimation(il.loadAll("sprite01_legl"), 5);
 			hornDefault = new TRAnimation(il.loadAll("horn_1.png"), 5);
 			eyeDefault = new TRAnimation(new TRImage[] { il.load("sprite01_eyes_1") }, 5);
 			eyeClosed = new TRAnimation(new TRImage[] { il.load("sprite01_eyes_2") }, 5);
@@ -175,6 +176,7 @@ public class SceneTest1 implements ActionListener {
 
 			llegView = new TRAnimationView("left_leg");
 			llegView.addAnimation("default", llegDefault, true);
+			llegView.addAnimation("move", llegMove, false);
 			llegView.setBounds(0, 0, 600, 600);
 
 			headView.add(hornView);
@@ -227,6 +229,7 @@ public class SceneTest1 implements ActionListener {
 			if (moveTask != null) {
 				moveTask.cancel();
 				rlegView.loadAnimation("default", true);
+				llegView.loadAnimation("default", true);
 				moveTask = new TimerTask() {
 
 					@Override
@@ -242,6 +245,7 @@ public class SceneTest1 implements ActionListener {
 		} else {
 			if (!rlegView.getAnimationKey().equalsIgnoreCase("move")) {
 				rlegView.loadAnimation("move", true);
+				llegView.loadAnimation("move", true);
 			}
 			if (target.x > mainP.getWidth() || target.y > mainP.getHeight()) {
 				target = new Point((int) Math.round(Math.random() * mainP.getWidth()),
