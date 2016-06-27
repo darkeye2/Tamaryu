@@ -73,6 +73,14 @@ public class TRComplexAnimationView extends TRAnimationView {
 		super.setScale(s);
 	}
 	
+	public void setPreScale(float s){
+		scale = s;
+		for(TRAnimationView av : views.values()){
+			av.setPreScale(s);
+		}
+		super.setPreScale(s);
+	}
+	
 	/*public void setWidth(int w){
 		this.setPreferredSize(new Dimension(w, this.getHeight()));
 	}

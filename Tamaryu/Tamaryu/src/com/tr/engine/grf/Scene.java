@@ -15,6 +15,7 @@ import java.util.TimerTask;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import com.tr.img.gameobject.TRImageView;
 import com.tr.util.GraphicsUtility;
 
 public class Scene extends JComponent implements ComponentListener {
@@ -84,11 +85,12 @@ public class Scene extends JComponent implements ComponentListener {
 	protected JLabel debugLabel = new JLabel();
 
 	// components
-	protected ArrayList<Component> components = new ArrayList<Component>();
+	protected ArrayList<TRImageView> components = new ArrayList<TRImageView>();
 
 	public Scene(ITRBackground bg, int stageWidth, int stageHeight) {
 		this.bg = bg;
 		this.stageSize = new Dimension(stageWidth, stageHeight);
+		this.minStageSize = new Dimension(stageWidth, stageHeight);
 		this.setLayout(null);
 		
 		debugLabel.setBounds(5, 5, getWidth(), 25);
@@ -327,10 +329,13 @@ public class Scene extends JComponent implements ComponentListener {
 		bg.paintComponent(g);
 
 		// paint components
+		int tx, ty;
 		for (Component c : components) {
-			g.translate(c.getX(), c.getY());
+			tx = c.getX();
+			ty = c.getY();
+			g.translate(tx, ty);
 			c.paint(g);
-			g.translate(-c.getX(), -c.getY());
+			g.translate(-tx, -ty);
 		}
 
 		if (this.doubleBuffering) {
@@ -405,7 +410,7 @@ public class Scene extends JComponent implements ComponentListener {
 	 *  - void remove(Component); 
 	 *  - void removeAll();
 	 */
-	public Component add(Component c) {
+	public TRImageView add(TRImageView c) {
 		if (c != null) {
 			components.add(c);
 		}
@@ -460,9 +465,21 @@ public class Scene extends JComponent implements ComponentListener {
 		debugLabel.setBounds(5, 5, getWidth(), 25);
 		// rendering properties
 		this.reinitBuffer();
+		
+		//scaling
+		if(this.getWidth() < this.minStageSize.width || this.getHeight() < this.minStageSize.height){
+			if(this.getWidth() < this.getHeight()){
+				this.scale = (float)this.getWidth()/(float) this.minStageSize.width;
+			}else{
+				this.scale = (float)this.getHeight()/(float) this.minStageSize.height;
+			}
+			for(TRImageView view : this.components){
+				view.setScale(scale);
+			}
+		}
 
 		// TODO Auto-generated method stub
-		((JComponent) bg).setBounds(0, 0, this.getWidth(), this.getHeight());
+		((JComponent) bg).setBounds(0, 0, Math.max(0, this.getWidth()), Math.max(0, this.getHeight()));
 
 	}
 

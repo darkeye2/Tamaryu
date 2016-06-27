@@ -11,6 +11,7 @@ public class TestBackground extends TRImageView implements ITRBackground {
 	private static final long serialVersionUID = 1L;
 	private final long dnCyclus = 48000;		//day - night cyclus in ms
 	private final int[] imgTimes = new int[]{16000, 36000, 0};
+	private int curImage = 0;
 	private TRImage[] imgs;
 	
 
@@ -54,11 +55,20 @@ public class TestBackground extends TRImageView implements ITRBackground {
 		curTime = (int) (time%dnCyclus);
 		//System.out.println(curTime);
 		if(curTime > imgTimes[0] && curTime < imgTimes[1]){
-			setImage(imgs[0]);
+			if(curImage != 0){
+				curImage = 0;
+				setImage(imgs[0]);
+			}
 		}else if(curTime > imgTimes[1]){
-			setImage(imgs[2]);
+			if(curImage != 2){
+				curImage = 2;
+				setImage(imgs[2]);
+			}
 		}else{
-			setImage(imgs[1]);
+			if(curImage != 1){
+				curImage = 1;
+				setImage(imgs[1]);
+			}
 		}
 	}
 
