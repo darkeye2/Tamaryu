@@ -43,6 +43,7 @@ public class AnimationViewTest implements ActionListener{
 		frame.setLayout(new BorderLayout());
 		frame.add(mainP, BorderLayout.CENTER);
 		frame.add(menueP, BorderLayout.EAST);
+		frame.setBackground(Color.black);
 
 		try {
 			createAnimation();
