@@ -1,5 +1,12 @@
 package com.tr.img.animation;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.TimerTask;
 
@@ -8,7 +15,7 @@ import com.tr.img.filter.Filter;
 import com.tr.util.GraphicsUtility;
 
 public class TRAnimationView extends TRImageView implements
-		Comparable<TRAnimationView> {
+		Comparable<TRAnimationView>{
 	private static final long serialVersionUID = 1L;
 
 	// map available animations
@@ -26,6 +33,12 @@ public class TRAnimationView extends TRImageView implements
 
 	// call repaint automatically on image update
 	protected boolean autorepaint = true;
+	
+	//transformation
+	protected BufferedImage transformImage = null;
+	protected boolean transform = false;
+	protected boolean flipVert = false;
+	protected boolean flipHor = false;
 
 	protected int index = 0;
 
@@ -118,6 +131,26 @@ public class TRAnimationView extends TRImageView implements
 	public boolean addAnimation(String key, TRAnimation ani) {
 		return addAnimation(key, ani, false);
 	}
+	
+	public void setFlipVert(boolean b){
+		this.flipVert = b;
+		updateTransform();
+	}
+	
+	public void setFlipHor(boolean b){
+		this.flipHor = b;
+		updateTransform();
+	}
+	
+	protected void updateTransform(){
+		if(this.flipHor || this.flipVert){
+			this.transform = true;
+			this.transformImage = new BufferedImage(Math.max(1, getWidth()), Math.max(1, getHeight()), BufferedImage.TYPE_INT_ARGB);
+		}else if(!this.flipHor || !this.flipVert){
+			this.transform = false;
+			//transformImage = null;
+		}
+	}
 
 	// create a TimerTask for updating the displayed image
 	private void createUpdateTask() {
@@ -185,24 +218,35 @@ public class TRAnimationView extends TRImageView implements
 		return curAniKey;
 	}
 
-	/*public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		/*if (deg == 0) {
+	public void paintComponent(Graphics g) {
+		if(!this.transform){
+			this.transformImage = null;
 			super.paintComponent(g);
-			g.setColor(Color.blue);
-			g.drawRect(0, 0, getWidth()-1, getHeight()-1);
-		} else {
+		}else{
+			if(transformImage.getWidth() != getWidth() ||
+					transformImage.getHeight() != getHeight()){
+				this.updateTransform();
+			}
+			Graphics2D imgG = ((Graphics2D)transformImage.getGraphics());
+			imgG.setBackground(new Color(255, 255, 255, 0));
+			imgG.clearRect(0, 0, transformImage.getWidth(), transformImage.getHeight());
+			super.paintComponent(transformImage.getGraphics());
 			Graphics2D g2d = (Graphics2D) g.create();
-			g2d.setColor(Color.blue);
-			g2d.fillOval(getAx(), getAy(), 5, 5);
-			System.out.println("Rotation: "+getAx()+", "+getAy());
-			//g2d.rotate(Math.toRadians(deg), 240, 80);
-			g2d.rotate(Math.toRadians(deg), getAx(), getAy());
-			super.paintComponent(g2d);
-			g2d.setColor(Color.blue);
-			g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
+			AffineTransform tx;
+			if(this.flipHor && this.flipVert){
+				tx = AffineTransform.getScaleInstance(-1, -1);
+				tx.translate(getWidth(), getHeight());
+			}else if(this.flipVert){
+				tx = AffineTransform.getScaleInstance(-1, 1);
+				tx.translate(-transformImage.getWidth(null), 0);
+			}else{
+				tx = AffineTransform.getScaleInstance(1, -1);
+				tx.translate(0, -transformImage.getHeight(null));
+			}
+			g2d.setTransform(tx);
+			g2d.drawImage(transformImage, 0, 0, this);
 			g2d.dispose();
-		}*/
-	//}*/
+		}
+	}
 
 }

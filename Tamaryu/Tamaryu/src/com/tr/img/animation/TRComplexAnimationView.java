@@ -1,9 +1,12 @@
 package com.tr.img.animation;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -152,14 +155,50 @@ public class TRComplexAnimationView extends TRAnimationView {
 		}
 	}
 	
-	
-	public void paintComponent(Graphics g){
+	protected void paintTRComponent(Graphics2D g){
 		super.paintComponent(g);
 		for(TRAnimationView trav : views.values()){
 			Point p = trav.getPosition();
 			g.translate(p.x, p.y);
 			trav.paintComponent(g);
 			g.translate(-p.x, -p.y);
+		}
+	}
+	
+	
+	public void paintComponent(Graphics g){
+		if(!this.transform){
+			this.transformImage = null;
+			paintTRComponent((Graphics2D) g);
+		}else{
+			if(transformImage.getWidth() != getWidth() ||
+					transformImage.getHeight() != getHeight()){
+				this.updateTransform();
+			}
+			Graphics2D imgG = ((Graphics2D)transformImage.getGraphics());
+			int posX = getX(), posY = getY();
+			imgG.setBackground(new Color(255, 255, 255, 0));
+			imgG.clearRect(0, 0, transformImage.getWidth(), transformImage.getHeight());
+			paintTRComponent((Graphics2D) transformImage.getGraphics());
+			Graphics2D g2d = (Graphics2D) g.create();
+			AffineTransform tx;
+			if(this.flipHor && this.flipVert){
+				tx = AffineTransform.getScaleInstance(-1, -1);
+				tx.translate(getWidth(), getHeight());
+				posX *= -1;
+				posY *= -1;
+			}else if(this.flipVert){
+				tx = AffineTransform.getScaleInstance(-1, 1);
+				tx.translate(-transformImage.getWidth(null), 0);
+				posX *= -1;
+			}else{
+				tx = AffineTransform.getScaleInstance(1, -1);
+				tx.translate(0, -transformImage.getHeight(null));
+				posY *= -1;
+			}
+			g2d.setTransform(tx);
+			g2d.drawImage(transformImage, posX, posY, this);
+			g2d.dispose();
 		}
 	}
 

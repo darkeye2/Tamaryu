@@ -43,6 +43,22 @@ public class SceneTest1 implements ActionListener {
 	private int minPause = 1000;
 	private int speed = 2;
 	private float orgScale = 1f;
+	
+	//random update
+	private TimerTask updateTask;
+	private float pauseFrame = 0.5f;
+	private int blinkPause = 3000;
+	private int movePause = 3000;
+	private int wavePause = 8000;
+	private int tailPause = 2000;
+	private int moveSpeed = 2;
+	private long nextBlink = 0;
+	private long nextMove = 0;
+	private long nextWave = 0;
+	private long nextTail = 0;
+	private boolean isTailAnimating = false;
+	private boolean isMoving = false;
+	
 
 	// private TRAnimationView aniView;
 	private ImageLoader il = new ImageLoader();
@@ -89,6 +105,7 @@ public class SceneTest1 implements ActionListener {
 				System.out.println("Is Transparent: " + aniView.isTransparent(e.getX(), e.getY()));
 			}
 		});
+		//aniView.setBorder(BorderFactory.createLineBorder(Color.red));
 
 		// show frame
 		frame.pack();
@@ -99,16 +116,17 @@ public class SceneTest1 implements ActionListener {
 		mainP.setDoubleBuffering(true);
 		mainP.useRenderingThread(true);
 
-		moveTask = new TimerTask() {
+		/*moveTask = new TimerTask() {
 
 			@Override
 			public void run() {
 				slide();
 
 			}
-		};
+		};*/
 		orgScale = aniView.getPreScale();
-		GraphicsUtility.getTimer().schedule(moveTask, Math.round(Math.random() * maxPause + minPause), 17);
+		//GraphicsUtility.getTimer().schedule(moveTask, Math.round(Math.random() * maxPause + minPause), 17);
+		this.startDemoUpdate();
 	}
 
 	private void loadAnimation() {
@@ -209,6 +227,97 @@ public class SceneTest1 implements ActionListener {
 			e.printStackTrace();
 		}
 	}
+	
+	private void startDemoUpdate(){
+		updateTask = new TimerTask(){
+
+			@Override
+			public void run() {
+				//time of this update
+				long curTime = System.currentTimeMillis();
+				
+				//init values, if 0
+				if(nextBlink == 0){
+					nextBlink = curTime + Math.round(Math.random()*(blinkPause+blinkPause*pauseFrame)+blinkPause*pauseFrame);
+				}
+				if(nextMove == 0){
+					nextMove = curTime + Math.round(Math.random()*(movePause+movePause*pauseFrame)+movePause*pauseFrame);
+				}
+				if(nextTail == 0){
+					nextTail = curTime + Math.round(Math.random()*(tailPause+tailPause*pauseFrame)+tailPause*pauseFrame);
+				}
+				if(nextWave == 0){
+					nextWave = curTime + Math.round(Math.random()*(wavePause+wavePause*pauseFrame)+wavePause*pauseFrame);
+				}
+				
+				//blink
+				if((curTime - nextBlink) > 0){
+					blink();
+					nextBlink = 0;
+				}
+				
+				//toggle tail move
+				if((curTime - nextTail) > 0){
+					if(isTailAnimating){
+						tailView.loadAnimation("default", true);
+						isTailAnimating = false;
+					}else{
+						tailView.loadAnimation("move", true);
+						isTailAnimating = true;
+					}
+					nextTail = 0;
+				}
+				
+				//wave
+				if((curTime - nextWave) > 0){
+					wink();
+					nextWave = 0;
+				}
+				
+				//move
+				int x = aniView.getOrcX(), y = aniView.getOrcY();
+				if(isMoving){
+					//check if ready
+					if (x == target.x && y == target.y) {
+						isMoving = false;
+						nextMove = 0;
+						rlegView.loadAnimation("default", true);
+						llegView.loadAnimation("default", true);
+					}else{
+						//update position
+						if (x < target.x) {
+							x += Math.min(moveSpeed, Math.abs(target.x - x));
+						}
+						if (x > target.x) {
+							x -= Math.min(moveSpeed, Math.abs(target.x - x));
+						}
+						if (y < target.y) {
+							y += Math.min(moveSpeed, Math.abs(target.y - y));
+						}
+						if (y > target.y) {
+							y -= Math.min(moveSpeed, Math.abs(target.y - y));
+						}
+						aniView.setPosition(x, y);
+					}
+				}else{
+					if((curTime - nextMove) > 0){
+						target = new Point((int) Math.round(Math.random() * mainP.getWidth()),
+								(int) Math.round(Math.random() * mainP.getHeight()));
+						isMoving = true;
+						if(target.x < x){
+							aniView.setFlipVert(false);
+						}else{
+							aniView.setFlipVert(true);
+						}
+						rlegView.loadAnimation("move", true);
+						llegView.loadAnimation("move", true);
+					}
+				}
+				
+			}};
+			
+		GraphicsUtility.getTimer().schedule(updateTask, 17, 17);
+	}
 
 	public void closeEyes() {
 		eyeView.loadAnimation("closed", true);
@@ -243,7 +352,12 @@ public class SceneTest1 implements ActionListener {
 			int oldTargetX = target.x;
 			target = new Point((int) Math.round(Math.random() * mainP.getWidth()),
 					(int) Math.round(Math.random() * mainP.getHeight()));
-			if target.x <
+			//if target.x <
+			if(target.x < x){
+				aniView.setFlipVert(false);
+			}else{
+				aniView.setFlipVert(true);
+			}
 		} else {
 			if (!rlegView.getAnimationKey().equalsIgnoreCase("move")) {
 				rlegView.loadAnimation("move", true);

@@ -68,8 +68,9 @@ public class AnimationViewTest implements ActionListener{
 		addButton(new JButton(LanguageTranslator.getString("moveleft")), 11);
 		
 		frame.setFocusable(true);
-		frame.addKeyListener(new TREventListenerTest());
+		//frame.addKeyListener(new TREventListenerTest());
 		//geht noch nicht		frame.addMouseListener(new TREventListenerTest());
+		//aniView.setFlipHor(true);
 		
 		
 		aniView.addMouseListener(new MouseAdapter(){
