@@ -1,7 +1,5 @@
 package com.tr.engine.gameobject;
 
-import java.awt.Rectangle;
-
 import com.tr.img.gameobject.TRLayerdImage;
 
 /** 
@@ -13,11 +11,9 @@ import com.tr.img.gameobject.TRLayerdImage;
  */
 
 public class Prop extends AbstractGameObject
-{
-	private static final long serialVersionUID = 8723625421997826746L;
-	
+{	
 	private TRLayerdImage image;
-	private Rectangle hitbox;
+	private TRRectangle hitbox;
 	
 	public Prop(int x, int y, TRLayerdImage image)
 	{
@@ -51,16 +47,16 @@ public class Prop extends AbstractGameObject
 	
 	public void setHitbox(int relativeX, int relativeY, int width, int height)
 	{
-		this.hitbox = new Rectangle(relativeX, relativeY, width, height);
+		this.hitbox = new TRRectangle(relativeX, relativeY, width, height);
 	}
 	
-	public void setHitbox(Rectangle rect)
+	public void setHitbox(TRRectangle rect)
 	{
 		this.hitbox = rect;
 	}
 	
-	public Rectangle getHitbox()
+	public TRRectangle getHitbox()
 	{
-		return new Rectangle(this.x + this.hitbox.x, this.y + this.hitbox.y, this.hitbox.width, this.hitbox.height);
+		return new TRRectangle(this.x + this.hitbox.x, this.y + this.hitbox.y, this.hitbox.width, this.hitbox.height);
 	}
 }

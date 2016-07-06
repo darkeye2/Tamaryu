@@ -1,13 +1,9 @@
 package com.tr.engine.gameobject;
 
-import java.awt.Rectangle;
-
 import com.tr.test.nick.main.GameWindow;
 
-public abstract class AbstractGameObject extends Rectangle
+public abstract class AbstractGameObject extends TRRectangle
 {
-	private static final long serialVersionUID = 1506829664607422784L;
-
 	protected int GameObjectID;
 	
 	protected int velocityX;

@@ -59,7 +59,7 @@ public class TestState extends AbstractGameState
 		this.background.draw(g);
 		
 		g.setColor(Color.RED);
-		g.draw(this.testObject.getHitbox());
+		//g.draw(this.testObject.getHitbox());
 	}
 
 	@Override

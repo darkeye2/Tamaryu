@@ -12,9 +12,7 @@ import com.tr.img.gameobject.TRLayerdImage;
  */
 
 public class Decoration extends AbstractGameObject
-{
-	private static final long serialVersionUID = 4402244606590167628L;
-	
+{	
 	private TRLayerdImage image;
 
 	public Decoration(int x, int y, TRLayerdImage image)

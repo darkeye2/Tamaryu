@@ -1,7 +1,5 @@
 package com.tr.engine.gameobject;
 
-import java.awt.Rectangle;
-
 import com.tr.img.gameobject.TRLayerdImage;
 
 /** 
@@ -18,12 +16,10 @@ import com.tr.img.gameobject.TRLayerdImage;
 
 public class Actor extends AbstractGameObject
 {
-	private static final long serialVersionUID = -8035304360453003726L;
-
 	private TRLayerdImage image;
 	
-	private Rectangle hitboxHead;
-	private Rectangle hitboxBody;
+	private TRRectangle hitboxHead;
+	private TRRectangle hitboxBody;
 
 	public Actor(int x, int y, TRLayerdImage image)
 	{
@@ -57,17 +53,17 @@ public class Actor extends AbstractGameObject
 	
 	public void setHitboxHead(int relativeX, int relativeY, int width, int height)
 	{
-		this.hitboxHead = new Rectangle(relativeX, relativeY, width, height);
+		this.hitboxHead = new TRRectangle(relativeX, relativeY, width, height);
 	}
 	
-	public void setHitboxHead(Rectangle rect)
+	public void setHitboxHead(TRRectangle rect)
 	{
 		this.hitboxHead = rect;
 	}
 	
-	public Rectangle getHitboxHead()
+	public TRRectangle getHitboxHead()
 	{
-		return new Rectangle(this.x + this.hitboxHead.x, this.y + this.hitboxHead.y, this.hitboxHead.width, this.hitboxHead.height);
+		return new TRRectangle(this.x + this.hitboxHead.x, this.y + this.hitboxHead.y, this.hitboxHead.width, this.hitboxHead.height);
 	}
 	
 	/**
@@ -78,16 +74,16 @@ public class Actor extends AbstractGameObject
 	
 	public void setHitboxBody(int x, int y, int width, int height)
 	{
-		this.hitboxBody = new Rectangle(x, y, width, height);
+		this.hitboxBody = new TRRectangle(x, y, width, height);
 	}
 	
-	public void setHitboxBody(Rectangle rect)
+	public void setHitboxBody(TRRectangle rect)
 	{
 		this.hitboxBody = rect;
 	}
 	
-	public Rectangle getHitboxBody()
+	public TRRectangle getHitboxBody()
 	{
-		return new Rectangle(this.x + this.hitboxBody.x, this.y + this.hitboxBody.y, this.hitboxBody.width, this.hitboxBody.height);
+		return new TRRectangle(this.x + this.hitboxBody.x, this.y + this.hitboxBody.y, this.hitboxBody.width, this.hitboxBody.height);
 	}
 }
