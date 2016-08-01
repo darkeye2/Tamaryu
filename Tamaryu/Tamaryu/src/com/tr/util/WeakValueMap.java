@@ -18,6 +18,10 @@ public class WeakValueMap<K,V>{
 		map.put(key, new WeakValue<K, V>(key, value, queue));
 	}
 	
+	public boolean containsKey(K key){
+		return map.containsKey(key);
+	}
+	
 	public V get(K key){
 		clearReferences();
 		if(map.containsKey(key)){
@@ -47,11 +51,9 @@ public class WeakValueMap<K,V>{
 		WeakValue<K,V> wk;
 		//int s = map.size();
 		while((wk = (WeakValue<K,V>)queue.poll()) != null){
-			//System.out.println("[WeakValueMap] Remove unreferenced Object: "+wk.getKey());
 			map.remove(wk.getKey());
 			wk = null;
 		}
-		//System.out.println("Remove unreferenced items! ("+s+" / "+map.size()+")");
 	}
 	
     
