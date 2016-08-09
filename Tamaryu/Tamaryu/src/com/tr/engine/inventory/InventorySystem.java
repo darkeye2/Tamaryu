@@ -1,17 +1,19 @@
 package com.tr.engine.inventory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public final class InventorySystem
 {
-	public static ArrayList<InventoryItem> inventoryItems;
+	public static ArrayList<IInventoryable> inventoryItems;
+	private static Comparator<IInventoryable> comparator;
 
 	private InventorySystem()
 	{
-		
+		//Inventory System is Static
 	}
 	
-	public static ArrayList<InventoryItem> getInventory()
+	public static ArrayList<IInventoryable> getInventory()
 	{
 		if(InventorySystem.inventoryItems == null)
 		{
@@ -25,11 +27,11 @@ public final class InventorySystem
 	{
 		try
 		{
-			InventorySystem.inventoryItems = new ArrayList<InventoryItem>();
+			InventorySystem.inventoryItems = new ArrayList<IInventoryable>();
 			
 			//TODO
 			//Load Items from somewhere (DataBase, File)
-			InventoryItem item = new InventoryItem("Apfel", "Obst", 4);
+			IInventoryable item = new InventoryItem("Apfel", "Obst", 4);
 			
 			InventorySystem.inventoryItems.add(item);
 		}
@@ -39,7 +41,7 @@ public final class InventorySystem
 		}
 	}
 	
-	public static void addItem(InventoryItem item)
+	public static void addItem(IInventoryable item)
 	{
 		if(InventorySystem.inventoryItems == null)
 		{
@@ -53,7 +55,7 @@ public final class InventorySystem
 		{
 			boolean newItem = true;
 			
-			for(InventoryItem entry : InventorySystem.inventoryItems)
+			for(IInventoryable entry : InventorySystem.inventoryItems)
 			{
 				if(entry.getName() == item.getName())
 				{
@@ -68,9 +70,9 @@ public final class InventorySystem
 		}
 	}
 	
-	public static void useItem(InventoryItem item)
+	public static void useItem(IInventoryable item)
 	{
-		for(InventoryItem entry : InventorySystem.inventoryItems)
+		for(IInventoryable entry : InventorySystem.inventoryItems)
 		{
 			if(entry.getName() == item.getName())
 			{
@@ -79,7 +81,27 @@ public final class InventorySystem
 			if(entry.getAmount() <= 0)
 			{
 				InventorySystem.inventoryItems.remove(entry);
+				break;
 			}
 		}
+	}
+	
+	public static void sortInventory()
+	{
+		inventoryItems.sort(comparator);
+	}
+	
+	public static void setComparator(int comparatorID)
+	{
+		if(comparatorID != InventoryComparatorFactory.getCurrentComparatorID())
+		{
+			comparator = InventoryComparatorFactory.createComparator(comparatorID);	
+		}
+		
+	}
+	
+	public static void setNextComparator()
+	{
+		comparator = InventoryComparatorFactory.createComparator(InventoryComparatorFactory.getCurrentComparatorID() + 1);
 	}
 }

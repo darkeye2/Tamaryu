@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-
+import com.tr.engine.inventory.IInventoryable;
 import com.tr.engine.inventory.InventoryItem;
 import com.tr.engine.inventory.InventorySystem;
 import com.tr.test.nick.main.GameWindow;
@@ -33,7 +33,7 @@ public class InventoryTestState extends AbstractGameState
 			
 			this.regularFont = new Font("Arial", Font.PLAIN, 12);
 			
-			for(InventoryItem item : InventorySystem.getInventory())
+			for(IInventoryable item : InventorySystem.getInventory())
 			{
 				this.listOfItems.add(item.getName() + " " + item.getType() + " " + item.getAmount());
 			}			
@@ -78,7 +78,7 @@ public class InventoryTestState extends AbstractGameState
 			InventorySystem.addItem(new InventoryItem("Apfel", "Obst", 1));
 			
 			this.listOfItems.clear();
-			for(InventoryItem item : InventorySystem.getInventory())
+			for(IInventoryable item : InventorySystem.getInventory())
 			{
 				this.listOfItems.add(item.getName() + " " + item.getType() + " " + item.getAmount());
 			}
@@ -89,7 +89,7 @@ public class InventoryTestState extends AbstractGameState
 			InventorySystem.useItem(new InventoryItem("Apfel", "Obst", 1));
 			
 			this.listOfItems.clear();
-			for(InventoryItem item : InventorySystem.getInventory())
+			for(IInventoryable item : InventorySystem.getInventory())
 			{
 				this.listOfItems.add(item.getName() + " " + item.getType() + " " + item.getAmount());
 			}
@@ -100,7 +100,7 @@ public class InventoryTestState extends AbstractGameState
 			InventorySystem.addItem(new InventoryItem("Birne", "Obst", 1));
 			
 			this.listOfItems.clear();
-			for(InventoryItem item : InventorySystem.getInventory())
+			for(IInventoryable item : InventorySystem.getInventory())
 			{
 				this.listOfItems.add(item.getName() + " " + item.getType() + " " + item.getAmount());
 			}
@@ -111,7 +111,7 @@ public class InventoryTestState extends AbstractGameState
 			InventorySystem.addItem(new InventoryItem("Karrote", "Gemüse", 1));
 			
 			this.listOfItems.clear();
-			for(InventoryItem item : InventorySystem.getInventory())
+			for(IInventoryable item : InventorySystem.getInventory())
 			{
 				this.listOfItems.add(item.getName() + " " + item.getType() + " " + item.getAmount());
 			}

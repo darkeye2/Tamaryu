@@ -1,9 +1,10 @@
 package com.tr.engine.inventory;
 
-public class InventoryItem
+public class InventoryItem implements IInventoryable
 {
 	private String name;
 	private String type;
+	private int position;
 	private int amount;
 	
 	/**
@@ -11,32 +12,36 @@ public class InventoryItem
 	 * Constructor
 	 * 
 	 */
-	public InventoryItem(String name)
+	public InventoryItem(String name, int posi)
 	{
 		this.name = name;
 		this.type = "Misc.";
 		this.amount = 1;
+		this.position = posi;
 	}
 	
-	public InventoryItem(String name, String type)
+	public InventoryItem(String name, String type, int posi)
 	{
 		this.name = name;
 		this.type = type;
 		this.amount = 1;
+		this.position = posi;
 	}
 	
-	public InventoryItem(String name, int amount)
+	public InventoryItem(String name, int posi, int amount)
 	{
 		this.name = name;
 		this.type = "Misc.";
 		this.amount = amount;
+		this.position = posi;
 	}
 	
-	public InventoryItem(String name, String type, int amount)
+	public InventoryItem(String name, String type, int posi, int amount)
 	{
 		this.name = name;
 		this.type = type;
 		this.amount = amount;
+		this.position = posi;
 	}
 	
 	/**
@@ -57,6 +62,11 @@ public class InventoryItem
 	public int getAmount()
 	{
 		return this.amount;
+	}
+	
+	public int getPosition()
+	{
+		return this.position;
 	}
 	
 	/**
@@ -80,11 +90,10 @@ public class InventoryItem
 		this.amount = amount;
 	}
 	
-	/**
-	 * 
-	 * Methods
-	 * 
-	 */
+	public void setPosition(int position)
+	{
+		this.position = position;
+	}
 	
 	public void increaseAmount(int plus)
 	{
@@ -93,6 +102,13 @@ public class InventoryItem
 	
 	public void decreaseAmount(int minus)
 	{
-		this.amount -= minus;
+		if(this.amount > 0)
+		{
+			this.amount -= minus;
+		}
+		else
+		{
+			this.amount = 0;
+		}
 	}
 }
