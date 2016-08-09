@@ -238,6 +238,8 @@ public class TRGL2DRenderable extends TRGLRenderable {
 			nd[i+stY] = this.data[i+stY]*(this.height/cam.getRefHeight());
 		}
 		
+		GLCamera.printFloatMatrix(nd, 5, 6, true);
+		
 		return nd;
 	}
 	
