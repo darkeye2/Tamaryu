@@ -233,7 +233,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 			break;
 		}
 		
-		for(int i = 0; (i+d) < data.length; i+=d){
+		for(int i = 0; (i+d-1) < data.length; i+=d){
 			nd[i+stX] = this.data[i+stX]*(this.width/cam.getRefWidth());
 			nd[i+stY] = this.data[i+stY]*(this.height/cam.getRefHeight());
 		}
