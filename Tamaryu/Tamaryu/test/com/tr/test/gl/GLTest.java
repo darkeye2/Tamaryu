@@ -31,8 +31,9 @@ public class GLTest {
 		 */
 		scene = rc.getScene();
 		
-		TestGLTama t1 = new TestGLTama();
-		t1.setRotation(0, 180, 10);
+		//TestGLTama t1 = new TestGLTama();
+		TestTama2 t1 = new TestTama2();
+		//t1.setRotation(0, 180, 10);
 		//t1.setPosition(0.5f, 0.5f, 5f);
 		TestGLTamaEye t2 = new TestGLTamaEye();
 		t1.addComponent(t2);

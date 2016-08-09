@@ -1,0 +1,26 @@
+struct dragon1
+head{
+	ani default 100 loop:1{
+		imageName
+	}
+}
+eye{
+	ani default 100 loop:1{
+		eyeOpenImage
+	}
+	ani close 100 loop:1{
+		eyeClosedImage
+	}
+	ani blink 300 loop:0 default{
+		eyeClosedImage
+	}
+}
+.....
+animations{
+	ani turnRight 100 loop:1{
+		this flipV
+	}
+	ani turnLeft 100 loop:1{
+		this flipH
+	}
+}

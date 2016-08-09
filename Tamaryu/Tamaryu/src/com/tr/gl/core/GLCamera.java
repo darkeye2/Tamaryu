@@ -46,6 +46,8 @@ public class GLCamera implements ICamera{
 	protected Point3D rot = new Point3D(0f, 0f, 0f); // rotation of the camera
 
 	protected float zoom = 1.0f; // zoom factor
+	
+	protected boolean normalized = true;
 
 	public GLCamera(int ww, int wh) {
 		this(ww, wh, 0, 0, 0);
@@ -136,8 +138,13 @@ public class GLCamera implements ICamera{
 		}else{
 			aspect = winHeight / winWidth;
 		}*/
-		ortho_matrix = FloatUtil.makeOrtho(ortho_matrix, 0, false, -aspect, aspect, -1, 1,
-				zNear, zFar);
+		if(this.normalized){
+			ortho_matrix = FloatUtil.makeOrtho(ortho_matrix, 0, false, -aspect, aspect, -1, 1,
+					zNear, zFar);
+		}else{
+			ortho_matrix = FloatUtil.makeOrtho(ortho_matrix, 0, false, 0, this.refWidth, this.refHeight, 0,
+					zNear, zFar);
+		}
 		
 		ortho_matrix[14] = 0;
 		//GLCamera.printFloatMatrix(ortho_matrix, 4, 4);
@@ -331,6 +338,36 @@ public class GLCamera implements ICamera{
 		}
 		sb.append("}");
 		System.out.println(sb.toString());
+	}
+	
+	public static void printFloatMatrix(float[] m, int x, int y, boolean col){
+		if(!col){
+			printFloatMatrix(m,x,y);
+			return;
+		}
+		//System.out.println("Matrix "+x+"x"+y+" {");
+		StringBuilder sb = new StringBuilder();
+		sb.append("\r\nMatrix "+x+"x"+y+" {\r\n");
+		for(int i = 0; i< y; i++){
+			for(int j = 0; j< x; j++){
+				sb.append(String.format("%.2f,\t", m[j+i*x]));
+				//System.out.format("%f,\t", m[j*x+i]);
+			}
+			sb.append("\r\n");
+			//System.out.println();
+		}
+		sb.append("}");
+		System.out.println(sb.toString());
+	}
+
+	@Override
+	public void setNormalized(boolean norm) {
+		this.normalized = norm;
+	}
+
+	@Override
+	public boolean isNormalized() {
+		return normalized;
 	}
 
 }

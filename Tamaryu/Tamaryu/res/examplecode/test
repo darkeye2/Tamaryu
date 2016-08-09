@@ -1,0 +1,11 @@
+cord[x1,y1,x2,y2]
+tex[tx1,ty1,tx2,ty2]
+
+v1[x1, y2, 0, tx1, ty2]
+v2[x1, y1, 0, tx1, ty1]
+v3[x2, y2, 0, tx2, ty2]
+v4[x2, y2, 0, tx2, ty2]
+v5[x1, y1, 0, tx1, ty1]
+v6[x2, y1, 0, tx2, ty1]
+
+0,0,2,2,0,2

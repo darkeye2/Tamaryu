@@ -1,0 +1,5 @@
+tex image_name /file/path filetype width height x y refW refH resource
+
+Bsp:
+tex tama1 /img/tamaSprite png 600 400 0 0 3000 400 true
+tex tama2 /img/tamaSprite png 600 400 600 0 3000 400 true

@@ -2,7 +2,10 @@ package com.tr.engine.grf.gl;
 
 import java.util.ArrayList;
 
+import com.jogamp.opengl.GL2ES3;
 import com.tr.engine.grf.TRLabel;
+import com.tr.gl.core.GLCamera;
+import com.tr.gl.core.GLProgramm;
 import com.tr.gl.core.text.BitmapFont;
 import com.tr.gl.core.text.BitmapFontManager;
 import com.tr.gl.core.text.Glyph;
@@ -13,17 +16,23 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 	private String text = "";
 	private int alignment = TRLabel.LEFT;
 	private float fontSize = 20;
-	private float width, height;
+	//private float width, height;
+	private float maxW = 0, maxH = 0;
 	private ArrayList<Glyph> glyphs = new ArrayList<Glyph>();
 	private BitmapFont font = BitmapFontManager.load("Arial");
 	
 	public TRGLLabel(){
 		this.setNormalized(false);
+		this.setTexture(font.getTexture());
+		this.setProgram(new GLProgramm("/shader/", new String[]{"default_f", "default_v"},
+				new int[]{GL2ES3.GL_FRAGMENT_SHADER, GL2ES3.GL_VERTEX_SHADER}, "default"));
 	}
 	
 	public TRGLLabel(String txt){
 		this();
 		setText(txt);
+		System.out.println("TRGLLabel ["+width+", "+height+"] text="+text);
+		GLCamera.printFloatMatrix(this.data, 5, 6, true);
 	}
 
 	@Override
@@ -43,7 +52,8 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 
 		// build lines
 		float y = 0;
-		if (this.width < 1) {
+		if (this.maxW < 1) {
+			this.width = 0;
 			// no line width set, take longest line
 			for (String line : lines) {
 				// create glyphs for the line
@@ -94,7 +104,7 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 			
 		}
 
-		if (this.height < 1) {
+		if (this.maxH < 1) {
 			this.height = glyphLines.size() * font.getLineHeight();
 		}
 		
@@ -110,9 +120,13 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 			}
 		}
 		
+		glyphs.clear();
 		for(GlyphLine gl : glyphLines){
 			this.glyphs.addAll(gl.getGlyphs());
 		}
+		
+		updateData();
+		System.out.println("Glyphs: "+glyphs.size());
 	}
 	
 	private void updateData(){
@@ -123,18 +137,50 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 		for(int i = 0; i<glyphs.size(); i++){
 			Glyph g = glyphs.get(i);
 			float[] texCoord = getNormalizedTexCoord(g);
+			float [] vecCoord = getNormalizedVecCoord(g);
+			
 			int di = i*6*5;
-			data[di] = (g.x+g.gd.width)/this.width;
-			data[di+1] = (g.y+g.gd.height)/this.height;
-			data[di+2] = 0;
-			data[di+3] = texCoord[2];
-			data[di+3] = texCoord[3];
-			data[di] = (g.x+g.gd.width)/this.width;
-			data[di+1] = (g.y+g.gd.height)/this.height;
-			data[di+2] = 0;
-			data[di+3] = texCoord[0];
-			data[di+3] = texCoord[3];
+			for(int j = 0; j < 6; j++){
+				System.arraycopy(genNormalizedVertex(j, vecCoord,  texCoord), 0, data, di+j*5, 5);
+			}
 		}
+		
+		this.setData(data, DATA_FORMAT_XYZUV);
+	}
+	
+	private float[] genNormalizedVertex(int i, float[] v, float[] t){
+		float[] vertex = null;
+		
+		switch(i){
+		case 0:
+			vertex = new float[]{v[2], v[1], 0, t[2], t[1]};
+			break;
+		case 1:
+		case 4:
+			vertex = new float[]{v[0], v[1], 0, t[0], t[1]};
+			break;
+		case 2:
+		case 3:
+			vertex = new float[]{v[2], v[3], 0, t[2], t[3]};
+			break;
+		case 5:
+			vertex = new float[]{v[0], v[3], 0, t[0], t[3]};
+			break;
+		}
+		return vertex;
+	}
+	
+	private float[] getNormalizedVecCoord(Glyph g){
+		float x1 = g.x/(this.width/2f) - 1;
+		float y1 = (g.y/(this.height/2f) - 1)*-1;
+		float x2 = (g.x+g.gd.width)/(this.width/2f) - 1;
+		float y2 = ((g.y+g.gd.height)/(this.height/2f) - 1)*-1;
+		/*float x1 = g.x;
+		float y1 = g.y;
+		float x2 = g.x+g.gd.width;
+		float y2 = g.y+g.gd.height;*/
+		
+		return new float[]{x1,y1,x2,y2};
 	}
 	
 	private float[] getNormalizedTexCoord(Glyph g){
@@ -153,8 +199,8 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 
 	@Override
 	public void setSize(int w, int h) {
-		this.width = w;
-		this.height = h;
+		this.maxW = w;
+		this.maxH = h;
 		updateText();
 	}
 

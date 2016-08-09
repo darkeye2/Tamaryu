@@ -15,4 +15,8 @@ public interface ICamera {
 
 	public void increaseRot(float x, float y, float z);
 	public void setReferenceSize(float sceneWidth, float sceneHeight);
+	
+	public void setNormalized(boolean norm);
+	
+	public boolean isNormalized();
 }

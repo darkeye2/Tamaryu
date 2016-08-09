@@ -1,0 +1,14 @@
+dragon x y{
+	head  x y{
+		eye x y{}
+		mouth x y{}
+	}
+	full_body x y{
+		body x y{}
+		rarm x y{}
+		larm x y{}
+		rfeet x y{}
+		lfeet x y{}
+		tail x y{}
+	}
+}

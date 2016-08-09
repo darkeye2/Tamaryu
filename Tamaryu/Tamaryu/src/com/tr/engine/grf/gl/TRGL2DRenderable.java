@@ -28,6 +28,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	protected boolean useTexture = false;
 	protected Color objectColor = Color.BLACK;
 	protected boolean dataUpdated = false;
+	protected boolean textureUpdated = false;
 	
 	//locations
 	protected int modelMatLocation = 0;
@@ -48,6 +49,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	public void setTexture(GLTexture tex) {
 		this.texture = tex;
 		useTexture(true);
+		this.textureUpdated = true;
 	}
 
 	public GLTexture getTexture() {
@@ -109,6 +111,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	@Override
 	public void init(TRRenderContext context) {
 		GL2ES3 gl = (GL2ES3) ((TRGLRenderContext) context).getGL();
+		GLCamera cam = (GLCamera) context.getScene().getCamera();
 		
 		//compile programm
 		this.program = this.program.init(gl);
@@ -130,14 +133,13 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		gl.glGenVertexArrays(1, objects, Semantic.Object.VAO);
 
 		// update vbo and vao data
-		this.updateVBOData(gl);
+		this.updateVBOData(gl, cam);
 		
 		//init components inside
 		for(TRGLRenderable r : this.components){
 			r.init(context);
 		}
 
-		GLCamera cam = (GLCamera) context.getScene().getCamera();
 		if(!normalized){
 			this.updateModelMatrix(cam);
 		}
@@ -155,7 +157,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		GLCamera.printFloatMatrix(tmp.getMatrix(), 4, 4);
 	}
 
-	private void updateVBOData(GL2ES3 gl) {
+	private void updateVBOData(GL2ES3 gl, GLCamera cam) {
 		// bind VAO
 		gl.glBindVertexArray(objects[Semantic.Object.VAO]);
 
@@ -163,7 +165,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, objects[Semantic.Object.VBO]);
 
 		// load vertex data into the buffer
-		gl.glBufferData(GL.GL_ARRAY_BUFFER, this.data.length * 4, FloatBuffer.wrap(this.data), GL.GL_STATIC_DRAW);
+		gl.glBufferData(GL.GL_ARRAY_BUFFER, this.data.length * 4, FloatBuffer.wrap(this.normalizeData(cam)), GL.GL_STATIC_DRAW);
 
 		// update attribute data according to data format
 		switch (this.dataFormat) {
@@ -204,6 +206,41 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		gl.glBindVertexArray(0);
 	}
 	
+	protected float[] normalizeData(GLCamera cam){
+		if(this.normalized){
+			return data;
+		}
+		
+		float[] nd = new float[this.data.length];
+		System.arraycopy(data, 0, nd, 0, data.length);
+		int stX = 0, stY = 1, d = 3;
+		
+		switch (this.dataFormat) {
+		case DATA_FORMAT_XYZ:
+			break;
+		case DATA_FORMAT_XYZWUV:
+		case DATA_FORMAT_XYZ_UV_M:
+			d = 6;
+			break;
+		case DATA_FORMAT_UVXYZ:
+			stX = 2;
+			stY = 3;
+			d = 5;
+			break;
+		case DATA_FORMAT_XYZUV:
+		default:
+			d = 5;
+			break;
+		}
+		
+		for(int i = 0; (i+d) < data.length; i+=d){
+			nd[i+stX] = this.data[i+stX]*(this.width/cam.getRefWidth());
+			nd[i+stY] = this.data[i+stY]*(this.height/cam.getRefHeight());
+		}
+		
+		return nd;
+	}
+	
 	private int getVertexDataSize(){
 		switch (this.dataFormat) {
 		case DATA_FORMAT_XYZ:
@@ -228,6 +265,10 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		if(this.updateMatrix){
 			this.updateModelMatrix(cam);
 		}
+		
+		if(this.textureUpdated){
+			this.texture.init(gl);
+		}
 
 		// use program
 		gl.glUseProgram(program.getID());
@@ -243,7 +284,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 
 		// update data if changed (reload into VBO)
 		if (this.dataUpdated) {
-			this.updateVBOData(gl);
+			this.updateVBOData(gl, cam);
 			this.dataUpdated = false;
 		}
 		
@@ -306,6 +347,14 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		gl.glDeleteBuffers(1, objects, Semantic.Object.VBO);
 		this.texture = null;
 		this.program = null;
+	}
+	
+	public void setNormalized(boolean norm){
+		this.normalized = false;
+	}
+	
+	public boolean isNormalized(){
+		return this.normalized;
 	}
 
 }

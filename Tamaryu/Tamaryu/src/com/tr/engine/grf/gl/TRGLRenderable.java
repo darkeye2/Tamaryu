@@ -111,8 +111,20 @@ public abstract class TRGLRenderable implements IRenderable {
 		
 		float x = pos.x, y = pos.y, z = pos.z;
 		if(!normalized){
-			x = ((x+this.width/2-cam.getRefWidth()/2)/cam.getRefWidth()/2);
-			y = 1-((x+this.height/2-cam.getRefHeight()/2)/cam.getRefHeight()/2);
+			float x0 = - (cam.getRefWidth()/cam.getRefHeight());
+			float xw = (cam.getRefWidth()/cam.getRefHeight());
+			float y0 = 1;
+			float yh = -1;
+			
+			x = x0 + x * (2 * xw / cam.getRefWidth()) + this.width/cam.getRefWidth();
+			y = y0 + y * (2 * yh / cam.getRefHeight()) - this.height/cam.getRefHeight();
+			
+			//System.out.println("Rendering not normalized Object!");
+			//x = ((x)/cam.getRefWidth()/2) - 1;
+			//y = (((y)/cam.getRefHeight()/2) - 1)*-1;
+			/*x = ((x+this.width/2-cam.getRefWidth()/2)/cam.getRefWidth()/2);
+			y = 1-((x+this.height/2-cam.getRefHeight()/2)/cam.getRefHeight()/2);*/
+			//System.out.println("Normalized Pos: "+x+", "+y);
 		}
 		
 		Matrix4 tmp = new Matrix4();
