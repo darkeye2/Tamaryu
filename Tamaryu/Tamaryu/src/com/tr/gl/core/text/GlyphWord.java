@@ -24,6 +24,8 @@ public class GlyphWord {
 		g.x = x + g.gd.xoffset;
 		g.y = y + g.gd.yoffset;
 		x += g.gd.width;
+		wordWidth += g.gd.width;
+		glyphs.add(g);
 	}
 	
 	public void setYOffset(float y){

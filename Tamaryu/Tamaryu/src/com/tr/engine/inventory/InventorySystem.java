@@ -1,6 +1,7 @@
 package com.tr.engine.inventory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 
 public final class InventorySystem
@@ -88,7 +89,7 @@ public final class InventorySystem
 	
 	public static void sortInventory()
 	{
-		inventoryItems.sort(comparator);
+		Collections.sort(inventoryItems, comparator);
 	}
 	
 	public static void setComparator(int comparatorID)

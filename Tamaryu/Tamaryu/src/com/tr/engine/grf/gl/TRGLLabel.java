@@ -2,9 +2,12 @@ package com.tr.engine.grf.gl;
 
 import java.util.ArrayList;
 
+import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.opengl.GL2ES3;
+import com.jogamp.opengl.util.packrect.Rect;
 import com.tr.engine.grf.TRLabel;
-import com.tr.gl.core.GLCamera;
+import com.tr.engine.input.ITRMouseListener;
+import com.tr.engine.input.TRMouseEvent;
 import com.tr.gl.core.GLProgramm;
 import com.tr.gl.core.text.BitmapFont;
 import com.tr.gl.core.text.BitmapFontManager;
@@ -12,12 +15,13 @@ import com.tr.gl.core.text.Glyph;
 import com.tr.gl.core.text.GlyphLine;
 import com.tr.gl.core.text.GlyphWord;
 
-public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
+public class TRGLLabel extends TRGL2DRenderable implements TRLabel, ITRMouseListener {
 	private String text = "";
 	private int alignment = TRLabel.LEFT;
 	private float fontSize = 20;
 	//private float width, height;
 	private float maxW = 0, maxH = 0;
+	private Rect hitbox = new Rect();
 	private ArrayList<Glyph> glyphs = new ArrayList<Glyph>();
 	private BitmapFont font = BitmapFontManager.load("Arial");
 	
@@ -32,7 +36,7 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 		this();
 		setText(txt);
 		System.out.println("TRGLLabel ["+width+", "+height+"] text="+text);
-		GLCamera.printFloatMatrix(this.data, 5, 6, true);
+		//GLCamera.printFloatMatrix(this.data, 5, 6, true);
 	}
 
 	@Override
@@ -109,13 +113,24 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 		}
 		
 		if(this.alignment == TRLabel.CENTER){
+			System.out.println("Center Glyphs!");
 			for(GlyphLine gl : glyphLines){
-				float offset = this.width - gl.lineWidth;
+				float offset =  0;
+				if(this.maxW>0){
+					offset = this.maxW - gl.lineWidth;
+				}else{
+					offset = this.width - gl.lineWidth;
+				}
 				gl.setXOffset(offset/2);
 			}
 		}else if(this.alignment == TRLabel.RIGHT){
 			for(GlyphLine gl : glyphLines){
-				float offset = this.width - gl.lineWidth;
+				float offset =  0;
+				if(this.maxW>0){
+					offset = this.maxW - gl.lineWidth;
+				}else{
+					offset = this.width - gl.lineWidth;
+				}
 				gl.setXOffset(offset);
 			}
 		}
@@ -126,6 +141,7 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 		}
 		
 		updateData();
+		hitbox.setSize(this.getWidth(), this.getHeight());
 		System.out.println("Glyphs: "+glyphs.size());
 	}
 	
@@ -203,6 +219,14 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 		this.maxH = h;
 		updateText();
 	}
+	
+	public int getWidth(){
+		return Math.round(Math.max(this.width, maxW));
+	}
+	
+	public int getHeight(){
+		return Math.round(Math.max(this.height, maxH));
+	}
 
 	@Override
 	public void setPosition(int x, int y) {
@@ -230,5 +254,64 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel {
 	public void setFontSize(float size) {
 		this.fontSize = size;
 	}
+
+	@Override
+	public void mouseEnter(TRMouseEvent e) {
+		this.setRotation(0, 20, 0);
+	}
+
+	@Override
+	public void mouseLeave(TRMouseEvent e) {
+		this.setRotation(0, 0, 0);
+	}
+
+	@Override
+	public void mouseRelease(TRMouseEvent e) {
+		this.setRotation(0, 0, 0);
+		//System.out.println("HIT!");
+	}
+
+	@Override
+	public void mousePress(TRMouseEvent e) {
+		//System.out.println("Absolute Pos: "+this.getAbsolutPosition()+" Size: "+this.getWidth()+" x "+this.getHeight());
+		//System.out.println("Click: "+e.x()+", "+e.y());
+		this.setRotation(0, 20, 0);
+		
+	}
+
+	@Override
+	public Rect getHitbox() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setHitbox(Rect hitbox) {
+		this.hitbox = hitbox;
+	}
+
+	@Override
+	public int getZ() {
+		return Math.round(this.getPosition().z);
+	}
+	
+	@Override
+	public void mouseDragged(TRMouseEvent tre) {
+		int  xoff = tre.x()-tre.lastPos.getX();
+		int yoff = tre.y()-tre.lastPos.getY();
+		this.setPosition((int)this.getPosition().x+xoff,(int) this.getPosition().y+yoff);
+	}
+
+	@Override
+	public boolean isHit(int x, int y) {
+		if(x >= getAbsolutPosition().x+hitbox.x() && x <= getAbsolutPosition().x+hitbox.x()+hitbox.maxX()){
+			if(y >= getAbsolutPosition().y+hitbox.y() && y <= getAbsolutPosition().y+hitbox.y()+hitbox.maxY()){
+				//System.out.println("Hit a Component!");
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 }

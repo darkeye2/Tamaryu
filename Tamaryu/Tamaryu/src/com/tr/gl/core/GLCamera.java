@@ -46,6 +46,7 @@ public class GLCamera implements ICamera{
 	protected Point3D rot = new Point3D(0f, 0f, 0f); // rotation of the camera
 
 	protected float zoom = 1.0f; // zoom factor
+	protected float aspectScale = 1.0f;
 	
 	protected boolean normalized = true;
 
@@ -76,6 +77,8 @@ public class GLCamera implements ICamera{
 
 		// create view Matrix
 		updateViewMatrix();
+		
+		this.setNormalized(false);
 	}
 	
 	public float normalizeWidth(float w){
@@ -113,6 +116,7 @@ public class GLCamera implements ICamera{
 	public void setReferenceSize(float refW, float refH){
 		this.refWidth = refW;
 		this.refHeight = refH;
+		calculateScale();
 	}
 	
 	public float getRefWidth(){
@@ -142,8 +146,9 @@ public class GLCamera implements ICamera{
 			ortho_matrix = FloatUtil.makeOrtho(ortho_matrix, 0, false, -aspect, aspect, -1, 1,
 					zNear, zFar);
 		}else{
-			ortho_matrix = FloatUtil.makeOrtho(ortho_matrix, 0, false, 0, this.refWidth, this.refHeight, 0,
-					zNear, zFar);
+			float m = Math.max(this.winHeight, this.winWidth);
+			ortho_matrix = FloatUtil.makeOrtho(ortho_matrix, 0, false, 0, this.winWidth*zoom*aspectScale, 0, 
+					this.winHeight*zoom*aspectScale, -m, m);
 		}
 		
 		ortho_matrix[14] = 0;
@@ -167,6 +172,8 @@ public class GLCamera implements ICamera{
 
 		// create orthogonal matrix
 		updateOrthoMatrix();
+		
+		calculateScale();
 	}
 	
 	public float getWinWidth(){
@@ -175,6 +182,28 @@ public class GLCamera implements ICamera{
 	
 	public float getWinHeigth(){
 		return this.winHeight;
+	}
+	
+	private void calculateScale(){
+		float s = Math.min(this.refWidth/this.winWidth, this.refHeight/this.winHeight);
+		if(this.refWidth > 0 && this.refHeight > 0){
+			this.aspectScale = s;
+		}
+		
+		this.updateOrthoMatrix();
+		this.updateProjectionMatrix();
+	}
+	
+	public float getAspectScale(){
+		return this.aspectScale;
+	}
+	
+	public float getScale(){
+		return this.aspectScale*this.zoom;
+	}
+	
+	public float getZoom(){
+		return this.zoom;
 	}
 	
 	public Dimension getWinSize(){

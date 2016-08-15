@@ -18,6 +18,7 @@ public abstract class TRGameWindow {
 	//render context 
 	protected TRRenderContext renderContext = null;
 	
+	
 	public TRGameWindow(TRRenderContext rc){
 		this.renderContext = rc;
 	}

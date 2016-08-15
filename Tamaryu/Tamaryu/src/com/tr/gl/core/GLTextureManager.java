@@ -32,7 +32,13 @@ public final class GLTextureManager {
 
 		InputStream in = null;
 		if(tex.resource){
-			in = GLTextureManager.class.getResourceAsStream("/img/"+tex.fileName);
+			System.out.println("Loading: "+tex.fileName);
+			if(tex.fileName.startsWith("/")){
+				in = GLTextureManager.class.getResourceAsStream(tex.fileName);
+				System.out.println("Texture Stream: "+in);
+			}else{
+				in = GLTextureManager.class.getResourceAsStream("/img/"+tex.fileName);
+			}
 		}else{
 			try {
 				in = new FileInputStream((new File(tex.fileName)));

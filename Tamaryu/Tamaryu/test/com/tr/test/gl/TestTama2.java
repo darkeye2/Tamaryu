@@ -18,8 +18,8 @@ public class TestTama2 extends TRGL2DRenderable{
 	
 	public TestTama2(){
 		this.setNormalized(false);
-		this.width = 400;
-		this.height = 400;
+		this.width = 300;
+		this.height = 300;
 		this.setData(data, DATA_FORMAT_XYZUV);
 		
 		this.setProgram(new GLProgramm("/shader/", new String[]{"default_f", "default_v"},

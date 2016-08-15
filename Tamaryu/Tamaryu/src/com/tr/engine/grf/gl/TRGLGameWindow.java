@@ -4,6 +4,13 @@ import com.jogamp.nativewindow.util.Dimension;
 import com.jogamp.newt.Display;
 import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.Screen;
+import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.event.MouseEvent;
+import com.jogamp.newt.event.MouseListener;
+import com.jogamp.newt.event.WindowEvent;
+import com.jogamp.newt.event.WindowListener;
+import com.jogamp.newt.event.WindowUpdateEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
@@ -12,12 +19,13 @@ import com.jogamp.opengl.util.Animator;
 import com.tr.engine.grf.TRGameWindow;
 import com.tr.engine.grf.TRRenderContext;
 
-public class TRGLGameWindow extends TRGameWindow{
+public class TRGLGameWindow extends TRGameWindow implements WindowListener{
 	//window and animator
 	public static GLWindow glWindow;
 	public static Animator animator;
 	
-	public TRGLGameWindow(TRGLRenderContext rc, GLEventListener glel, int winWidth, int winHeight){
+	public TRGLGameWindow(TRGLRenderContext rc, GLEventListener glel, KeyListener kl, MouseListener ml, 
+			int winWidth, int winHeight){
 		super(rc);
 		windowSize = new Dimension(winWidth, winHeight);
 		Display display = NewtFactory.createDisplay(null);
@@ -45,7 +53,9 @@ public class TRGLGameWindow extends TRGameWindow{
 		glWindow.setPointerVisible(mouseVisible);
 		glWindow.confinePointer(mouseConfined);
 		glWindow.addGLEventListener(glel);
-		//glWindow.addKeyListener(this);
+		glWindow.addKeyListener(kl);
+		glWindow.addMouseListener(ml);
+		glWindow.addWindowListener(this);
 
 		animator = new Animator(glWindow);
 		//animator.start();
@@ -104,7 +114,8 @@ public class TRGLGameWindow extends TRGameWindow{
 
 	@Override
 	public void stop() {
-		animator.pause();
+		//animator.pause();
+		animator.stop();
 		glWindow.setVisible(false);
 	}
 
@@ -123,6 +134,50 @@ public class TRGLGameWindow extends TRGameWindow{
 	public Animator getAnimator() {
 		return animator;
 	}
+
+	@Override
+	public void windowResized(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowMoved(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDestroyNotify(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDestroyed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowGainedFocus(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowLostFocus(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowRepaint(WindowUpdateEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 	
 

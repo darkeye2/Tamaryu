@@ -50,6 +50,9 @@ void main(void){
 		
 		}else {
 			color = texture(tex_object, fs_in.tc);
+			/*if(color.a == 0){
+				color.rgba = vec4(1,0,0,1);
+			}*/
 		}
 		
 		//set overlay color

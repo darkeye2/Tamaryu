@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import com.jogamp.opengl.math.Matrix4;
 import com.tr.engine.grf.IRenderable;
+import com.tr.engine.grf.TRRenderContext;
 import com.tr.gl.core.GLCamera;
 import com.tr.gl.core.GLProgramm;
 import com.tr.gl.core.GLTexture;
@@ -14,13 +15,21 @@ import com.tr.gl.core.Semantic;
 
 
 public abstract class TRGLRenderable implements IRenderable {
+	//id
+	protected String name = "";
+	protected int id = 0;
+	
 	//position
 	protected Point3D pos = new Point3D(0f,0f,0f);				//position of the object in the 3D world
+	protected Point3D offset = new Point3D(0,0,0);				//
 	protected Point3D rot = new Point3D(0f,0f,0f);				//rotation of the object  (own zero point)
 	protected float width = 1, height = 1;						//
+	protected float scale = 1f;
 	protected Matrix4 model_matrix = new Matrix4();				//model view matrix
 	protected boolean normalized = true;						//if x and y are normalized
 	protected boolean updateMatrix = false;						//
+	protected int positionFix = -1;
+	protected boolean callResize = false;
 	
 	//data and bindings
 	protected float[] data;
@@ -32,6 +41,11 @@ public abstract class TRGLRenderable implements IRenderable {
 	protected TRGLRenderable parent = null;
 	protected ArrayList<TRGLRenderable> components = new ArrayList<TRGLRenderable>();
 	
+	
+	public void setFixedPosition(int posConstant){
+		this.positionFix = posConstant;
+		this.callResize = true;
+	}
 	
 	public void setNormalized(boolean normalized){
 		this.normalized = normalized;
@@ -60,6 +74,18 @@ public abstract class TRGLRenderable implements IRenderable {
 	public void setZ(float z) {
 		this.pos.z = 1;
 		updateModelMatrix(null);
+	}
+	
+	public void setScale(float f){
+		this.scale = f;
+	}
+	
+	public float getScale(){
+		return this.scale;
+	}
+	
+	public float getOverallScale(){
+		return this.scale;
 	}
 	
 	public void increasePos(float x, float  y, float z){
@@ -103,21 +129,48 @@ public abstract class TRGLRenderable implements IRenderable {
 		return pos;
 	}
 	
+	public Point3D getAbsolutPosition(){
+		Point3D pos = new Point3D(0,0,0);
+		if(parent != null){
+			pos.add(parent.getAbsolutPosition());
+		}
+		pos.add(this.getPosition());
+		return pos;
+	}
+	
+	protected void updateOffset(){
+		offset.x = offset.y = offset.z = 0;
+		float tmp = 0;
+		if((tmp = (float) Math.cos(Math.toRadians(rot.y))) < 0){
+			this.offset.x = -tmp*this.width;
+		}
+		if((tmp = (float) Math.cos(Math.toRadians(rot.x))) < 0){
+			this.offset.y = -tmp*this.height;
+		}
+		
+	}
+	
 	protected void updateModelMatrix(GLCamera cam){
 		if(!normalized && cam == null){
 			updateMatrix = true;
 			return;
 		}
 		
+		updateOffset();
+		
 		float x = pos.x, y = pos.y, z = pos.z;
 		if(!normalized){
-			float x0 = - (cam.getRefWidth()/cam.getRefHeight());
+			/*float x0 = - (cam.getRefWidth()/cam.getRefHeight());
 			float xw = (cam.getRefWidth()/cam.getRefHeight());
 			float y0 = 1;
-			float yh = -1;
+			float yh = -1;*/
+			x += offset.x;
+			y += offset.y;
+			z += offset.z;
 			
-			x = x0 + x * (2 * xw / cam.getRefWidth()) + this.width/cam.getRefWidth();
-			y = y0 + y * (2 * yh / cam.getRefHeight()) - this.height/cam.getRefHeight();
+			//x = x0 + x * (2 * xw / cam.getRefWidth()) + this.width/cam.getRefWidth();
+			//y = y0 + y * (2 * yh / cam.getRefHeight()) - this.height/cam.getRefHeight();
+			
 			
 			//System.out.println("Rendering not normalized Object!");
 			//x = ((x)/cam.getRefWidth()/2) - 1;
@@ -129,6 +182,7 @@ public abstract class TRGLRenderable implements IRenderable {
 		
 		Matrix4 tmp = new Matrix4();
 		tmp.loadIdentity();
+		tmp.scale(scale, scale, scale);
 		tmp.translate(x, y, z);
 		tmp.rotate((float)Math.toRadians(rot.x), 1, 0, 0);
 		tmp.rotate((float)Math.toRadians(rot.y), 0, 1, 0);
@@ -182,6 +236,104 @@ public abstract class TRGLRenderable implements IRenderable {
 	@Override
 	public void removeAll() {
 		this.components.clear();
+	}
+	
+	public void setName(String name){
+		this.name = name;
+	}
+	
+	public String getName(){
+		return this.name;
+	}
+	
+	public void setID(int id){
+		this.id = id;
+	}
+	
+	public int getID(){
+		return this.id;
+	}
+	
+	public IRenderable getComponentByName(String nn){
+		if(nn.equals("this"))
+			return this;
+		String[] names = nn.split("\\.");
+		if(names.length > 0){
+			for(IRenderable r : this.components){
+				if(r.getName().equals(names[0])){
+					if(names.length > 1){
+						r.getComponentByName(join(names, ".", 1));
+					}else{
+						return r;
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public IRenderable getComponentByID(String idid){
+		if(idid.equals("-1")){
+			return this;
+		}
+		String[] ids = idid.split("\\.");
+		if(ids.length > 0){
+			for(IRenderable r : this.components){
+				if(r.getID() == Integer.parseInt(ids[0])){
+					if(ids.length > 1){
+						r.getComponentByID(join(ids, ".", 1));
+					}else{
+						return r;
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	
+	private String join(String[] arr, String sep, int offset){
+		String ret = "";
+		for(int i = offset; i<arr.length; i++){
+			ret += sep+arr[i];
+		}
+		
+		return ret;
+	}
+	
+	public void resize(TRRenderContext rc, int w, int h){
+		GLCamera cam = (GLCamera)rc.getScene().getCamera();
+		//System.out.println("HERE");
+		if(this.positionFix == FIXED_POS_NONE)
+			return;
+		
+		if(getWidth()>0 && getHeight() > 0){
+			//System.out.println("Component Size: "+getWidth()+" x "+getHeight());
+			int xoff = (int) (cam.getWinWidth()*cam.getScale() - this.width);
+			int yoff = (int) (cam.getWinHeigth()*cam.getScale() - this.height);
+			
+			//set y
+			if(positionFix == FIXED_POS_CENTER || positionFix == FIXED_POS_LEFT || positionFix == FIXED_POS_RIGHT){
+				yoff /= 2;
+			}else if(positionFix == FIXED_POS_BOTTOM_LEFT || positionFix == FIXED_POS_BOTTOM || positionFix == FIXED_POS_BOTTOM_RIGHT){
+				yoff = 0;
+			}
+			
+			//set x
+			if(positionFix == FIXED_POS_CENTER || positionFix == FIXED_POS_TOP || positionFix == FIXED_POS_BOTTOM){
+				xoff /= 2;
+			}else if(positionFix == FIXED_POS_TOP_LEFT || positionFix == FIXED_POS_LEFT || positionFix == FIXED_POS_BOTTOM_LEFT){
+				xoff = 0;
+			}
+			
+			this.setPosition(xoff, yoff, this.getPosition().z);
+			System.out.println("Component Postion: "+this.getPosition()+" Scale: "+cam.getScale());
+			//System.out.println(cam.getScale());
+		}
+		
+		this.callResize = false;
 	}
 
 }

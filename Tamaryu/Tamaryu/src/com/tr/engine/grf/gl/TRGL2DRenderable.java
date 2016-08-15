@@ -117,7 +117,9 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		this.program = this.program.init(gl);
 		
 		//generate texture
-		this.texture = this.texture.init(gl);
+		if(this.texture != null){
+			this.texture = this.texture.init(gl);
+		}
 		
 		//get location addr
 		this.modelMatLocation = gl.glGetUniformLocation(this.program.getID(), "model_matrix");
@@ -234,8 +236,10 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		}
 		
 		for(int i = 0; (i+d-1) < data.length; i+=d){
-			nd[i+stX] = this.data[i+stX]*(this.width/cam.getRefWidth());
-			nd[i+stY] = this.data[i+stY]*(this.height/cam.getRefHeight());
+			//nd[i+stX] = this.data[i+stX]*(this.width/cam.getRefWidth());
+			//nd[i+stY] = this.data[i+stY]*(this.height/cam.getRefHeight());
+			nd[i+stX] = (this.data[i+stX]*this.width + this.width)*(0.5f);
+			nd[i+stY] = (this.data[i+stY]*this.height + this.height) * (0.5f);
 		}
 		
 		GLCamera.printFloatMatrix(nd, 5, 6, true);
@@ -264,12 +268,18 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		GL2ES3 gl = (GL2ES3) ((TRGLRenderContext) context).getGL();
 		GLCamera cam = (GLCamera) context.getScene().getCamera();
 		
+		if(this.callResize){
+			this.resize(context, 0, 0);
+		}
+		
 		if(this.updateMatrix){
 			this.updateModelMatrix(cam);
 		}
 		
 		if(this.textureUpdated){
-			this.texture.init(gl);
+			if(this.texture != null){
+				this.texture.init(gl);
+			}
 		}
 
 		// use program
@@ -278,7 +288,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		// set settings for 2D textured/untextured object
 		gl.glDisable(GL.GL_CULL_FACE);
 		gl.glFrontFace(GL.GL_CW);
-		gl.glEnable(GL.GL_DEPTH_TEST);
+		gl.glDisable(GL.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL.GL_LEQUAL);
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
@@ -338,8 +348,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 
 	@Override
 	public void resize(TRRenderContext context, int w, int h) {
-		// TODO Auto-generated method stub
-
+		super.resize(context, w, h);
 	}
 
 	@Override
@@ -357,6 +366,22 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	
 	public boolean isNormalized(){
 		return this.normalized;
+	}
+
+	@Override
+	public void setSize(int w, int h) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getWidth() {
+		return (int)this.width;
+	}
+
+	@Override
+	public int getHeight() {
+		return (int)this.height;
 	}
 
 }

@@ -2,6 +2,8 @@ package com.tr.engine.grf.gl;
 
 import java.util.ArrayList;
 
+import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.event.MouseListener;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLEventListener;
 import com.tr.engine.debug.TRGLDebugger;
@@ -14,6 +16,8 @@ public class TRGLRenderContext extends TRRenderContext {
 	protected GL gl = null;
 	protected TRGLDebugger debugConsole = null;
 	protected GLEventListener glel = null;
+	protected KeyListener glkl = null;
+	protected MouseListener glml = null;
 	
 	protected ArrayList<TRRenderPropertie> globalRenderProperties = new ArrayList<TRRenderPropertie>();
 	
@@ -51,6 +55,14 @@ public class TRGLRenderContext extends TRRenderContext {
 	
 	public void setGLEventListener(GLEventListener glel){
 		this.glel = glel;
+	}
+	
+	public void setGLKeyListener(KeyListener glkl){
+		this.glkl = glkl;
+	}
+	
+	public void setGLMouseListener(MouseListener glml){
+		this.glml = glml;
 	}
 	
 	public boolean checkError(GL gl, String title) {
@@ -99,8 +111,8 @@ public class TRGLRenderContext extends TRRenderContext {
 
 	@Override
 	public void destruct() {
-		this.debugConsole.stop();
 		this.gameWindow.stop();
+		this.debugConsole.stop();
 		this.scene.clearScene();
 		//TODO user defined code!
 		System.exit(0);
@@ -114,7 +126,7 @@ public class TRGLRenderContext extends TRRenderContext {
 	@Override
 	public TRGameWindow createWindow() {
 		if(this.gameWindow == null){
-			this.gameWindow = new TRGLGameWindow(this, this.glel, 800, 600);
+			this.gameWindow = new TRGLGameWindow(this, glel, glkl, glml, 800, 600);
 		}
 
 		return this.gameWindow;

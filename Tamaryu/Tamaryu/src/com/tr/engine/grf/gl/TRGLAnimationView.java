@@ -1,36 +1,90 @@
 package com.tr.engine.grf.gl;
 
-public class TRGLAnimationView extends TRGLImageView {
+import java.util.HashMap;
 
-}
+import com.tr.engine.grf.TRRenderContext;
+import com.tr.engine.img.ani.ITRAnimationView;
+import com.tr.engine.img.ani.TRAnimation;
 
+public class TRGLAnimationView extends TRGLImageView implements ITRAnimationView {
+	
+	protected HashMap<String, TRAnimation> anis = new HashMap<String, TRAnimation>();
+	protected String lastAni = "default";
+	protected String curAniName = "default";
+	protected TRAnimation ani = null;
+	protected boolean running = false;
 
-/*color to 8bit
- * 
- * <?php
-$r = 0;
-$g = 0;
-$b = 0;
+	@Override
+	public TRAnimation get(String name) {
+		if(anis.containsKey(name))
+			return anis.get(name);
+		return null;
+	}
+	
+	public void render(TRRenderContext context) {
+		if(running){
+			if(ani != null && ani.frameReady()){
+				long t = System.currentTimeMillis();
+				long t2 = t+ani.getNextFrameDuration();
+				ani.getNextFrame().apply(this);
+				ani.setFrameTimes(t, t2);
+			}
+		}
+		super.render(context);
+	}
 
-for($r = 0; $r <=255; $r+=5){
-	for($g = 0; $g <=255; $g+=5){
-		for($b = 0; $b <=255; $b+=5){
-			//$color = ($r*6/256)*36 + ($g*6/256)*6 + ($b*6/256);
-			$color = (floor(($r / 32)) << 5) + (floor(($g / 32)) << 2) + floor(($b / 64));
-			$nr = ($color >> 5) * 32;
-			$ng = (($color & 28) >> 2) * 32;
-			$nb = ($color & 3) * 64;
-			//$nr  = round(($color >> 5) * 255 / 7);
-			//$ng = round((($color >> 2) & 0x07) * 255 / 7);
-			//$nb  = round(($color & 0x03) * 255 / 3);
-			print("<div style='width:100px; height:25px; display:inline-block; background-color:rgb(".$r.", ".$g.", ".$b.");'>(".$r.", ".$g.", ".$b.")</div>");
-			print("<div style='width:100px; height:25px; display:inline-block; background-color:rgb(".$nr.", ".$ng.", ".$nb.");'>(".$nr.", ".$ng.", ".$nb.")</div><br>");
+	@Override
+	public void start() {
+		this.running = true;
+	}
+
+	@Override
+	public void pause() {
+		this.running = false;
+	}
+	
+	public void unloadAnimation(){
+		if(this.ani != null){
+			ani.getCloseFrame().apply(this);
 		}
 	}
+
+	@Override
+	public void loadAnimation(String name, int fps) {
+		if(this.anis.containsKey(name)){
+			unloadAnimation();
+			lastAni = curAniName;
+			curAniName = name;
+			ani = this.get(name);
+			ani.setFixedFPS(fps);
+			ani.getInitFrame().apply(this);
+		}
+	}
+
+	@Override
+	public void loadAnimation(String name) {
+		if(this.anis.containsKey(name)){
+			unloadAnimation();
+			lastAni = curAniName;
+			curAniName = name;
+			ani = this.get(name);
+			ani.getInitFrame().apply(this);
+		}
+	}
+
+	@Override
+	public void addAnimation(String name, TRAnimation ani) {
+		this.anis.put(name, ani);
+	}
+
+	@Override
+	public void restore() {
+		this.loadAnimation(lastAni);
+	}
+
+	@Override
+	public void loadDefault() {
+		this.loadAnimation("default");
+	}
+
 }
-
-
-?>
- * 
- * 
- * */
