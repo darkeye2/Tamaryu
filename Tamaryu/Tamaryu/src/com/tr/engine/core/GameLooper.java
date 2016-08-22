@@ -15,16 +15,7 @@ public class GameLooper
 		return this.running;
 	}
 	
-	public GameLooper()
-	{
-		this.running = true;
-	}
-	
-	public void think(long startTimeStamp)
-	{		
-		elapsed = System.nanoTime() - startTimeStamp;
-		wait = targetTime - (elapsed / 1000000);
-		
+	public void sleep(){
 		try
 		{
 			if(wait > 0)
@@ -37,4 +28,24 @@ public class GameLooper
 			e.printStackTrace();
 		}
 	}
+	
+	public GameLooper()
+	{
+		this.running = true;
+	}
+	
+	public void think(long startTimeStamp)
+	{		
+		elapsed = System.nanoTime() - startTimeStamp;
+		wait = targetTime - (elapsed / 1000000);
+		
+		this.sleep();
+	}
+	
+	
+	public static void main(String[] args) {
+		
+	}
+	
+	
 }
