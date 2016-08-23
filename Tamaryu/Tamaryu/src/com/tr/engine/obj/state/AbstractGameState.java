@@ -54,6 +54,7 @@ public abstract class AbstractGameState {
 				nL.add(A.get(i));
 			}
 		}
+		//maybe clear old list and/or trim it?
 		return nL;
 	}
 
