@@ -53,7 +53,7 @@ public class TRImage {
 	}
 	
 	public float getNormalizedWidth(){
-		return Math.round((float)this.imageWidth/(float)this.fullWidth);
+		return (float)this.imageWidth/(float)this.fullWidth;
 	}
 	
 	public float getHeight(){
@@ -61,7 +61,7 @@ public class TRImage {
 	}
 	
 	public float getNormalizedHeight(){
-		return Math.round((float)this.imageHeight/(float)this.fullHeight);
+		return (float)this.imageHeight/(float)this.fullHeight;
 	}
 	
 	public float getX(){
@@ -69,7 +69,7 @@ public class TRImage {
 	}
 	
 	public float getNormalizedX(){
-		return Math.round((float)this.offsetX/(float)this.fullWidth);
+		return (float)this.offsetX/(float)this.fullWidth;
 	}
 	
 	public float getY(){
@@ -77,6 +77,6 @@ public class TRImage {
 	}
 	
 	public float getNormalizedY(){
-		return Math.round((float)this.offsetY/(float)this.fullWidth);
+		return (float)this.offsetY/(float)this.fullWidth;
 	}
 }
