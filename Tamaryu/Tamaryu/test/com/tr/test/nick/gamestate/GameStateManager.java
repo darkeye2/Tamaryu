@@ -13,6 +13,7 @@ public class GameStateManager
 	public static final int HELPSTATE = 3;
 	public static final int TESTSTATE = 4;
 	public static final int INVENTORYTESTSTATE = 5;
+	public static final int SOUNDTESTSTATE = 6;
 	
 	public GameStateManager()
 	{
@@ -25,6 +26,7 @@ public class GameStateManager
 		gameStates.add(new LanguageState(this));
 		gameStates.add(new TestState(this));
 		gameStates.add(new InventoryTestState(this));
+		gameStates.add(new SoundTestState(this));
 	}
 	
 	public void setState(int state)
