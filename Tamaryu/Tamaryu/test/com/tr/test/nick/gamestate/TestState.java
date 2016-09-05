@@ -50,7 +50,7 @@ public class TestState extends AbstractGameState
 	public void update()
 	{
 		this.background.update();
-		this.testObject.update();
+		this.testObject.update(0);
 	}
 
 	@Override

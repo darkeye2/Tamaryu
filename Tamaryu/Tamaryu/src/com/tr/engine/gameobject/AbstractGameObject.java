@@ -16,7 +16,7 @@ public abstract class AbstractGameObject extends TRRectangle
 		this.velocityY = 0;
 	}
 	
-	public void update()
+	public void update(long ct)
 	{
 		this.x += this.velocityX;
 		this.y += this.velocityY;

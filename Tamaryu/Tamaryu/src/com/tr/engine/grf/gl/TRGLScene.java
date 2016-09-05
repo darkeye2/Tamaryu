@@ -19,8 +19,9 @@ import com.jogamp.opengl.GLEventListener;
 import com.tr.engine.grf.IRenderable;
 import com.tr.engine.grf.TRGameWindow;
 import com.tr.engine.grf.TRScene;
-import com.tr.engine.input.EventComparator;
+import com.tr.engine.input.ITRGlobalMouseListener;
 import com.tr.engine.input.ITRMouseListener;
+import com.tr.engine.input.TRGlobalMouseEvent;
 import com.tr.engine.input.TRMouseEvent;
 import com.tr.gl.core.GLCamera;
 import com.tr.gl.core.GLProgramManager;
@@ -61,6 +62,8 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 
 	@Override
 	public void addComponent(IRenderable ra) {
+		if(ra == null)
+			return;
 		unInitObjects.add(ra);
 	}
 
@@ -331,17 +334,25 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 	}
 	
 	private ITRMouseListener getSelected(TRMouseEvent e, boolean last){
+		ITRMouseListener srcL = null;
 		for(ITRMouseListener l : mlisteners){
 			if(!last){
 				if(l.isHit(e.x(), e.y())){
-					return l;
+					srcL =  l;
 				}
 			}else{
 				if(l.isHit(e.lastPos.getX(), e.lastPos.getY())){
-					return l;
+					srcL = l;
 				}
 			}
 			
+			if(srcL != null){
+				if(dndManager == null || !dndManager.isDragging(srcL.getSrc())){
+					return srcL;
+				}else{
+					srcL = null;
+				}
+			}
 		}
 		return null;
 	}
@@ -362,6 +373,12 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		if(l != null && (getSelected(tre, true)) == null){
 			l.mouseEnter(tre);
 		}
+		
+		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
+		gme.setSource(l);
+		for(ITRGlobalMouseListener gml : this.gmllisteners){
+			gml.mouseDragged(gme);
+		}
 	}
 
 	@Override
@@ -370,6 +387,12 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		ITRMouseListener l  = getSelected(tre, true);
 		if(l != null && (getSelected(tre, false)) == null){
 			l.mouseLeave(tre);
+		}
+		
+		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
+		gme.setSource(l);
+		for(ITRGlobalMouseListener gml : this.gmllisteners){
+			gml.mouseDragged(gme);
 		}
 	}
 
@@ -380,6 +403,12 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		if(l != null){
 			l.mousePress(tre);
 		}
+		
+		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
+		gme.setSource(l);
+		for(ITRGlobalMouseListener gml : this.gmllisteners){
+			gml.mouseDragged(gme);
+		}
 	}
 
 	@Override
@@ -389,12 +418,27 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		if(l != null){
 			l.mouseRelease(tre);
 		}
+		
+		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
+		gme.setSource(l);
+		for(ITRGlobalMouseListener gml : this.gmllisteners){
+			gml.mouseDragged(gme);
+		}
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
+		TRMouseEvent tre = toTREvent(e);
+		ITRMouseListener l  = getSelected(tre, false);
+		if(l != null){
+			l.mouseMoved(tre);
+		}
 		
+		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
+		gme.setSource(l);
+		for(ITRGlobalMouseListener gml : this.gmllisteners){
+			gml.mouseDragged(gme);
+		}
 	}
 
 	@Override
@@ -403,6 +447,12 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		ITRMouseListener l  = getSelected(tre, false);
 		if(l != null){
 			l.mouseDragged(tre);
+		}
+		
+		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
+		gme.setSource(l);
+		for(ITRGlobalMouseListener gml : this.gmllisteners){
+			gml.mouseDragged(gme);
 		}
 	}
 

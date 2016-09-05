@@ -13,7 +13,8 @@ public class TRImage {
 	protected int fullWidth = 0;
 	protected int fullHeight = 0;
 	
-	public TRImage(String name, String filename, String fileExtension, String path, int x, int y, int index, int imgW, int imgH, int fullW, int fullH){
+	public TRImage(String name, String filename, String fileExtension, String path, 
+			int x, int y, int index, int imgW, int imgH, int fullW, int fullH){
 		this.imageName = name;
 		this.fileName = filename;
 		this.fileExtension = fileExtension;

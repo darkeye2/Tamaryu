@@ -262,7 +262,7 @@ public abstract class TRGLRenderable implements IRenderable {
 			for(IRenderable r : this.components){
 				if(r.getName().equals(names[0])){
 					if(names.length > 1){
-						r.getComponentByName(join(names, ".", 1));
+						return r.getComponentByName(join(names, ".", 1));
 					}else{
 						return r;
 					}
@@ -282,7 +282,7 @@ public abstract class TRGLRenderable implements IRenderable {
 			for(IRenderable r : this.components){
 				if(r.getID() == Integer.parseInt(ids[0])){
 					if(ids.length > 1){
-						r.getComponentByID(join(ids, ".", 1));
+						return r.getComponentByID(join(ids, ".", 1));
 					}else{
 						return r;
 					}
@@ -297,7 +297,10 @@ public abstract class TRGLRenderable implements IRenderable {
 	private String join(String[] arr, String sep, int offset){
 		String ret = "";
 		for(int i = offset; i<arr.length; i++){
-			ret += sep+arr[i];
+			ret += arr[i];
+			if(i+1 < arr.length){
+				ret += sep;
+			}
 		}
 		
 		return ret;

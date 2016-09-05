@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.tr.engine.input.EventComparator;
+import com.tr.engine.input.ITRGlobalMouseListener;
 import com.tr.engine.input.ITRMouseListener;
+import com.tr.engine.input.TRDragAndDropManager;
 
 public abstract class TRScene {
 	protected TRRenderContext rc;
@@ -12,6 +14,8 @@ public abstract class TRScene {
 	//component list
 	protected ArrayList<IRenderable> components = new ArrayList<IRenderable>();
 	protected ArrayList<ITRMouseListener> mlisteners = new ArrayList<ITRMouseListener>();
+	protected ArrayList<ITRGlobalMouseListener> gmllisteners = new ArrayList<ITRGlobalMouseListener>();
+	protected TRDragAndDropManager dndManager = null;
 	protected EventComparator ecomp = new EventComparator();
 	protected IRenderable bg = null;
 	protected ICamera cam = null;
@@ -35,13 +39,31 @@ public abstract class TRScene {
 		cam.setReferenceSize(sceneWidth, sceneHeight);
 	}
 	
+	public void setDnDManager(TRDragAndDropManager  dndm){
+		if(this.dndManager != null){
+			this.removeGlobalMouseListener(dndManager);
+		}
+		this.dndManager = dndm;
+		if(this.dndManager != null){
+			this.addGlobalMouseListener(dndManager);
+		}
+	}
+	
 	public void addMouseListener(ITRMouseListener ml){
 		this.mlisteners.add(ml);
 		Collections.sort(mlisteners, ecomp);
 	}
 	
+	public void addGlobalMouseListener(ITRGlobalMouseListener ml){
+		this.gmllisteners.add(ml);
+	}
+	
 	public void removeMouseListener(ITRMouseListener ml){
 		this.mlisteners.remove(ml);
 		Collections.sort(mlisteners, ecomp);
+	}
+	
+	public void removeGlobalMouseListener(ITRGlobalMouseListener ml){
+		this.gmllisteners.remove(ml);
 	}
 }

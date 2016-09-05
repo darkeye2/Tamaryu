@@ -1,10 +1,10 @@
 package com.tr.engine.core;
 
+import com.tr.engine.components.gl.TRGLLabel;
 import com.tr.engine.grf.TRGameWindow;
 import com.tr.engine.grf.TRRenderContext;
 import com.tr.engine.grf.TRScene;
 import com.tr.engine.grf.gl.TRGLImageView;
-import com.tr.engine.grf.gl.TRGLLabel;
 import com.tr.engine.grf.gl.TRGLRenderContext;
 import com.tr.engine.img.TRImage;
 import com.tr.test.gl.TestGLTamaEye;
