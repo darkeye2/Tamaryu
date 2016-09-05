@@ -354,7 +354,7 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 				}
 			}
 		}
-		return null;
+		return srcL;
 	}
 
 	@Override
@@ -369,30 +369,22 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		TRMouseEvent tre = toTREvent(e);
-		ITRMouseListener l  = getSelected(tre, false);
-		if(l != null && (getSelected(tre, true)) == null){
-			l.mouseEnter(tre);
-		}
 		
 		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
-		gme.setSource(l);
+		gme.setSource(null);
 		for(ITRGlobalMouseListener gml : this.gmllisteners){
-			gml.mouseDragged(gme);
+			gml.mouseEnter(gme);
 		}
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		TRMouseEvent tre = toTREvent(e);
-		ITRMouseListener l  = getSelected(tre, true);
-		if(l != null && (getSelected(tre, false)) == null){
-			l.mouseLeave(tre);
-		}
 		
 		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
-		gme.setSource(l);
+		gme.setSource(null);
 		for(ITRGlobalMouseListener gml : this.gmllisteners){
-			gml.mouseDragged(gme);
+			gml.mouseLeave(gme);
 		}
 	}
 
@@ -430,14 +422,30 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 	public void mouseMoved(MouseEvent e) {
 		TRMouseEvent tre = toTREvent(e);
 		ITRMouseListener l  = getSelected(tre, false);
-		if(l != null){
-			l.mouseMoved(tre);
-		}
-		
+		ITRMouseListener lo = getSelected(tre, true);
 		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
 		gme.setSource(l);
-		for(ITRGlobalMouseListener gml : this.gmllisteners){
-			gml.mouseDragged(gme);
+		
+		if(lo != null && lo.equals(l)){
+			if(l!=null){
+				l.mouseMoved(tre);
+				for(ITRGlobalMouseListener gml : this.gmllisteners){
+					gml.mouseMoved(gme);
+				}
+			}
+		}else{
+			if(l!=null){
+				l.mouseEnter(tre);
+				for(ITRGlobalMouseListener gml : this.gmllisteners){
+					gml.mouseEnter(gme);
+				}
+			}
+			if(lo!=null){
+				lo.mouseLeave(tre);
+				for(ITRGlobalMouseListener gml : this.gmllisteners){
+					gml.mouseLeave(gme);
+				}
+			}
 		}
 	}
 

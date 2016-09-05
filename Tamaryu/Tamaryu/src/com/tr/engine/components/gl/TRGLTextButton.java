@@ -18,7 +18,8 @@ public class TRGLTextButton extends TRGLLabel implements TRTextButton {
 
 	@Override
 	public void addClickAction(Runnable r) {
-		stateAction[TRTextButton.MOUSE_UP_ACTION] = r;
+		/*if(stateAction[TRTextButton.MOUSE_UP_ACTION] != null)
+			stateAction[TRTextButton.MOUSE_UP_ACTION] = r;*/
 	}
 
 	@Override
@@ -30,21 +31,25 @@ public class TRGLTextButton extends TRGLLabel implements TRTextButton {
 	
 	@Override
 	public void mouseEnter(TRMouseEvent e) {
+		if(stateAction[TRTextButton.MOUSE_ENTER_ACTION] != null)
 		stateAction[TRTextButton.MOUSE_ENTER_ACTION].run();
 	}
 
 	@Override
 	public void mouseLeave(TRMouseEvent e) {
+		if(stateAction[TRTextButton.MOUSE_LEAVE_ACTION] != null)
 		stateAction[TRTextButton.MOUSE_LEAVE_ACTION].run();
 	}
 
 	@Override
 	public void mouseRelease(TRMouseEvent e) {
+		if(stateAction[TRTextButton.MOUSE_UP_ACTION] != null)
 		stateAction[TRTextButton.MOUSE_UP_ACTION].run();
 	}
 
 	@Override
 	public void mousePress(TRMouseEvent e) {
+		if(stateAction[TRTextButton.MOUSE_DOWN_ACTION] != null)
 		stateAction[TRTextButton.MOUSE_DOWN_ACTION].run();
 		
 	}
@@ -67,9 +72,9 @@ public class TRGLTextButton extends TRGLLabel implements TRTextButton {
 	
 	@Override
 	public void mouseDragged(TRMouseEvent tre) {
-		int  xoff = tre.x()-tre.lastPos.getX();
+		/*int  xoff = tre.x()-tre.lastPos.getX();
 		int yoff = tre.y()-tre.lastPos.getY();
-		this.setPosition((int)this.getPosition().x+xoff,(int) this.getPosition().y+yoff);
+		this.setPosition((int)this.getPosition().x+xoff,(int) this.getPosition().y+yoff);*/
 	}
 
 	@Override

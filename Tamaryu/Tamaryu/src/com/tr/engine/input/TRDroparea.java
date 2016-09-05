@@ -1,5 +1,7 @@
 package com.tr.engine.input;
 
-public interface TRDroparea {
+import com.tr.engine.gameobject.AbstractGameObject;
 
+public interface TRDroparea {
+	public void drop(AbstractGameObject o);
 }
