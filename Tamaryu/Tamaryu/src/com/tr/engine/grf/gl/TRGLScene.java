@@ -437,11 +437,11 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 			if(lo!=null){
 				lo.mouseLeave(tre);
 				for(ITRGlobalMouseListener gml : this.gmllisteners){
-					gml.mouseEnter(gme);
+					gml.mouseLeave(gme);
 				}
 			}
 			if(l!=null){
-				l.mouseLeave(tre);
+				l.mouseEnter(tre);
 				for(ITRGlobalMouseListener gml : this.gmllisteners){
 					gml.mouseEnter(gme);
 				}
