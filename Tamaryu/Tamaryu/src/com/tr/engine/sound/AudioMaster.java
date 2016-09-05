@@ -77,9 +77,9 @@ public final class AudioMaster
     {
     	AudioMaster.loadAllAudios(audioFilePaths);
         al.alGenBuffers(audios.length, buffers, 0);
+        
         if (al.alGetError() != AL.AL_NO_ERROR)
         {
-        	System.out.println("BufferID: " + buffers.toString());
         	System.out.println("Fehler: " + al.alGetError()); //40964 = AL_INVALID_OPERATION
             return AL.AL_FALSE;
         }
@@ -111,19 +111,14 @@ public final class AudioMaster
 	    	for(int i = 0; i < sources.length; i++)
 	    	{
 	    		AudioMaster.stopSource(i);
+	    		al.alSourcei(sources[i], AL.AL_BUFFER, 0);
 	    	}
 	    	
 	        al.alDeleteBuffers(buffers.length, buffers, 0);
 	        
 	        buffers = null;
 	        audios = null;
-	        
-	        ALCcontext currentContext = alc.alcGetCurrentContext();
-	        ALCdevice currentDevice = alc.alcGetContextsDevice(currentContext);
-	    	ALCcontext newContext = alc.alcCreateContext(currentDevice, null);
-	    	alc.alcMakeContextCurrent(newContext);
-	    	alc.alcDestroyContext(currentContext);
-	        
+
 	        dataLoaded = false;
     	}
     }
@@ -137,10 +132,6 @@ public final class AudioMaster
     	
     	if(initialized)
     	{
-	    	for(int i = 0; i < sources.length ; i++)
-	    	{
-	    		al.alSourcei(sources[i], AL.AL_BUFFER, 0);
-	    	}
 	    	al.alDeleteSources(MAX_SOURCES, sources, 0);
 	    	
 	    	
