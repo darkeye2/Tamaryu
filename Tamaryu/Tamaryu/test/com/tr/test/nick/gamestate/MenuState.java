@@ -20,6 +20,7 @@ public class MenuState extends AbstractGameState
 			"language",
 			"help",
 			"inventory",
+			"soundtest",
 			"",
 			"quit"
 		};
@@ -107,6 +108,11 @@ public class MenuState extends AbstractGameState
 		{
 			//Inventory
 			gsm.setState(GameStateManager.INVENTORYTESTSTATE);
+		}
+		if (currentChoice == 4)
+		{
+			//Soundtest
+			gsm.setState(GameStateManager.SOUNDTESTSTATE);
 		}
 		if(currentChoice == (options.length-1))
 		{
