@@ -137,13 +137,13 @@ public class TRGLGameWindow extends TRGameWindow implements WindowListener{
 
 	@Override
 	public void windowResized(WindowEvent e) {
-		// TODO Auto-generated method stub
+		// ---
 		
 	}
 
 	@Override
 	public void windowMoved(WindowEvent e) {
-		// TODO Auto-generated method stub
+		// ---
 		
 	}
 

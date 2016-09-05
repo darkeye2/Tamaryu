@@ -18,6 +18,7 @@ public abstract class TRRenderContext {
 	
 	public abstract void init();
 	public abstract void destruct();
+	public abstract void addOnClose(Runnable close);
 	public abstract void refresh();
 	public abstract TRGameWindow createWindow();
 	public abstract TRScene getScene();
@@ -43,6 +44,8 @@ public abstract class TRRenderContext {
 	public boolean areGRPEnabled(){
 		return this.enableGlobalRenderProperties;
 	}
+	
+	
 	
 	public ArrayList<TRRenderPropertie> getRenderProperties(){
 		return this.renderProperties;

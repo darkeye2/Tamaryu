@@ -15,6 +15,7 @@ import com.tr.engine.grf.TRScene;
 public class TRGLRenderContext extends TRRenderContext {
 	protected GL gl = null;
 	protected TRGLDebugger debugConsole = null;
+	protected Runnable onCloseAction = null;
 	protected GLEventListener glel = null;
 	protected KeyListener glkl = null;
 	protected MouseListener glml = null;
@@ -114,8 +115,13 @@ public class TRGLRenderContext extends TRRenderContext {
 		this.gameWindow.stop();
 		this.debugConsole.stop();
 		this.scene.clearScene();
-		//TODO user defined code!
+		if(onCloseAction != null)
+			onCloseAction.run();
 		System.exit(0);
+	}
+	
+	public void addOnClose(Runnable close){
+		onCloseAction = close;
 	}
 
 	@Override
