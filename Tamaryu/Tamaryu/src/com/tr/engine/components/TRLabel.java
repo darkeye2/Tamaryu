@@ -1,4 +1,7 @@
-package com.tr.engine.grf;
+package com.tr.engine.components;
+
+import com.tr.engine.grf.Color;
+import com.tr.engine.grf.IRenderable;
 
 public interface TRLabel extends IRenderable{
 	public static final int CENTER = 0;

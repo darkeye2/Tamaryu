@@ -4,6 +4,7 @@ import com.jogamp.nativewindow.util.Dimension;
 import com.jogamp.opengl.GL2ES3;
 import com.tr.engine.img.ITRImageView;
 import com.tr.engine.img.TRImage;
+import com.tr.gl.core.GLCamera;
 import com.tr.gl.core.GLProgramm;
 import com.tr.gl.core.GLTexture;
 import com.tr.gl.core.Point3D;

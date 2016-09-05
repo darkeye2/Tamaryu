@@ -12,6 +12,10 @@ public class TRGlobalMouseEvent extends TRMouseEvent{
 		super(e, p);
 	}
 	
+	public TRGlobalMouseEvent(TRMouseEvent me){
+		super(me.e, me.lastPos);
+	}
+	
 	public IRenderable getSource(){
 		if(src != null)
 			return src;
