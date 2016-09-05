@@ -66,7 +66,7 @@ public abstract class AbstractGameState {
 		currentObjects = sortAL(currentObjects);
 
 		for (AbstractGameObject go : currentObjects) {
-			go.update();
+			go.update(0);
 		}
 
 	}
