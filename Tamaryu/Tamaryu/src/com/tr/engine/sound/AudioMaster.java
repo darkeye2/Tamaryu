@@ -49,8 +49,17 @@ public final class AudioMaster
         {
         	if(audios[i] != null && !audios[i].isEmpty())
         	{
-        		ALut.alutLoadWAVFile(audios[i], format, data, size, freq, loop);
-                al.alBufferData( buffers[i], format[0], data[0], size[0], freq[0]);
+        		try{
+        			ALut.alutLoadWAVFile(audios[i], format, data, size, freq, loop); 			
+        			if(format[0] > 0 && data[0] != null && size[0] > 0 && freq[0] > 0 && size[0] == data[0].limit())
+        			{
+        				al.alBufferData( buffers[i], format[0], data[0], size[0], freq[0]);
+        			}
+        		}
+        		catch(Exception e)
+        		{
+        			System.out.println("Error in Loading WAV-File");
+        		}
         	}
         }  
     }
