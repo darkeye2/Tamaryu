@@ -18,6 +18,8 @@ public class TRFrameAction {
 	public boolean posZFlag = false;
 	public int posZ = 0;
 	public boolean posYFlag = false;
+	public int h = 0;
+	public boolean hFlag = false;
 	public String loadPath = "this";
 	public String loadName = "default";
 	public boolean loadFlag = false;
@@ -57,6 +59,10 @@ public class TRFrameAction {
 		
 		if(posZFlag){
 			v.setZ(posZ);
+		}
+		
+		if(hFlag){
+			v.setSize(v.getWidth(), h);
 		}
 		
 		if(loadFlag){

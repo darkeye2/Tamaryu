@@ -145,7 +145,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		if(!normalized){
 			this.updateModelMatrix(cam);
 		}
-		System.out.println("Model Matrix:");
+		/*System.out.println("Model Matrix:");
 		GLCamera.printFloatMatrix(this.getModelMatrix().getMatrix(), 4, 4);
 		System.out.println("View Matrix:");
 		GLCamera.printFloatMatrix(cam.getViewMatrix(), 4, 4);
@@ -156,7 +156,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		tmp.multMatrix(cam.getViewMatrix());
 		tmp.multMatrix(cam.getOrthoMatrix());
 		System.out.println("MVP: ");
-		GLCamera.printFloatMatrix(tmp.getMatrix(), 4, 4);
+		GLCamera.printFloatMatrix(tmp.getMatrix(), 4, 4);*/
 	}
 
 	private void updateVBOData(GL2ES3 gl, GLCamera cam) {
@@ -280,6 +280,15 @@ public class TRGL2DRenderable extends TRGLRenderable {
 			if(this.texture != null){
 				this.texture.init(gl);
 			}
+			textureUpdated = false;
+		}
+		
+		//render components inside (behind)
+		for(TRGLRenderable r : this.components){
+			if(r.getPosition().z < this.getPosition().z){
+				r.render(context);
+			}
+			
 		}
 
 		// use program
@@ -327,7 +336,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		gl.glUniformMatrix4fv(projMatLocation, 1, false, cam.getOrthoMatrix(), 0);
 		
 		//use texture
-		if(this.useTexture){
+		if(this.useTexture && !this.textureUpdated){
 			gl.glActiveTexture(GL.GL_TEXTURE0);
         	texture.getTexture().enable(gl);
         	texture.getTexture().bind(gl);
@@ -340,8 +349,11 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		// unbind vao
 		gl.glBindVertexArray(0);
 		
-		//render components inside
+		//render components inside (front)
 		for(TRGLRenderable r : this.components){
+			if(r.getPosition().z < this.getPosition().z){
+				continue;
+			}
 			r.render(context);
 		}
 	}

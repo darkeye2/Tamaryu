@@ -67,6 +67,7 @@ public class TRDragAndDropManager implements ITRGlobalMouseListener{
 	}
 	
 	protected void startDrag(TRGlobalMouseEvent e, boolean over){
+		//System.out.println("Drag src: "+e.getSource());
 		if(!enabled || paused){
 			return;
 		}

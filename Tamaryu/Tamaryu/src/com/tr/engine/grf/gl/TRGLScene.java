@@ -399,7 +399,7 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
 		gme.setSource(l);
 		for(ITRGlobalMouseListener gml : this.gmllisteners){
-			gml.mouseDragged(gme);
+			gml.mousePress(gme);
 		}
 	}
 
@@ -414,7 +414,7 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
 		gme.setSource(l);
 		for(ITRGlobalMouseListener gml : this.gmllisteners){
-			gml.mouseDragged(gme);
+			gml.mouseRelease(gme);
 		}
 	}
 
@@ -426,25 +426,27 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
 		gme.setSource(l);
 		
+		for(ITRGlobalMouseListener gml : this.gmllisteners){
+			gml.mouseMoved(gme);
+		}
+		
 		if(lo != null && lo.equals(l)){
 			if(l!=null){
 				l.mouseMoved(tre);
-				for(ITRGlobalMouseListener gml : this.gmllisteners){
-					gml.mouseMoved(gme);
-				}
+				
 			}
 		}else{
 			if(lo!=null){
 				lo.mouseLeave(tre);
-				for(ITRGlobalMouseListener gml : this.gmllisteners){
+				/*for(ITRGlobalMouseListener gml : this.gmllisteners){
 					gml.mouseLeave(gme);
-				}
+				}*/
 			}
 			if(l!=null){
 				l.mouseEnter(tre);
-				for(ITRGlobalMouseListener gml : this.gmllisteners){
+				/*for(ITRGlobalMouseListener gml : this.gmllisteners){
 					gml.mouseEnter(gme);
-				}
+				}*/
 			}
 		}
 	}

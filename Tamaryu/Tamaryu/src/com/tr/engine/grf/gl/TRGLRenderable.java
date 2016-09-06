@@ -72,7 +72,7 @@ public abstract class TRGLRenderable implements IRenderable {
 
 	@Override
 	public void setZ(float z) {
-		this.pos.z = 1;
+		this.pos.z = z;
 		updateModelMatrix(null);
 	}
 	

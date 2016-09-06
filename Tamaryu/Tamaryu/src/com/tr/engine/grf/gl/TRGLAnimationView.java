@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.tr.engine.grf.TRRenderContext;
 import com.tr.engine.img.ani.ITRAnimationView;
 import com.tr.engine.img.ani.TRAnimation;
+import com.tr.engine.img.ani.TRFrame;
 
 public class TRGLAnimationView extends TRGLImageView implements ITRAnimationView {
 	
@@ -26,7 +27,9 @@ public class TRGLAnimationView extends TRGLImageView implements ITRAnimationView
 			if(ani != null && ani.frameReady()){
 				long t = System.currentTimeMillis();
 				long t2 = t+ani.getNextFrameDuration();
-				ani.getNextFrame().apply(this);
+				TRFrame f = ani.getNextFrame();
+				if(f != null)
+					ani.getNextFrame().apply(this);
 				ani.setFrameTimes(t, t2);
 			}
 		}
@@ -44,7 +47,7 @@ public class TRGLAnimationView extends TRGLImageView implements ITRAnimationView
 	}
 	
 	public void unloadAnimation(){
-		if(this.ani != null){
+		if(this.ani != null && ani.getCloseFrame() != null){
 			ani.getCloseFrame().apply(this);
 		}
 	}
@@ -57,7 +60,8 @@ public class TRGLAnimationView extends TRGLImageView implements ITRAnimationView
 			curAniName = name;
 			ani = this.get(name);
 			ani.setFixedFPS(fps);
-			ani.getInitFrame().apply(this);
+			if(ani.getInitFrame() != null)
+				ani.getInitFrame().apply(this);
 		}
 	}
 
@@ -68,7 +72,8 @@ public class TRGLAnimationView extends TRGLImageView implements ITRAnimationView
 			lastAni = curAniName;
 			curAniName = name;
 			ani = this.get(name);
-			ani.getInitFrame().apply(this);
+			if(ani.getInitFrame() != null)
+				ani.getInitFrame().apply(this);
 		}
 	}
 

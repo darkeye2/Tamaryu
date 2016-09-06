@@ -119,6 +119,10 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 				}else{
 					offset = this.width - gl.lineWidth;
 				}
+				if(this.maxH>0){
+					System.out.println("Max H: "+maxH+"; Height: "+height);
+					gl.setYOffset((this.maxH-height)/-2);
+				}
 				gl.setXOffset(offset/2);
 			}
 		}else if(this.alignment == TRLabel.RIGHT){
@@ -158,7 +162,6 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 				System.arraycopy(genNormalizedVertex(j, vecCoord,  texCoord), 0, data, di+j*5, 5);
 			}
 		}
-		
 		this.setData(data, DATA_FORMAT_XYZUV);
 	}
 	

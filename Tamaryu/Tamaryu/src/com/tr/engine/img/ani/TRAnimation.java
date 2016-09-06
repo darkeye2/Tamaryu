@@ -29,6 +29,8 @@ public class TRAnimation {
 	}
 	
 	public boolean frameReady(){
+		if(frameEnd <= 0)
+			return true;
 		return frameEnd>=System.currentTimeMillis();
 	}
 	
@@ -74,6 +76,7 @@ public class TRAnimation {
 	
 	public TRFrame getNextFrame(){
 		TRFrame f = null;
+		System.out.println("Playing frame: "+framePointer);
 		if(frames.size() > 0 || framePointer < frames.size()){
 			f = frames.get(framePointer);
 			updatePointerPos();
