@@ -1,5 +1,6 @@
 package com.tr.engine.components.gl;
 
+import com.tr.engine.components.ITRInputField;
 import com.tr.engine.components.TRAbstractComponentSet;
 import com.tr.engine.components.TRButton;
 import com.tr.engine.components.TRLabel;
@@ -34,6 +35,18 @@ public class TRGLComponentSet extends TRAbstractComponentSet {
 
 	@Override
 	public TRButton getButton(String txt) {
+		return null;
+	}
+
+	@Override
+	public ITRInputField getInputField() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ITRInputField getInputField(String txt) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
