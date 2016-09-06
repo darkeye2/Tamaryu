@@ -32,4 +32,12 @@ public final class TRComponentManager {
 	public static TRButton getButton(String txt) {
 		return set.getButton(txt);
 	}
+	
+	public static ITRInputField getInputField() {
+		return set.getInputField();
+	}
+	
+	public static ITRInputField getInputField(String txt) {
+		return set.getInputField(txt);
+	}
 }

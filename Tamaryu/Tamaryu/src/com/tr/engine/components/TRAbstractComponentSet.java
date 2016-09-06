@@ -7,4 +7,6 @@ public abstract class TRAbstractComponentSet {
 	public abstract TRTextButton getTxtButton(String txt);
 	public abstract TRButton getButton();
 	public abstract TRButton getButton(String txt);
+	public abstract ITRInputField getInputField();
+	public abstract ITRInputField getInputField(String txt);
 }
