@@ -3,7 +3,7 @@ package com.tr.engine.sound;
 import java.nio.ByteBuffer;
 
 import com.jogamp.openal.*;
-import com.jogamp.openal.util.*;
+import com.jogamp.openal.util.ALut;
 
 public final class AudioMaster
 {

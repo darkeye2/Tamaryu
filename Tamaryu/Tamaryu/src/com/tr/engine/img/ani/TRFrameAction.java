@@ -27,13 +27,13 @@ public class TRFrameAction {
 	
 	public void apply(ITRAnimationView view){
 		ITRAnimationView v = (ITRAnimationView) view.getComponentByName(path);
-		System.out.println("Found #"+path+" : "+(v != null));
+		//System.out.println("Found #"+path+" : "+(v != null));
 		if(v == null){
 			return;
 		}
 		
 		if(imgFlag){
-			System.out.println("Setting image: "+img.getFullFileName());
+			//System.out.println("Setting image: "+img.getFullFileName());
 			v.setImage(img);
 		}
 		

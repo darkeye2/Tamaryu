@@ -8,6 +8,7 @@ public class TRAnimation {
 	protected long frameEnd = 0;
 	
 	protected boolean loop = true;
+	protected boolean ended = false;
 	
 	protected TRFrame initFrame = null;
 	protected TRFrame closeFrame = null;
@@ -31,7 +32,7 @@ public class TRAnimation {
 	public boolean frameReady(){
 		if(frameEnd <= 0)
 			return true;
-		return frameEnd>=System.currentTimeMillis();
+		return System.currentTimeMillis()>=frameEnd;
 	}
 	
 	public void stop(){
@@ -49,6 +50,13 @@ public class TRAnimation {
 	
 	public void setLoop(boolean b){
 		this.loop = b;
+		if(b)
+			this.ended = false;
+	}
+	
+	public void reset(){
+		this.framePointer = 0;
+		this.ended = false;
 	}
 	
 	public int getFixedFPS(){
@@ -75,8 +83,11 @@ public class TRAnimation {
 	}
 	
 	public TRFrame getNextFrame(){
+		if(!loop && ended)
+			return null;
+		
 		TRFrame f = null;
-		System.out.println("Playing frame: "+framePointer);
+		//System.out.println("Playing frame: "+framePointer);
 		if(frames.size() > 0 || framePointer < frames.size()){
 			f = frames.get(framePointer);
 			updatePointerPos();
@@ -92,6 +103,8 @@ public class TRAnimation {
 		}else{
 			if(framePointer < frames.size()-1){
 				framePointer++;
+			}else{
+				ended = true;
 			}
 		}
 	}

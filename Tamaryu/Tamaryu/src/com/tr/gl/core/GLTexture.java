@@ -27,6 +27,7 @@ public class GLTexture {
 	}
 	
 	public GLTexture init(GL2ES3 gl){
+		//System.out.println("Init Texture: "+fileName+" ("+imageName+")");
 		return GLTextureManager.loadTexture(gl, this);
 	}
 	

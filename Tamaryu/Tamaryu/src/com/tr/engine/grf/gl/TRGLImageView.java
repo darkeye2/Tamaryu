@@ -61,7 +61,7 @@ public class TRGLImageView extends TRGL2DRenderable implements ITRImageView {
 	@Override
 	public void setImage(TRImage i) {
 		this.setSize((int)i.getWidth(), (int)i.getHeight());
-		System.out.println("Try to set Texture: "+i.getFullFileName()+" => "+new GLTexture(i.getFullFilePath(), true, i.getName()));
+		//System.out.println("Try to set Texture: "+i.getFullFileName()+" => "+new GLTexture(i.getFullFilePath(), true, i.getName()));
 		this.setTexture(new GLTexture(i.getFullFilePath(), true, i.getName()));
 		setTexturePos(i);
 		this.setData(data, DATA_FORMAT_XYZUV);

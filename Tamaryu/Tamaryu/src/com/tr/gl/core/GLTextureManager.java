@@ -27,15 +27,22 @@ public final class GLTextureManager {
 
 	public static GLTexture loadTexture(GL2ES3 gl, GLTexture tex) {
 		GLTexture p = getTexture(tex.getName());
-		if (p != null)
-			return p;
+		//System.out.println("[TM] try to get Texture ("+tex.imageName+"): "+p);
+		if (p != null){
+			if(p.getTexture() != null){
+				//System.out.println("Texture found! ("+p.getTexture()+")");
+				return p;
+			}
+			//textures.remove(tex.getName());
+		}
+		//System.out.println("Texture could not be returned!");
 
 		InputStream in = null;
 		if(tex.resource){
-			System.out.println("Loading: "+tex.fileName);
+			//System.out.println("Loading: "+tex.fileName);
 			if(tex.fileName.startsWith("/")){
 				in = GLTextureManager.class.getResourceAsStream(tex.fileName);
-				System.out.println("Texture Stream: "+in);
+				//System.out.println("Texture Stream: "+in);
 			}else{
 				in = GLTextureManager.class.getResourceAsStream("/img/"+tex.fileName);
 			}

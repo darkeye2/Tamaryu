@@ -31,6 +31,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
 import com.tr.engine.grf.gl.TRGLRenderContext;
 import com.tr.engine.grf.gl.TRGLScene;
@@ -117,6 +119,16 @@ public class TRGLDebugger extends TRDebugger {
 		console.setForeground(Color.GREEN);
 		console.setBackground(Color.BLACK);
 		console.setMargin(new Insets(1, 10, 2, 1));
+		/*console.addCaretListener(new CaretListener() {
+
+            public void caretUpdate(CaretEvent e) {
+                int height = Math.min(console.getPreferredSize().height, MAX_HEIGHT_RSZ);
+                Dimension preferredSize = scroll.getPreferredSize();
+                preferredSize.height = height;
+                scroll.setPreferredSize(preferredSize);
+                gui.validate();
+            }
+        });*/
 		//console.setLineWrap(true);
 	    //console.setWrapStyleWord(true);
 		scroll.setPreferredSize(new Dimension(400, 300));
@@ -389,6 +401,7 @@ public class TRGLDebugger extends TRDebugger {
 		public void flush() throws IOException{
 			super.flush();
 			console.setText("<HTML><BODY>"+sb.toString()+"</BODY></HTML>");
+			console.setCaretPosition(console.getDocument().getLength());
 		}
 		
 	}

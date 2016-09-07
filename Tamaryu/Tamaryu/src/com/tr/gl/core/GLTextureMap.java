@@ -16,9 +16,14 @@ public class GLTextureMap extends WeakValueMap<String, GLTexture> {
 		
 		while((wk = (WeakValue<String,GLTexture>)queue.poll()) != null){
 			map.remove(wk.getKey());
+			System.out.println("Destroying Texture!");
 			wk.get().getTexture().destroy(gl);
 			wk = null;
 		}
+	}
+	
+	public void remove(String name){
+		this.map.remove(name);
 	}
 
 }

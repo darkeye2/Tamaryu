@@ -47,8 +47,11 @@ public class TRGLAnimationView extends TRGLImageView implements ITRAnimationView
 	}
 	
 	public void unloadAnimation(){
-		if(this.ani != null && ani.getCloseFrame() != null){
-			ani.getCloseFrame().apply(this);
+		if(this.ani != null){
+			if(ani.getCloseFrame() != null){
+				ani.getCloseFrame().apply(this);
+			}
+			ani.reset();
 		}
 	}
 

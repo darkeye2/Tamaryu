@@ -25,10 +25,10 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	public static final int DATA_FORMAT_XYZ_UV_M = 0x24; // X,Y,Z , UV ,M
 															// Material ID
 	protected int dataFormat = DATA_FORMAT_XYZUV;
-	protected boolean useTexture = false;
+	protected volatile boolean useTexture = false;
 	protected Color objectColor = Color.BLACK;
-	protected boolean dataUpdated = false;
-	protected boolean textureUpdated = false;
+	protected volatile boolean dataUpdated = false;
+	protected volatile boolean textureUpdated = false;
 	
 	//locations
 	protected int modelMatLocation = 0;
@@ -50,6 +50,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		this.texture = tex;
 		useTexture(true);
 		this.textureUpdated = true;
+		//System.out.println("Texture Update Flag set!");
 	}
 
 	public GLTexture getTexture() {
@@ -242,7 +243,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 			nd[i+stY] = (this.data[i+stY]*this.height + this.height) * (0.5f);
 		}
 		
-		GLCamera.printFloatMatrix(nd, 5, 6, true);
+		//GLCamera.printFloatMatrix(nd, 5, 6, true);
 		
 		return nd;
 	}
@@ -278,9 +279,11 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		
 		if(this.textureUpdated){
 			if(this.texture != null){
-				this.texture.init(gl);
+				//System.out.println("Updating texture!");
+				this.texture = this.texture.init(gl);
+				textureUpdated = false;
+				//System.out.println("Cur Texture: "+texture.getTexture()+"; Object: "+texture);
 			}
-			textureUpdated = false;
 		}
 		
 		//render components inside (behind)
@@ -337,6 +340,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		
 		//use texture
 		if(this.useTexture && !this.textureUpdated){
+			//System.out.println("Selected texture: "+texture.getTexture()+"; Object: "+texture);
 			gl.glActiveTexture(GL.GL_TEXTURE0);
         	texture.getTexture().enable(gl);
         	texture.getTexture().bind(gl);
