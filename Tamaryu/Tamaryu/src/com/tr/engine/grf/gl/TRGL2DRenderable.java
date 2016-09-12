@@ -269,6 +269,26 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		GL2ES3 gl = (GL2ES3) ((TRGLRenderContext) context).getGL();
 		GLCamera cam = (GLCamera) context.getScene().getCamera();
 		
+		if(this.outComponents.size() > 0){
+			synchronized(outLock){
+				for(TRGLRenderable r : outComponents){
+					context.getScene().removeComponent(r);
+					this.components.remove(r);
+				}
+				outComponents.clear();
+			}
+		}
+		
+		if(this.inComponents.size() > 0){
+			synchronized(inLock){
+				for(TRGLRenderable r : inComponents){
+					context.getScene().addComponent(r);
+					this.components.add(r);
+				}
+				inComponents.clear();
+			}
+		}
+		
 		if(this.callResize){
 			this.resize(context, 0, 0);
 		}
@@ -287,12 +307,12 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		}
 		
 		//render components inside (behind)
-		for(TRGLRenderable r : this.components){
+		/*for(TRGLRenderable r : this.components){
 			if(r.getPosition().z < this.getPosition().z){
 				r.render(context);
 			}
 			
-		}
+		}*/
 
 		// use program
 		gl.glUseProgram(program.getID());
@@ -354,12 +374,12 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		gl.glBindVertexArray(0);
 		
 		//render components inside (front)
-		for(TRGLRenderable r : this.components){
+		/*for(TRGLRenderable r : this.components){
 			if(r.getPosition().z < this.getPosition().z){
 				continue;
 			}
 			r.render(context);
-		}
+		}*/
 	}
 
 	@Override

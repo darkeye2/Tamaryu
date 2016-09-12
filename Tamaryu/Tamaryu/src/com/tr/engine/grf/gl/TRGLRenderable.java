@@ -1,7 +1,6 @@
 package com.tr.engine.grf.gl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import com.jogamp.opengl.math.Matrix4;
 import com.tr.engine.grf.IRenderable;
@@ -39,7 +38,11 @@ public abstract class TRGLRenderable implements IRenderable {
 	
 	//components
 	protected TRGLRenderable parent = null;
-	protected ArrayList<TRGLRenderable> components = new ArrayList<TRGLRenderable>();
+	protected volatile ArrayList<TRGLRenderable> components = new ArrayList<TRGLRenderable>();
+	protected volatile ArrayList<TRGLRenderable> inComponents = new ArrayList<TRGLRenderable>();
+	protected volatile ArrayList<TRGLRenderable> outComponents = new ArrayList<TRGLRenderable>();
+	protected volatile Object inLock = new Object();
+	protected volatile Object outLock = new Object();
 	
 	
 	public void setFixedPosition(int posConstant){
@@ -218,8 +221,10 @@ public abstract class TRGLRenderable implements IRenderable {
 	public void addComponent(IRenderable c) {
 		if(c instanceof TRGLRenderable){
 			((TRGLRenderable) c).parent = this;
-			this.components.add((TRGLRenderable) c);
-			Collections.sort(this.components);
+			synchronized(inLock){
+				this.inComponents.add((TRGLRenderable) c);
+			}
+			//Collections.sort(this.components);
 		}
 	}
 
@@ -227,7 +232,10 @@ public abstract class TRGLRenderable implements IRenderable {
 	public IRenderable removeComponent(IRenderable c) {
 		if(this.components.contains(c)){
 			((TRGLRenderable)c).parent = null;
-			this.components.remove(c);
+			synchronized(outLock){
+				this.outComponents.add((TRGLRenderable) c);
+				System.out.println("Add cc to remove!");
+			}
 			return c;
 		}
 		return null;
@@ -235,7 +243,13 @@ public abstract class TRGLRenderable implements IRenderable {
 
 	@Override
 	public void removeAll() {
-		this.components.clear();
+		synchronized(outLock){
+			inComponents.clear();
+			for(TRGLRenderable i : components){
+				System.out.println("Add cc to remove!");
+				this.outComponents.add(i);
+			}
+		}
 	}
 	
 	public void setName(String name){

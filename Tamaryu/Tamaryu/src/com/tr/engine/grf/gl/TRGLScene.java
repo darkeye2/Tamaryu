@@ -42,7 +42,9 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 	protected boolean rpAntiAlising = true;
 	
 	protected ArrayList<IRenderable> unInitObjects = new ArrayList<IRenderable>();
+	protected ArrayList<IRenderable> outObjects = new ArrayList<IRenderable>();
 	protected ArrayList<IRenderable> temp = new ArrayList<IRenderable>();
+	protected Object outLock = new Object();
 	
 	//input
 	protected Point lastMousePos = new Point(0,0);
@@ -65,15 +67,24 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		if(ra == null)
 			return;
 		unInitObjects.add(ra);
+		if(ra instanceof ITRMouseListener){
+			this.addMouseListener((ITRMouseListener) ra);
+		}
+		//TODO add to key listener
 	}
 
 	@Override
 	public boolean removeComponent(IRenderable ra) {
+		System.out.println("removing cc from scene");
+		if(ra instanceof ITRMouseListener){
+			this.removeMouseListener((ITRMouseListener) ra);
+		}
 		if(unInitObjects.contains(ra)){
 			return unInitObjects.remove(ra);
 		}else{
-			synchronized(lock){
-				return this.components.remove(ra);
+			synchronized(outLock){
+				ra.removeAll();
+				return this.outObjects.add(ra);
 			}
 		}
 	}
@@ -277,7 +288,7 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 				}
 				temp.clear();
 				
-				Collections.sort(components);
+				Collections.sort(components, new RenderableComparator());
 			}
 		}
 		
@@ -289,6 +300,18 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		synchronized(lock){
 			for(IRenderable r : this.components){
 				r.render(glRc);
+			}
+		}
+		
+		// remove objects
+		if(outObjects.size()>0){
+			synchronized(outLock){
+				for(IRenderable i : outObjects){
+					synchronized(lock){
+						components.remove(i);
+					}
+				}
+				outObjects.clear();
 			}
 		}
 		
