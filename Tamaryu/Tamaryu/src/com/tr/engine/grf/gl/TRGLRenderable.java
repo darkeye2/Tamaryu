@@ -282,6 +282,15 @@ public abstract class TRGLRenderable implements IRenderable {
 					}
 				}
 			}
+			for(IRenderable r : this.inComponents){
+				if(r.getName().equals(names[0])){
+					if(names.length > 1){
+						return r.getComponentByName(join(names, ".", 1));
+					}else{
+						return r;
+					}
+				}
+			}
 		}
 		
 		return null;
@@ -294,6 +303,15 @@ public abstract class TRGLRenderable implements IRenderable {
 		String[] ids = idid.split("\\.");
 		if(ids.length > 0){
 			for(IRenderable r : this.components){
+				if(r.getID() == Integer.parseInt(ids[0])){
+					if(ids.length > 1){
+						return r.getComponentByID(join(ids, ".", 1));
+					}else{
+						return r;
+					}
+				}
+			}
+			for(IRenderable r : this.inComponents){
 				if(r.getID() == Integer.parseInt(ids[0])){
 					if(ids.length > 1){
 						return r.getComponentByID(join(ids, ".", 1));
