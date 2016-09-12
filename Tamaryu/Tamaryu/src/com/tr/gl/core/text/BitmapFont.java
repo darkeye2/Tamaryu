@@ -28,7 +28,7 @@ public class BitmapFont {
 		BufferedReader br = null;
 		if(resource){
 			in = this.getClass().getResourceAsStream(fntFile);
-			System.out.println("Font Stream: "+in);
+			//System.out.println("Font Stream: "+in);
 		}else{
 			try {
 				in = new FileInputStream(new File(fntFile));
@@ -63,7 +63,7 @@ public class BitmapFont {
 					GlyphData gd = new GlyphData(arr);
 					glyphs.put(gd.id, gd);
 				}
-				System.out.println("Glyphs read: "+glyphs.size());
+				//System.out.println("Glyphs read: "+glyphs.size());
 				
 			} catch (IOException e) {
 				System.err.println("ERROR in .fnt file: "+fntFile);

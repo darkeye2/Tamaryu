@@ -13,6 +13,7 @@ public abstract class TRScene {
 	
 	//component list
 	protected ArrayList<IRenderable> components = new ArrayList<IRenderable>();
+	protected Object lock = new Object();
 	protected ArrayList<ITRMouseListener> mlisteners = new ArrayList<ITRMouseListener>();
 	protected ArrayList<ITRGlobalMouseListener> gmllisteners = new ArrayList<ITRGlobalMouseListener>();
 	protected TRDragAndDropManager dndManager = null;

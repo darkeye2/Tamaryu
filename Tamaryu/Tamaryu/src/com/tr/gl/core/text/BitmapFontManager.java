@@ -7,7 +7,7 @@ public final class BitmapFontManager {
 		if(fonts.contains(fntName+".fnt")){
 			return fonts.get(fntName+".fnt");
 		}else{
-			System.out.println("Loading Font: "+"/font/"+fntName+".fnt       ("+"/font/"+fntName+".png"+")");
+			//System.out.println("Loading Font: "+"/font/"+fntName+".fnt       ("+"/font/"+fntName+".png"+")");
 			BitmapFont bmf = new BitmapFont("/font/"+fntName+".fnt", "/font/"+fntName+".png", true);
 			fonts.put(fntName+".fnt", bmf);
 			return bmf;

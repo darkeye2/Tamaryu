@@ -33,7 +33,7 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 	public TRGLLabel(String txt){
 		this();
 		setText(txt);
-		System.out.println("TRGLLabel ["+width+", "+height+"] text="+text);
+		//System.out.println("TRGLLabel ["+width+", "+height+"] text="+text);
 		//GLCamera.printFloatMatrix(this.data, 5, 6, true);
 	}
 
@@ -111,7 +111,7 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 		}
 		
 		if(this.alignment == TRLabel.CENTER){
-			System.out.println("Center Glyphs!");
+			//System.out.println("Center Glyphs!");
 			for(GlyphLine gl : glyphLines){
 				float offset =  0;
 				if(this.maxW>0){
@@ -120,7 +120,7 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 					offset = this.width - gl.lineWidth;
 				}
 				if(this.maxH>0){
-					System.out.println("Max H: "+maxH+"; Height: "+height);
+					//System.out.println("Max H: "+maxH+"; Height: "+height);
 					gl.setYOffset((this.maxH-height)/-2);
 				}
 				gl.setXOffset(offset/2);
@@ -144,7 +144,7 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 		
 		updateData();
 		hitbox.setSize(this.getWidth(), this.getHeight());
-		System.out.println("Glyphs: "+glyphs.size());
+		//System.out.println("Glyphs: "+glyphs.size());
 	}
 	
 	private void updateData(){

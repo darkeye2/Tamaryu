@@ -72,7 +72,9 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		if(unInitObjects.contains(ra)){
 			return unInitObjects.remove(ra);
 		}else{
-			return this.components.remove(ra);
+			synchronized(lock){
+				return this.components.remove(ra);
+			}
 		}
 	}
 
@@ -80,7 +82,9 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 	public void clearScene() {
 		mlisteners.clear();
 		unInitObjects.clear();
-		components.clear();
+		synchronized(lock){
+			components.clear();
+		}
 	}
 
 	@Override
@@ -262,17 +266,19 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		
 		//init new added objects
 		if(unInitObjects.size() > 0){
-			for(IRenderable r : unInitObjects){
-				r.init(glRc);
-				this.components.add(r);
-				this.temp.add(r);
+			synchronized(lock){
+				for(IRenderable r : unInitObjects){
+					r.init(glRc);
+					this.components.add(r);
+					this.temp.add(r);
+				}
+				for(IRenderable r : temp){
+					unInitObjects.remove(r);
+				}
+				temp.clear();
+				
+				Collections.sort(components);
 			}
-			for(IRenderable r : temp){
-				unInitObjects.remove(r);
-			}
-			temp.clear();
-			
-			Collections.sort(components);
 		}
 		
 		//remove unused programs
@@ -280,8 +286,10 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		
 		
 		//render objects
-		for(IRenderable r : this.components){
-			r.render(glRc);
+		synchronized(lock){
+			for(IRenderable r : this.components){
+				r.render(glRc);
+			}
 		}
 		
 		
@@ -315,8 +323,10 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		gl.glViewport(x, y, width, height);
 		cam.setWinSize(width, height);
 		
-		for(IRenderable r : this.components){
-			r.resize(glRc, width, height);
+		synchronized(lock){
+			for(IRenderable r : this.components){
+				r.resize(glRc, width, height);
+			}
 		}
 	}
 	
