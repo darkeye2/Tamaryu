@@ -25,4 +25,9 @@ public final class LanguageTranslator
 	{
 		return ResourceBundle.getBundle("localization/Bundle").getString(key);
 	}
+	
+	public static String getCurrentLanguage()
+	{
+		return Locale.getDefault().toString();
+	}
 }
