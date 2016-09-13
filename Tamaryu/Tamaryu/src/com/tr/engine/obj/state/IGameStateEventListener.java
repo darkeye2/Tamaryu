@@ -4,6 +4,8 @@ import com.tr.engine.rewardsystem.RewardManager;
 
 public final class IGameStateEventListener
 {
+	
+	//public void stateChanged(int id, String name);
 	public static void notifyAfterLogin()
 	{
 		RewardManager.notifyAfterLogin();
@@ -13,4 +15,15 @@ public final class IGameStateEventListener
 	{
 		RewardManager.notifyAfterMiniGame(time, score);
 	}
+	
+	
+	/*
+	 * Listener = Interface
+	 * Reward implementierts
+	 * TRGameStateManager Arrayliste fur Listener
+	 * add, remove, clear
+	 * 
+	 * notifys: state Changed = ID & Stringname
+	 * 
+	 */
 }

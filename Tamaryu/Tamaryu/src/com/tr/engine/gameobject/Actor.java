@@ -1,6 +1,6 @@
 package com.tr.engine.gameobject;
 
-import com.tr.img.gameobject.TRLayerdImage;
+import com.tr.engine.grf.IRenderable;
 
 /** 
  * @author Daimonius
@@ -16,14 +16,14 @@ import com.tr.img.gameobject.TRLayerdImage;
 
 public class Actor extends AbstractGameObject
 {
-	private TRLayerdImage image;
+	private IRenderable image;
 	
 	private TRRectangle hitboxHead;
 	private TRRectangle hitboxBody;
 
-	public Actor(int x, int y, TRLayerdImage image)
+	public Actor(int x, int y, IRenderable image)
 	{
-		super(x, y, image.getSize().width, image.getSize().height);	
+		super(x, y, image.getWidth(), image.getHeight());	
 		this.image = image;
 		this.velocityX = 0;
 		this.velocityY = 0;
@@ -35,12 +35,12 @@ public class Actor extends AbstractGameObject
 	 * 
 	 */
 	
-	public void setImage(TRLayerdImage image)
+	public void setImage(IRenderable image)
 	{
 		this.image = image;
 	}
 	
-	public TRLayerdImage getImage()
+	public IRenderable getImage()
 	{
 		return this.image;
 	}
