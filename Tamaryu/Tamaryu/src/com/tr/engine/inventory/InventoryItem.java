@@ -2,6 +2,31 @@ package com.tr.engine.inventory;
 
 public class InventoryItem implements IInventoryable
 {
+	public static final int LOOTBOX_LUXERY = 0;
+	public static final int LOOTBOX_PREMIUM = 1;
+	public static final int LOOTBOX_RARE = 2;
+	public static final int LOOTBOX_COMMON = 3;
+	
+	public static final int GOLDEN_APPLE = 10;
+	public static final int AMBROSIA = 11;
+	public static final int MINOTAUR_STEAK = 12;
+	public static final int NECTAR = 13;
+	
+	public static final int PITAHAYA = 20;
+	public static final int TRUFFLE = 21;
+	public static final int FISH_FILLET = 22;	
+	public static final int TEA = 23;
+	
+	public static final int ORANGE = 30;
+	public static final int BROCCOLI = 31;
+	public static final int SAUSAGE = 32;
+	public static final int MILK = 33;
+	
+	public static final int APPLE = 40;
+	public static final int POTATO = 41;
+	public static final int CHICKEN_NUGGET = 42;
+	public static final int MINERAL_WATER = 43;
+	
 	private String name;
 	private String type;
 	private int position;

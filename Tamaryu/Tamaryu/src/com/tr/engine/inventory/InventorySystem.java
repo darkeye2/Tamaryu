@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import com.tr.engine.rewardsystem.LootBox;
+import com.tr.engine.rewardsystem.RewardManager;
+
 public final class InventorySystem
 {
 	public static ArrayList<IInventoryable> inventoryItems;
@@ -44,29 +47,32 @@ public final class InventorySystem
 	
 	public static void addItem(IInventoryable item)
 	{
-		if(InventorySystem.inventoryItems == null)
+		if(item.getAmount() > 0)
 		{
-			InventorySystem.getInventory();
-		}
-		if(InventorySystem.inventoryItems.isEmpty())
-		{
-			InventorySystem.inventoryItems.add(item);
-		}
-		else
-		{
-			boolean newItem = true;
-			
-			for(IInventoryable entry : InventorySystem.inventoryItems)
+			if(InventorySystem.inventoryItems == null)
 			{
-				if(entry.getName() == item.getName())
-				{
-					entry.increaseAmount(item.getAmount());
-					newItem = false;
-				}
+				InventorySystem.getInventory();
 			}
-			if(newItem)
+			if(InventorySystem.inventoryItems.isEmpty())
 			{
 				InventorySystem.inventoryItems.add(item);
+			}
+			else
+			{
+				boolean newItem = true;
+				
+				for(IInventoryable entry : InventorySystem.inventoryItems)
+				{
+					if(entry.getName() == item.getName())
+					{
+						entry.increaseAmount(item.getAmount());
+						newItem = false;
+					}
+				}
+				if(newItem)
+				{
+					InventorySystem.inventoryItems.add(item);
+				}
 			}
 		}
 	}
@@ -78,6 +84,10 @@ public final class InventorySystem
 			if(entry.getName() == item.getName())
 			{
 				entry.decreaseAmount(1);
+				if(entry.getType() == "lootbox")
+				{
+					RewardManager.notifyLootBoxUse(entry.getName());
+				}
 			}
 			if(entry.getAmount() <= 0)
 			{
