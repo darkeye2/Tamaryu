@@ -57,7 +57,10 @@ void main(void){
 		
 		//set overlay color
 		if(bool(settings_array[USE_COLOR_OVER_TEXTURE])){
-			color = vec4(fs_in.color.rgb, color.a);
+			color = vec4(settings_array[OVERLAY_COLOR_RED], 
+							settings_array[OVERLAY_COLOR_GREEN],
+							settings_array[OVERLAY_COLOR_BLUE], 
+							color.a);
 		}
 	}else {
 		color = fs_in.color;

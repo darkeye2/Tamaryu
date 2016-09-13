@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.util.packrect.Rect;
 import com.tr.engine.components.TRLabel;
+import com.tr.engine.grf.Color;
+import com.tr.engine.grf.TRRenderPropertie;
 import com.tr.engine.grf.gl.TRGL2DRenderable;
 import com.tr.gl.core.GLProgramm;
 import com.tr.gl.core.text.BitmapFont;
@@ -257,6 +259,9 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 	}
 
 	
-
+	public void setColor(Color c){
+		System.out.println("Color set: ["+c.r+", "+c.g+", "+c.b+", "+c.a+"]");
+		this.setRenderPropertie(new TRRenderPropertie(TRRenderPropertie.USE_COLOR_OVER_TEXTURE, 1, c.r, c.g, c.b, c.a));
+	}
 
 }

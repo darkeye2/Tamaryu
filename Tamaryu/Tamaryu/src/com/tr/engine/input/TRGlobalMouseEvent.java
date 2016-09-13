@@ -14,6 +14,7 @@ public class TRGlobalMouseEvent extends TRMouseEvent{
 	
 	public TRGlobalMouseEvent(TRMouseEvent me){
 		super(me.e, me.lastPos);
+		this.setTranslatedPos(me.x(), me.y());
 	}
 	
 	public IRenderable getSource(){

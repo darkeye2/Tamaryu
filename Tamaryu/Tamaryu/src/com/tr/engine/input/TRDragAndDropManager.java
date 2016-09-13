@@ -81,6 +81,7 @@ public class TRDragAndDropManager implements ITRGlobalMouseListener{
 		}
 		
 		if(e.getSource() != null && e.getSource() instanceof TRDragable){
+			((TRDragable) e.getSource()).onDrag();
 			dragObjects.add(new TRDraggedObject(e));
 		}
 	}
@@ -90,9 +91,12 @@ public class TRDragAndDropManager implements ITRGlobalMouseListener{
 			return;
 		}
 		
+		//System.out.println("Last: "+e.lastPos+"; New: "+e.x()+", "+e.y());
 		int xOff = e.x() - e.lastPos.getX();
 		int yOff = e.y() - e.lastPos.getY();
+		int i = 0;
 		for(TRDraggedObject tdo : dragObjects){
+			//System.out.println("Dragging ("+(i++)+"): ["+xOff+", "+yOff+"]");
 			tdo.r.increasePos(xOff, yOff, 0);
 		}
 	}
@@ -141,6 +145,7 @@ public class TRDragAndDropManager implements ITRGlobalMouseListener{
 	@Override
 	public void mouseDragged(TRGlobalMouseEvent e) {
 		startDrag(e, true);
+		drag(e);
 	}
 
 	@Override
