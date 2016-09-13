@@ -260,7 +260,6 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 
 	
 	public void setColor(Color c){
-		System.out.println("Color set: ["+c.r+", "+c.g+", "+c.b+", "+c.a+"]");
 		this.setRenderPropertie(new TRRenderPropertie(TRRenderPropertie.USE_COLOR_OVER_TEXTURE, 1, c.r, c.g, c.b, c.a));
 	}
 

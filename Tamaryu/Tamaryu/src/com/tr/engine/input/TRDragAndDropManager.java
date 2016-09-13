@@ -107,11 +107,14 @@ public class TRDragAndDropManager implements ITRGlobalMouseListener{
 		}
 		if(!dropAreaOnly){
 			drag(e);
+			for(TRDraggedObject o : dragObjects){
+				((TRDragable) o.r).onDrop();
+			}
 			dragObjects.clear();
 		}else{
+			drag(e);
 			if(e.getSource() != null && e.getSource() instanceof TRDroparea){
-				drag(e);
-				dragObjects.clear();
+				((TRDroparea) e.getSource()).drop(dragObjects.get(0).r);
 			}else if(returnOnDropFail){
 				drag(e);
 				for(TRDraggedObject tdo : dragObjects){
@@ -121,6 +124,10 @@ public class TRDragAndDropManager implements ITRGlobalMouseListener{
 				}
 				dragObjects.clear();
 			}
+			for(TRDraggedObject o : dragObjects){
+				((TRDragable) o.r).onDrop();
+			}
+			dragObjects.clear();
 		}
 	}
 	

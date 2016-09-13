@@ -17,10 +17,12 @@ public final class TRGameStateManager {
 	
 	public static void setState(TRAbstractGameState gs){
 		if(curState != null){
+			if(curState.getID() == gs.getID()){
+				return;
+			}
 			curState.unload(scene, looper);
 		}
 		curState = gs;
-		//System.out.println("Loading State: "+gs.getName());
 		curState.load(scene, looper);
 	}
 	
