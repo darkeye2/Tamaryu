@@ -7,4 +7,5 @@ public interface ITRGlobalMouseListener {
 	public void mousePress(TRGlobalMouseEvent e);
 	public void mouseDragged(TRGlobalMouseEvent e);	
 	public void mouseMoved(TRGlobalMouseEvent tre);
+	public void mouseClicked(TRGlobalMouseEvent e);
 }

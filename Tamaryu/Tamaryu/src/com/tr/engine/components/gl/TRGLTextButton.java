@@ -1,6 +1,5 @@
 package com.tr.engine.components.gl;
 
-import com.jogamp.opengl.util.packrect.Rect;
 import com.tr.engine.components.TRTextButton;
 import com.tr.engine.grf.IRenderable;
 import com.tr.engine.input.TRMouseEvent;
@@ -18,8 +17,7 @@ public class TRGLTextButton extends TRGLLabel implements TRTextButton {
 
 	@Override
 	public void addClickAction(Runnable r) {
-		/*if(stateAction[TRTextButton.MOUSE_UP_ACTION] != null)
-			stateAction[TRTextButton.MOUSE_UP_ACTION] = r;*/
+		addStateChangeAction(MOUSE_CLICK_ACTION, r);
 	}
 
 	@Override
@@ -53,22 +51,13 @@ public class TRGLTextButton extends TRGLLabel implements TRTextButton {
 		stateAction[TRTextButton.MOUSE_DOWN_ACTION].run();
 		
 	}
-
+	
 	@Override
-	public Rect getHitbox() {
-		// TODO Auto-generated method stub
-		return null;
+	public void mouseClicked(TRMouseEvent e) {
+		if(stateAction[TRTextButton.MOUSE_CLICK_ACTION] != null)
+			stateAction[TRTextButton.MOUSE_CLICK_ACTION].run();
 	}
 
-	@Override
-	public void setHitbox(Rect hitbox) {
-		this.hitbox = hitbox;
-	}
-
-	@Override
-	public int getZ() {
-		return Math.round(this.getPosition().z);
-	}
 	
 	@Override
 	public void mouseDragged(TRMouseEvent tre) {
@@ -78,25 +67,22 @@ public class TRGLTextButton extends TRGLLabel implements TRTextButton {
 	}
 
 	@Override
-	public boolean isHit(int x, int y) {
-		if(x >= getAbsolutPosition().x+hitbox.x() && x <= getAbsolutPosition().x+hitbox.x()+hitbox.maxX()){
-			if(y >= getAbsolutPosition().y+hitbox.y() && y <= getAbsolutPosition().y+hitbox.y()+hitbox.maxY()){
-				//System.out.println("Hit a Component!");
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public void mouseMoved(TRMouseEvent tre) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
+	public int getZ() {
+		return (int) this.getPosition().z;
+	}
+
+	@Override
 	public IRenderable getSrc() {
 		return this;
 	}
+
+
+
 
 }

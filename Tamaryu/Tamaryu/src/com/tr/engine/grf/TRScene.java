@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import com.tr.engine.input.EventComparator;
 import com.tr.engine.input.ITRGlobalMouseListener;
+import com.tr.engine.input.ITRKeyListener;
 import com.tr.engine.input.ITRMouseListener;
 import com.tr.engine.input.TRDragAndDropManager;
 
@@ -14,8 +15,13 @@ public abstract class TRScene {
 	//component list
 	protected ArrayList<IRenderable> components = new ArrayList<IRenderable>();
 	protected Object lock = new Object();
+	
 	protected ArrayList<ITRMouseListener> mlisteners = new ArrayList<ITRMouseListener>();
 	protected ArrayList<ITRGlobalMouseListener> gmllisteners = new ArrayList<ITRGlobalMouseListener>();
+	
+	protected ArrayList<ITRKeyListener> gkllisteners = new ArrayList<ITRKeyListener>();
+	protected Object gklLock = new Object();
+	
 	protected TRDragAndDropManager dndManager = null;
 	protected EventComparator ecomp = new EventComparator();
 	protected IRenderable bg = null;
@@ -66,5 +72,17 @@ public abstract class TRScene {
 	
 	public void removeGlobalMouseListener(ITRGlobalMouseListener ml){
 		this.gmllisteners.remove(ml);
+	}
+	
+	public void addGlobalKeyListener(ITRKeyListener kl){
+		synchronized(gklLock){
+			this.gkllisteners.add(kl);
+		}
+	}
+	
+	public void removeGlobalKeyListener(ITRKeyListener kl){
+		synchronized(gklLock){
+			this.gkllisteners.remove(kl);
+		}
 	}
 }

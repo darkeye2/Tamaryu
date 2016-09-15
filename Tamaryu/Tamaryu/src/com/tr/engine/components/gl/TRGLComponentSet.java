@@ -40,13 +40,11 @@ public class TRGLComponentSet extends TRAbstractComponentSet {
 
 	@Override
 	public ITRInputField getInputField() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TRGLInputField();
 	}
 
 	@Override
 	public ITRInputField getInputField(String txt) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

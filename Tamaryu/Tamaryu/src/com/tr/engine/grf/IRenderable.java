@@ -1,5 +1,6 @@
 package com.tr.engine.grf;
 
+import com.jogamp.opengl.util.packrect.Rect;
 import com.tr.gl.core.Point3D;
 
 public interface IRenderable extends Comparable<IRenderable>{
@@ -40,8 +41,16 @@ public interface IRenderable extends Comparable<IRenderable>{
 	public void removeAll();
 	public void setRenderPropertie(TRRenderPropertie p);
 	public Point3D getAbsolutPosition();
+	public IRenderable getParent();
 	
 	public void setFixedPosition(int posConstant);
+	
+	public Rect getHitbox();
+	public void setHitbox(Rect r);
+	public boolean isHit(float x, float y);
+	public void propagateHit(String hitPath);
+	public boolean ignore();
+	public void setIgnore(boolean b);
 	
 	public void setName(String name);
 	public String getName();

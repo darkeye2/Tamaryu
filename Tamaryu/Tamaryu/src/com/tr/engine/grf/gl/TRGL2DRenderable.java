@@ -5,7 +5,9 @@ import java.nio.FloatBuffer;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.math.Matrix4;
+import com.jogamp.opengl.util.packrect.Rect;
 import com.tr.engine.grf.Color;
+import com.tr.engine.grf.IRenderable;
 import com.tr.engine.grf.TRRenderContext;
 import com.tr.engine.grf.TRRenderPropertie;
 import com.tr.gl.core.GLCamera;
@@ -29,6 +31,9 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	protected Color objectColor = Color.BLACK;
 	protected volatile boolean dataUpdated = false;
 	protected volatile boolean textureUpdated = false;
+	
+	protected Rect hitbox = new Rect();
+	protected boolean ignore = false;
 	
 	//locations
 	protected int modelMatLocation = 0;
@@ -79,6 +84,13 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	public void setRenderPropertie(TRRenderPropertie p, float[] propArray){
 		propArray[p.getID()] = p.getValue();
 		switch(p.getID()){
+		case TRRenderPropertie.USE_TEXTURE:
+			if(p.getValue() == 0){
+				propArray[TRRenderPropertie.COLOR_RED] = p.getR();
+				propArray[TRRenderPropertie.COLOR_GREEN] = p.getG();
+				propArray[TRRenderPropertie.COLOR_BLUE] = p.getB();
+				propArray[TRRenderPropertie.COLOR_ALPHA] = p.getA();
+			}
 		case TRRenderPropertie.USE_COLOR_OVER_TEXTURE:
 			propArray[TRRenderPropertie.OVERLAY_COLOR_RED] = p.getR();
 			propArray[TRRenderPropertie.OVERLAY_COLOR_GREEN] = p.getG();
@@ -103,6 +115,14 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	
 	public void setRenderPropertie(TRRenderPropertie p){
 		this.setRenderPropertie(p, glslSettings);
+		synchronized(lock){
+			for(TRGLRenderable r : this.components){
+				r.setRenderPropertie(p);
+			}
+		}
+		for(TRGLRenderable r : this.inComponents){
+			r.setRenderPropertie(p);
+		}
 	}
 
 	public void setProgram(GLProgramm prog) {
@@ -139,8 +159,10 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		this.updateVBOData(gl, cam);
 		
 		//init components inside
-		for(TRGLRenderable r : this.components){
-			r.init(context);
+		synchronized(lock){
+			for(TRGLRenderable r : this.components){
+				r.init(context);
+			}
 		}
 
 		if(!normalized){
@@ -272,6 +294,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		if(this.outComponents.size() > 0){
 			synchronized(outLock){
 				for(TRGLRenderable r : outComponents){
+					r.parent = null;
 					context.getScene().removeComponent(r);
 					this.components.remove(r);
 				}
@@ -283,7 +306,9 @@ public class TRGL2DRenderable extends TRGLRenderable {
 			synchronized(inLock){
 				for(TRGLRenderable r : inComponents){
 					context.getScene().addComponent(r);
+					//System.out.println("Adding cc to RA");
 					this.components.add(r);
+					//System.out.println("Components: "+components.size());
 				}
 				inComponents.clear();
 			}
@@ -418,6 +443,52 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	@Override
 	public int getHeight() {
 		return (int)this.height;
+	}
+
+	@Override
+	public Rect getHitbox() {
+		return this.hitbox;
+	}
+
+	@Override
+	public void setHitbox(Rect r) {
+		//System.out.println("New Hitbox: "+r);
+		this.hitbox = r;
+	}
+
+	@Override
+	public boolean isHit(float x, float y) {
+		if(hitbox != null){
+			if(x >= getAbsolutPosition().x+hitbox.x() && x <= getAbsolutPosition().x+hitbox.x()+(hitbox.maxX()*this.getScale())){
+				if(y >= getAbsolutPosition().y+hitbox.y() && y <= getAbsolutPosition().y+hitbox.y()+(hitbox.maxY()*this.getScale())){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void propagateHit(String hitPath) {
+		if(parent != null){
+			String hp = (hitPath != null && !hitPath.equals(""))?(hitPath+"."+this.getName()):this.getName();
+			parent.propagateHit(hp);
+		}
+	}
+
+	@Override
+	public boolean ignore() {
+		return ignore;
+	}
+
+	@Override
+	public void setIgnore(boolean b) {
+		this.ignore = b;
+	}
+
+	@Override
+	public IRenderable getParent() {
+		return this.parent;
 	}
 
 }

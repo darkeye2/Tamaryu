@@ -1,12 +1,22 @@
 package com.tr.engine.components;
 
 import com.tr.engine.components.gl.TRGLComponentSet;
+import com.tr.engine.grf.IRenderable;
 
 public final class TRComponentManager {
 	private static TRAbstractComponentSet set = new TRGLComponentSet();
+	private static IRenderable selected = null;
 	
 	public static void setComponentSet(TRAbstractComponentSet cs){
 		set = cs;
+	}
+	
+	public static void setSelected(IRenderable i){
+		selected = i;
+	}
+	
+	public static IRenderable getSelected(){
+		return selected;
 	}
 	
 	public static TRLabel getLabel() {

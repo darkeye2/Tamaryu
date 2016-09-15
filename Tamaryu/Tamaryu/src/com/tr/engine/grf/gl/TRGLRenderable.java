@@ -43,6 +43,7 @@ public abstract class TRGLRenderable implements IRenderable {
 	protected volatile ArrayList<TRGLRenderable> outComponents = new ArrayList<TRGLRenderable>();
 	protected volatile Object inLock = new Object();
 	protected volatile Object outLock = new Object();
+	protected volatile Object lock = new Object();
 	
 	
 	public void setFixedPosition(int posConstant){
@@ -234,7 +235,7 @@ public abstract class TRGLRenderable implements IRenderable {
 			((TRGLRenderable)c).parent = null;
 			synchronized(outLock){
 				this.outComponents.add((TRGLRenderable) c);
-				System.out.println("Add cc to remove!");
+				//System.out.println("Add cc to remove!");
 			}
 			return c;
 		}
@@ -245,9 +246,11 @@ public abstract class TRGLRenderable implements IRenderable {
 	public void removeAll() {
 		synchronized(outLock){
 			inComponents.clear();
-			for(TRGLRenderable i : components){
-				System.out.println("Add cc to remove!");
-				this.outComponents.add(i);
+			synchronized(lock){
+				for(TRGLRenderable i : components){
+					//System.out.println("Add cc to remove!");
+					this.outComponents.add(i);
+				}
 			}
 		}
 	}
@@ -273,12 +276,14 @@ public abstract class TRGLRenderable implements IRenderable {
 			return this;
 		String[] names = nn.split("\\.");
 		if(names.length > 0){
-			for(IRenderable r : this.components){
-				if(r.getName().equals(names[0])){
-					if(names.length > 1){
-						return r.getComponentByName(join(names, ".", 1));
-					}else{
-						return r;
+			synchronized(lock){
+				for(IRenderable r : this.components){
+					if(r.getName().equals(names[0])){
+						if(names.length > 1){
+							return r.getComponentByName(join(names, ".", 1));
+						}else{
+							return r;
+						}
 					}
 				}
 			}
@@ -302,12 +307,14 @@ public abstract class TRGLRenderable implements IRenderable {
 		}
 		String[] ids = idid.split("\\.");
 		if(ids.length > 0){
-			for(IRenderable r : this.components){
-				if(r.getID() == Integer.parseInt(ids[0])){
-					if(ids.length > 1){
-						return r.getComponentByID(join(ids, ".", 1));
-					}else{
-						return r;
+			synchronized(lock){
+				for(IRenderable r : this.components){
+					if(r.getID() == Integer.parseInt(ids[0])){
+						if(ids.length > 1){
+							return r.getComponentByID(join(ids, ".", 1));
+						}else{
+							return r;
+						}
 					}
 				}
 			}
@@ -364,7 +371,7 @@ public abstract class TRGLRenderable implements IRenderable {
 			}
 			
 			this.setPosition(xoff, yoff, this.getPosition().z);
-			System.out.println("Component Postion: "+this.getPosition()+" Scale: "+cam.getScale());
+			//System.out.println("Component Postion: "+this.getPosition()+" Scale: "+cam.getScale());
 			//System.out.println(cam.getScale());
 		}
 		

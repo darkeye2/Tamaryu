@@ -10,6 +10,10 @@
 #define USE_GRAYSCALE 9				//fragment	(transform color to grayscale)		V
 #define USE_TEXTURE_OVER_TEXTURE 10	//fragment	(not implemented, draw texture 2 over txture 1)
 
+#define COLOR_ALPHA 27
+#define COLOR_BLUE 28
+#define COLOR_GREEN 29
+#define COLOR_RED 30
 #define COLOR_FILTER_RED 31
 #define COLOR_FILTER_GREEN 32
 #define COLOR_FILTER_BLUE 33
@@ -63,7 +67,10 @@ void main(void){
 							color.a);
 		}
 	}else {
-		color = fs_in.color;
+		color = vec4(settings_array[COLOR_RED],
+					settings_array[COLOR_GREEN],
+					settings_array[COLOR_BLUE],
+					settings_array[COLOR_ALPHA]);
 	}
 	
 	//use hsl filter

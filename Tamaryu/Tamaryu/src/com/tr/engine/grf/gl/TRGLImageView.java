@@ -2,6 +2,7 @@ package com.tr.engine.grf.gl;
 
 import com.jogamp.nativewindow.util.Dimension;
 import com.jogamp.opengl.GL2ES3;
+import com.jogamp.opengl.util.packrect.Rect;
 import com.tr.engine.img.ITRImageView;
 import com.tr.engine.img.TRImage;
 import com.tr.gl.core.GLCamera;
@@ -71,6 +72,9 @@ public class TRGLImageView extends TRGL2DRenderable implements ITRImageView {
 	public void setSize(int w, int h) {
 		this.width = w;
 		this.height = h;
+		int x = (int) Math.max(0, this.getPosition().x);
+		int y = (int) Math.max(0, this.getPosition().y);
+		this.setHitbox(new Rect(x, y, (int)width, (int)height, null));
 		this.updateModelMatrix(null);
 	}
 

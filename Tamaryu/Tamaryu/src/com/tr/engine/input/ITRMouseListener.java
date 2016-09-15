@@ -1,6 +1,5 @@
 package com.tr.engine.input;
 
-import com.jogamp.opengl.util.packrect.Rect;
 import com.tr.engine.grf.IRenderable;
 
 public interface ITRMouseListener  {
@@ -10,11 +9,9 @@ public interface ITRMouseListener  {
 	public void mousePress(TRMouseEvent e);
 	public void mouseDragged(TRMouseEvent tre);
 	public void mouseMoved(TRMouseEvent tre);
+	public void mouseClicked(TRMouseEvent e);
 	
-	public Rect getHitbox();
-	public void setHitbox(Rect hitbox);
 	public int getZ();
 	
-	public boolean isHit(int  x, int y);
 	public IRenderable getSrc();
 }

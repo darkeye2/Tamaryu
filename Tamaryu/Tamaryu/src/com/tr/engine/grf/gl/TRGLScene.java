@@ -16,12 +16,17 @@ import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
+import com.tr.engine.components.ISelectable;
+import com.tr.engine.components.TRComponentManager;
 import com.tr.engine.grf.IRenderable;
 import com.tr.engine.grf.TRGameWindow;
 import com.tr.engine.grf.TRScene;
 import com.tr.engine.input.ITRGlobalMouseListener;
+import com.tr.engine.input.ITRKeyListener;
 import com.tr.engine.input.ITRMouseListener;
+import com.tr.engine.input.TRDroparea;
 import com.tr.engine.input.TRGlobalMouseEvent;
+import com.tr.engine.input.TRKeyEvent;
 import com.tr.engine.input.TRMouseEvent;
 import com.tr.gl.core.GLCamera;
 import com.tr.gl.core.GLProgramManager;
@@ -48,6 +53,7 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 	
 	//input
 	protected Point lastMousePos = new Point(0,0);
+	protected TRMouseEvent lastMouseEvent = new TRMouseEvent(null, null);
 	
 	
 	public TRGLScene(TRGLRenderContext context) {
@@ -75,7 +81,10 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 
 	@Override
 	public boolean removeComponent(IRenderable ra) {
-		System.out.println("removing cc from scene");
+		if(ra.getParent() != null){
+			ra.getParent().removeComponent(ra);
+			return true;
+		}
 		if(ra instanceof ITRMouseListener){
 			this.removeMouseListener((ITRMouseListener) ra);
 		}
@@ -363,39 +372,48 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		tre.setTranslatedPos(x, y);
 		lastMousePos = new Point(x, y);
 		
-		return tre;
+		return getSelected(tre);
 	}
 	
-	private ITRMouseListener getSelected(TRMouseEvent e, boolean last){
-		ITRMouseListener srcL = null;
-		for(ITRMouseListener l : mlisteners){
-			if(!last){
-				if(l.isHit(e.x(), e.y())){
-					srcL =  l;
+	private TRMouseEvent getSelected(TRMouseEvent e){
+		IRenderable r = null;
+		for(int i = (this.components.size()-1); i >= 0; i--){
+			r = components.get(i);
+			//System.out.println("Check component ("+i+"): "+r.isHit(e.x(), e.y()));
+			if(r.isHit(e.x(), e.y())){
+				if(e.src == null){
+					e.src = r;
+					if(r instanceof ITRMouseListener){
+						e.listening = true;
+					}
 				}
-			}else{
-				if(l.isHit(e.lastPos.getX(), e.lastPos.getY())){
-					srcL = l;
+				if(e.dra == null){
+					if(r instanceof TRDroparea){
+						e.dra = (TRDroparea) r;
+					}
 				}
 			}
-			
-			if(srcL != null){
-				if(dndManager == null || !dndManager.isDragging(srcL.getSrc())){
-					return srcL;
-				}else{
-					srcL = null;
-				}
+			if(e.src != null && e.dra != null){
+				break;
 			}
 		}
-		return srcL;
+		
+		return e;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		TRMouseEvent tre = toTREvent(e);
-		ITRMouseListener l  = getSelected(tre, false);
-		if(l != null){
-			l.mouseRelease(tre);
+		if(tre.listening){
+			((ITRMouseListener) tre.src).mouseClicked(tre);
+		}
+		for(ITRGlobalMouseListener gl : this.gmllisteners){
+			gl.mouseClicked(new TRGlobalMouseEvent(tre));
+		}
+		this.lastMouseEvent = tre;
+		
+		if(tre.src != null && tre.src instanceof ISelectable){
+			((ISelectable) tre.src).requestFocus();
 		}
 	}
 
@@ -408,6 +426,7 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		for(ITRGlobalMouseListener gml : this.gmllisteners){
 			gml.mouseEnter(gme);
 		}
+		this.lastMouseEvent = tre;
 	}
 
 	@Override
@@ -419,84 +438,71 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		for(ITRGlobalMouseListener gml : this.gmllisteners){
 			gml.mouseLeave(gme);
 		}
+		this.lastMouseEvent = tre;
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		TRMouseEvent tre = toTREvent(e);
-		ITRMouseListener l  = getSelected(tre, false);
-		if(l != null){
-			l.mousePress(tre);
+		if(tre.listening){
+			((ITRMouseListener) tre.src).mousePress(tre);
 		}
-		
-		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
-		gme.setSource(l);
-		for(ITRGlobalMouseListener gml : this.gmllisteners){
-			gml.mousePress(gme);
+		for(ITRGlobalMouseListener gl : this.gmllisteners){
+			gl.mousePress(new TRGlobalMouseEvent(tre));
 		}
+		this.lastMouseEvent = tre;
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		TRMouseEvent tre = toTREvent(e);
-		ITRMouseListener l  = getSelected(tre, false);
-		if(l != null){
-			l.mouseRelease(tre);
+		if(tre.listening){
+			((ITRMouseListener) tre.src).mouseRelease(tre);
 		}
-		
-		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
-		gme.setSource(l);
-		for(ITRGlobalMouseListener gml : this.gmllisteners){
-			gml.mouseRelease(gme);
+		for(ITRGlobalMouseListener gl : this.gmllisteners){
+			gl.mouseRelease(new TRGlobalMouseEvent(tre));
 		}
+		this.lastMouseEvent = tre;
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		TRMouseEvent tre = toTREvent(e);
-		ITRMouseListener l  = getSelected(tre, false);
-		ITRMouseListener lo = getSelected(tre, true);
-		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
-		gme.setSource(l);
 		
 		for(ITRGlobalMouseListener gml : this.gmllisteners){
-			gml.mouseMoved(gme);
+			gml.mouseMoved(new TRGlobalMouseEvent(tre));
 		}
 		
+		ITRMouseListener lo = (lastMouseEvent.src != null && lastMouseEvent.listening)?(ITRMouseListener)lastMouseEvent.src:null;
+		ITRMouseListener l = (tre.src != null && tre.listening)?(ITRMouseListener)tre.src:null;
+		//System.out.println("LO: "+lo+"; L: "+l);
+		
 		if(lo != null && lo.equals(l)){
-			if(l!=null){
-				l.mouseMoved(tre);
-				
-			}
+			l.mouseMoved(tre);
 		}else{
+			//System.out.println("Mouse Event! "+lo+l);
 			if(lo!=null){
+				//System.out.println("Mouse Leave!");
 				lo.mouseLeave(tre);
-				/*for(ITRGlobalMouseListener gml : this.gmllisteners){
-					gml.mouseLeave(gme);
-				}*/
 			}
 			if(l!=null){
+				//System.out.println("Mouse Enter!");
 				l.mouseEnter(tre);
-				/*for(ITRGlobalMouseListener gml : this.gmllisteners){
-					gml.mouseEnter(gme);
-				}*/
 			}
 		}
+		this.lastMouseEvent = tre;
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		TRMouseEvent tre = toTREvent(e);
-		ITRMouseListener l  = getSelected(tre, false);
-		if(l != null){
-			l.mouseDragged(tre);
+		if(tre.listening){
+			((ITRMouseListener) tre.src).mouseDragged(tre);
 		}
-		
-		TRGlobalMouseEvent gme = new TRGlobalMouseEvent(tre);
-		gme.setSource(l);
-		for(ITRGlobalMouseListener gml : this.gmllisteners){
-			gml.mouseDragged(gme);
+		for(ITRGlobalMouseListener gl : this.gmllisteners){
+			gl.mouseDragged(new TRGlobalMouseEvent(tre));
 		}
+		this.lastMouseEvent = tre;
 	}
 
 	@Override
@@ -504,17 +510,44 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private ITRKeyListener getKeyListener(){
+		IRenderable r = TRComponentManager.getSelected();
+		if(r == null){
+			return null;
+		}
+		if(r instanceof ITRKeyListener){
+			return (ITRKeyListener) r;
+		}
+		return null;
+	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		//System.out.println("KeyPressed");
+		ITRKeyListener r = getKeyListener();
+		TRKeyEvent ke = new TRKeyEvent(e);
+		for(ITRKeyListener l : this.gkllisteners){
+			l.keyPressed(ke);
+		}
+		if(r != null){
+			r.keyPressed(ke);
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		//System.out.println("KeyReleased");
+		ITRKeyListener r = getKeyListener();
+		TRKeyEvent ke = new TRKeyEvent(e);
+		synchronized(gklLock){
+			for(ITRKeyListener l : this.gkllisteners){
+				l.keyReleased(ke);
+			}
+		}
+		if(r != null){
+			r.keyReleased(ke);
+		}
 	}
 
 

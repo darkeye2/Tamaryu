@@ -21,7 +21,6 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 	private float fontSize = 20;
 	//private float width, height;
 	private float maxW = 0, maxH = 0;
-	protected Rect hitbox = new Rect();
 	private ArrayList<Glyph> glyphs = new ArrayList<Glyph>();
 	private BitmapFont font = BitmapFontManager.load("Arial");
 	
@@ -83,14 +82,16 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 				String[] words = line.split(" ");
 				
 				for(int i = 0; i<words.length; i++){
-					while(gl.lineWidth < this.width){
+					//System.out.println("LW: "+gl.lineWidth+" / MW: "+this.maxW);
+					if(gl.lineWidth < this.maxW){
 						GlyphWord gw = null;
 						if(i < words.length-1){
 							gw = new GlyphWord(words[i]+" ", font);
 						}else{
 							gw = new GlyphWord(words[i], font);
 						}
-						if(gl.lineWidth+gw.wordWidth <= this.width || gl.lineWidth == 0){
+						//System.out.println("WW: "+gw.wordWidth);
+						if((gl.lineWidth+gw.wordWidth) <= this.maxW || gl.lineWidth == 0){
 							gl.addWord(gw);
 						}
 					}
@@ -141,10 +142,12 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 		
 		glyphs.clear();
 		for(GlyphLine gl : glyphLines){
+			//System.out.println("Adding line with "+gl.getGlyphs().size()+" glyphs!");
 			this.glyphs.addAll(gl.getGlyphs());
 		}
 		
 		updateData();
+		//System.out.println("Setting size to: "+this.getWidth()+" x "+this.getHeight());
 		hitbox.setSize(this.getWidth(), this.getHeight());
 		//System.out.println("Glyphs: "+glyphs.size());
 	}
@@ -218,6 +221,7 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 
 	@Override
 	public void setSize(int w, int h) {
+		System.out.println("Setting size: ("+w+" x "+h+")");
 		this.maxW = w;
 		this.maxH = h;
 		updateText();

@@ -15,6 +15,10 @@ public class TRRenderPropertie {
 	public static final int USE_TEXTURE_OVER_TEXTURE = 10;
 
 	// setting value indexes
+	public static final int COLOR_ALPHA = 27; // used for color filling
+	public static final int COLOR_BLUE = 28; // used for color filling
+	public static final int COLOR_GREEN = 29; // used for color filling
+	public static final int COLOR_RED = 30; // used for color filling
 	public static final int COLOR_FILTER_RED = 31; // used for HSL and RGB
 														// Filter
 	public static final int COLOR_FILTER_GREEN = 32; // used for HSL and RGB

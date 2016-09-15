@@ -1,6 +1,7 @@
 package com.tr.engine.core;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.tr.engine.gameobject.AbstractGameObject;
 
@@ -107,8 +108,9 @@ public class TRGameLooper {
 				startTime = System.currentTimeMillis();
 				ct = System.currentTimeMillis();
 				synchronized(lock){
-					for(AbstractGameObject go : objects){
-						go.update(ct);
+					Iterator<AbstractGameObject> i = objects.iterator();
+					while(i.hasNext()){
+						i.next().update(ct);
 					}
 				}
 				upsCount++;
