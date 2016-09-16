@@ -23,13 +23,14 @@ public class TRGLAnimationView extends TRGLImageView implements ITRAnimationView
 	}
 	
 	public void render(TRRenderContext context) {
+		//System.out.println("rendering "+this.getName()+" ["+this.curAniName+"] Running: "+running);
 		if(running){
 			if(ani != null && ani.frameReady()){
 				long t = System.currentTimeMillis();
 				long t2 = t+ani.getNextFrameDuration();
 				TRFrame f = ani.getNextFrame();
 				if(f != null)
-					ani.getNextFrame().apply(this);
+					f.apply(this);
 				ani.setFrameTimes(t, t2);
 			}
 		}
@@ -70,7 +71,9 @@ public class TRGLAnimationView extends TRGLImageView implements ITRAnimationView
 
 	@Override
 	public void loadAnimation(String name) {
+		//System.out.println("Search for ani: "+name);
 		if(this.anis.containsKey(name)){
+			//System.out.println("Loading ani: "+name);
 			unloadAnimation();
 			lastAni = curAniName;
 			curAniName = name;

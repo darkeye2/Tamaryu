@@ -25,7 +25,11 @@ public class TRGameLooper {
 	private volatile boolean paused = false;
 	
 	private volatile ArrayList<AbstractGameObject> objects = new ArrayList<AbstractGameObject>();
+	private volatile ArrayList<AbstractGameObject> inObjects = new ArrayList<AbstractGameObject>();
+	private volatile ArrayList<AbstractGameObject> outObjects = new ArrayList<AbstractGameObject>();
 	private volatile Object lock = new Object();
+	private volatile Object inLock = new Object();
+	private volatile Object outLock = new Object();
 	
 	public TRGameLooper() {
 		start();
@@ -33,20 +37,23 @@ public class TRGameLooper {
 	
 	public void clear(){
 		synchronized(lock){
-			objects.clear();
+			for(AbstractGameObject o : objects){
+				synchronized(outLock){
+					outObjects.add(o);
+				}
+			}
 		}
 	}
 	
 	public void add(AbstractGameObject o){
-		synchronized(lock){
-			objects.add(o);
+		synchronized(inLock){
+			inObjects.add(o);
 		}
 	}
 	
 	public void remove(AbstractGameObject o){
-		synchronized(lock){
-			if(objects.contains(o))
-				objects.add(o);
+		synchronized(outLock){
+			outObjects.add(o);
 		}
 	}
 	
@@ -107,6 +114,27 @@ public class TRGameLooper {
 				}
 				startTime = System.currentTimeMillis();
 				ct = System.currentTimeMillis();
+				
+				//remove objects
+				synchronized(outLock){
+					for(AbstractGameObject o : outObjects){
+						synchronized(lock){
+							objects.remove(o);
+						}
+					}
+					outObjects.clear();
+				}
+				
+				//add objects
+				synchronized(inLock){
+					for(AbstractGameObject o : inObjects){
+						synchronized(lock){
+							objects.add(o);
+						}
+					}
+					inObjects.clear();
+				}
+				
 				synchronized(lock){
 					Iterator<AbstractGameObject> i = objects.iterator();
 					while(i.hasNext()){

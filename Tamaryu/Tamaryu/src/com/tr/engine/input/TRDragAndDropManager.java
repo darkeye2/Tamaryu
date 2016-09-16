@@ -105,11 +105,7 @@ public class TRDragAndDropManager implements ITRGlobalMouseListener{
 			return;
 		}
 		drag(e);
-		if(!dropAreaOnly){
-			for(TRDraggedObject o : dragObjects){
-				((TRDragable) o.r).onDrop();
-			}
-		}else{
+		if(dropAreaOnly){
 			boolean area = (e.dra != null);
 			for(TRDraggedObject tdo : dragObjects){
 				if(area){
@@ -120,6 +116,10 @@ public class TRDragAndDropManager implements ITRGlobalMouseListener{
 					returnToStartPos(tdo, e);
 				}
 			}
+		}
+		
+		for(TRDraggedObject o : dragObjects){
+			((TRDragable) o.r).onDrop();
 		}
 		dragObjects.clear();
 	}

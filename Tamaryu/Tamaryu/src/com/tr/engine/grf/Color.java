@@ -138,6 +138,13 @@ public class Color {
 	/** Clamps this Color's components to a valid range [0 - 1]
 	 * @return this Color for chaining */
 	public Color clamp () {
+		if(r>1 || g>1 || b>1 || a>1){
+			r /= 255f;
+			g /= 255f;
+			b /= 255f;
+			a /= 255f;
+		}
+		
 		if (r < 0)
 			r = 0;
 		else if (r > 1) r = 1;
@@ -154,6 +161,22 @@ public class Color {
 			a = 0;
 		else if (a > 1) a = 1;
 		return this;
+	}
+	
+	public float rgbR(){
+		return 255*r;
+	}
+	
+	public float rgbG(){
+		return 255*g;
+	}
+	
+	public float rgbB(){
+		return 255*b;
+	}
+	
+	public float rgbA(){
+		return 255*a;
 	}
 
 	/** Sets this Color's component values.

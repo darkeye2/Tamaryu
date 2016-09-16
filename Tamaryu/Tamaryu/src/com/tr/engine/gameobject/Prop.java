@@ -59,4 +59,10 @@ public class Prop extends AbstractGameObject
 	{
 		return new TRRectangle(this.x + this.hitbox.x, this.y + this.hitbox.y, this.hitbox.width, this.hitbox.height);
 	}
+
+	@Override
+	public void update(long ct) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -23,7 +23,7 @@ public class Actor extends AbstractGameObject
 
 	public Actor(int x, int y, IRenderable image)
 	{
-		super(x, y, image.getWidth(), image.getHeight());	
+		super(x, y, 0, 0);	
 		this.image = image;
 		this.velocityX = 0;
 		this.velocityY = 0;
@@ -43,6 +43,12 @@ public class Actor extends AbstractGameObject
 	public IRenderable getImage()
 	{
 		return this.image;
+	}
+	
+	@Override
+	public void update(long ct) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	/**
@@ -86,4 +92,6 @@ public class Actor extends AbstractGameObject
 	{
 		return new TRRectangle(this.x + this.hitboxBody.x, this.y + this.hitboxBody.y, this.hitboxBody.width, this.hitboxBody.height);
 	}
+
+	
 }

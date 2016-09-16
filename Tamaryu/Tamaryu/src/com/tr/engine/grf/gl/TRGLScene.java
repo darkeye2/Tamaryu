@@ -16,6 +16,7 @@ import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.util.packrect.Rect;
 import com.tr.engine.components.ISelectable;
 import com.tr.engine.components.TRComponentManager;
 import com.tr.engine.grf.IRenderable;
@@ -54,6 +55,8 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 	//input
 	protected Point lastMousePos = new Point(0,0);
 	protected TRMouseEvent lastMouseEvent = new TRMouseEvent(null, null);
+
+	private Rect viewPort = new Rect(0,0,0,0, null);
 	
 	
 	public TRGLScene(TRGLRenderContext context) {
@@ -296,9 +299,10 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 					unInitObjects.remove(r);
 				}
 				temp.clear();
-				
-				Collections.sort(components, new RenderableComparator());
 			}
+		}
+		synchronized(lock){
+			Collections.sort(components, new RenderableComparator());
 		}
 		
 		//remove unused programs
@@ -352,6 +356,7 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 		gl.glRenderbufferStorage(GL2ES2.GL_RENDERBUFFER, GL2ES2.GL_DEPTH24_STENCIL8, width, height);
 		gl.glBindRenderbuffer(GL2ES2.GL_RENDERBUFFER, 0);
 		
+		viewPort  = new Rect(x,y,width,height, null);
 		gl.glViewport(x, y, width, height);
 		cam.setWinSize(width, height);
 		
@@ -360,6 +365,11 @@ public class TRGLScene extends TRScene implements GLEventListener, KeyListener, 
 				r.resize(glRc, width, height);
 			}
 		}
+	}
+	
+	public void resetViewport(GL2ES2 gl){
+		//System.out.println("org vp: "+viewPort);
+		gl.glViewport(viewPort.x(), viewPort.y(), viewPort.w(), viewPort.h());
 	}
 	
 	private TRMouseEvent toTREvent(MouseEvent e){

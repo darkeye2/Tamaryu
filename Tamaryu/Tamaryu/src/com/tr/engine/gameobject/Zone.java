@@ -26,4 +26,10 @@ public class Zone extends AbstractGameObject
 	{
 		return new TRRectangle(this.x, this.y, this.width, this.height);
 	}
+
+	@Override
+	public void update(long ct) {
+		// TODO Auto-generated method stub
+		
+	}
 }

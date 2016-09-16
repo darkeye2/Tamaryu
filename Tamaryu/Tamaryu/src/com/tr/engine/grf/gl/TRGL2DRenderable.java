@@ -10,6 +10,7 @@ import com.tr.engine.grf.Color;
 import com.tr.engine.grf.IRenderable;
 import com.tr.engine.grf.TRRenderContext;
 import com.tr.engine.grf.TRRenderPropertie;
+import com.tr.engine.grf.TRScene;
 import com.tr.gl.core.GLCamera;
 import com.tr.gl.core.GLProgramm;
 import com.tr.gl.core.GLTexture;
@@ -34,6 +35,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	
 	protected Rect hitbox = new Rect();
 	protected boolean ignore = false;
+	protected boolean clip = false;
 	
 	//locations
 	protected int modelMatLocation = 0;
@@ -84,6 +86,11 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	public void setRenderPropertie(TRRenderPropertie p, float[] propArray){
 		propArray[p.getID()] = p.getValue();
 		switch(p.getID()){
+		case TRRenderPropertie.USE_OUTLINE:
+			propArray[TRRenderPropertie.OUTLINE_COLOR_RED] = p.getR();
+			propArray[TRRenderPropertie.OUTLINE_COLOR_GREEN] = p.getG();
+			propArray[TRRenderPropertie.OUTLINE_COLOR_BLUE] = p.getB();
+			break;
 		case TRRenderPropertie.USE_TEXTURE:
 			if(p.getValue() == 0){
 				propArray[TRRenderPropertie.COLOR_RED] = p.getR();
@@ -91,6 +98,7 @@ public class TRGL2DRenderable extends TRGLRenderable {
 				propArray[TRRenderPropertie.COLOR_BLUE] = p.getB();
 				propArray[TRRenderPropertie.COLOR_ALPHA] = p.getA();
 			}
+			break;
 		case TRRenderPropertie.USE_COLOR_OVER_TEXTURE:
 			propArray[TRRenderPropertie.OVERLAY_COLOR_RED] = p.getR();
 			propArray[TRRenderPropertie.OVERLAY_COLOR_GREEN] = p.getG();
@@ -100,8 +108,8 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		case TRRenderPropertie.USE_HSL_FILTER:
 		case TRRenderPropertie.USE_RGB_FILTER:
 			propArray[TRRenderPropertie.COLOR_FILTER_RED] = p.getR();
-			propArray[TRRenderPropertie.COLOR_FILTER_RED] = p.getG();
-			propArray[TRRenderPropertie.COLOR_FILTER_RED] = p.getB();
+			propArray[TRRenderPropertie.COLOR_FILTER_GREEN] = p.getG();
+			propArray[TRRenderPropertie.COLOR_FILTER_BLUE] = p.getB();
 			break;
 		case TRRenderPropertie.USE_DISTANCE_SCALE:
 			propArray[TRRenderPropertie.DISTANCE_SCALE_VALUE] = p.getValue();
@@ -180,6 +188,21 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		tmp.multMatrix(cam.getOrthoMatrix());
 		System.out.println("MVP: ");
 		GLCamera.printFloatMatrix(tmp.getMatrix(), 4, 4);*/
+	}
+	
+	public Rect getClip(TRScene scene){
+		if(this.clip){
+			int x = (int) (this.getAbsolutPosition().x / ((GLCamera) scene.getCamera()).getAspectScale());
+			int y = (int) (this.getAbsolutPosition().y / ((GLCamera) scene.getCamera()).getAspectScale());
+			int w = (int) (this.getWidth() / ((GLCamera) scene.getCamera()).getAspectScale());
+			int h = (int) (this.getHeight() / ((GLCamera) scene.getCamera()).getAspectScale());
+		
+			return new Rect(x,y,w,h,null);
+		}
+		if(this.parent != null){
+			return parent.getClip(scene);
+		}
+		return null;
 	}
 
 	private void updateVBOData(GL2ES3 gl, GLCamera cam) {
@@ -391,9 +414,22 @@ public class TRGL2DRenderable extends TRGLRenderable {
         	texture.getTexture().bind(gl);
         	gl.glUniform1i(gl.glGetUniformLocation(program.getID(), "tex_object"), 0); 
 		}
+		
+		Rect clip = this.getClip(context.getScene());
+		if(clip != null){
+			gl.glScissor(clip.x(), clip.y(), clip.w(), clip.h());
+			gl.glEnable(GL.GL_SCISSOR_TEST);
+			//gl.glViewport(clip.x(), clip.y(), 800, 600);
+			//gl.glViewport(clip.x(), clip.y(), clip.w(), clip.h());
+			//System.out.println("Viewport: "+clip);
+			//GLCamera.printFloatMatrix(this.getModelMatrix().getMatrix(), 4, 4);
+		}
 
 		//draw
 		gl.glDrawArrays(GL.GL_TRIANGLES, 0, this.getVertexDataSize());
+		
+		gl.glDisable(GL.GL_SCISSOR_TEST);
+		//((TRGLScene) context.getScene()).resetViewport(gl);
 		
 		// unbind vao
 		gl.glBindVertexArray(0);
@@ -489,6 +525,11 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	@Override
 	public IRenderable getParent() {
 		return this.parent;
+	}
+
+	@Override
+	public void setClipping(boolean b) {
+		this.clip = b;
 	}
 
 }

@@ -51,6 +51,8 @@ public interface IRenderable extends Comparable<IRenderable>{
 	public void propagateHit(String hitPath);
 	public boolean ignore();
 	public void setIgnore(boolean b);
+	public void setClipping(boolean b);
+	public Rect getClip(TRScene s);
 	
 	public void setName(String name);
 	public String getName();

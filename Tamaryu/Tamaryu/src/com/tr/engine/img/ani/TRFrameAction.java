@@ -58,6 +58,7 @@ public class TRFrameAction {
 		}
 		
 		if(posZFlag){
+			//System.out.println("Change z ("+v.getName()+") to: "+posZ);
 			v.setZ(posZ);
 		}
 		

@@ -38,4 +38,10 @@ public class Decoration extends AbstractGameObject
 	{
 		return this.image;
 	}
+
+	@Override
+	public void update(long ct) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -13,8 +13,12 @@ public class TRRenderPropertie {
 	public static final int USE_PIXELATION = 8;
 	public static final int USE_GRAYSCALE = 9;
 	public static final int USE_TEXTURE_OVER_TEXTURE = 10;
+	public static final int USE_OUTLINE = 11;
 
 	// setting value indexes
+	public static final int OUTLINE_COLOR_RED = 24;
+	public static final int OUTLINE_COLOR_GREEN = 25;
+	public static final int OUTLINE_COLOR_BLUE = 26;
 	public static final int COLOR_ALPHA = 27; // used for color filling
 	public static final int COLOR_BLUE = 28; // used for color filling
 	public static final int COLOR_GREEN = 29; // used for color filling

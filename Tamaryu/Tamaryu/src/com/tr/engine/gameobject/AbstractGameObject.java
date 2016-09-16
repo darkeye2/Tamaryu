@@ -16,31 +16,7 @@ public abstract class AbstractGameObject extends TRRectangle
 		this.velocityY = 0;
 	}
 	
-	public void update(long ct)
-	{
-		this.x += this.velocityX;
-		this.y += this.velocityY;
-		
-		if(this.x <= 0)
-		{
-			this.x = 0;
-		}
-		
-		if(this.y <= 0)
-		{
-			this.y = 0;
-		}
-		
-		if(this.x + width >= GameWindow.scaledWidth)
-		{
-			this.x = GameWindow.scaledWidth - width;
-		}
-		
-		if(this.y + height >= GameWindow.scaledHeight)
-		{
-			this.y = GameWindow.scaledHeight - height;
-		}
-	}
+	public abstract void update(long ct);
 	
 	public int getGameObjectID()
 	{

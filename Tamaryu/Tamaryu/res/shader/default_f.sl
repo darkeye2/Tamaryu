@@ -9,7 +9,11 @@
 #define USE_PIXELATION 8			//fragment	(only if use texture)
 #define USE_GRAYSCALE 9				//fragment	(transform color to grayscale)		V
 #define USE_TEXTURE_OVER_TEXTURE 10	//fragment	(not implemented, draw texture 2 over txture 1)
+#define USE_OUTLINE 11
 
+#define OUTLINE_COLOR_RED 24
+#define OUTLINE_COLOR_GREEN 25
+#define OUTLINE_COLOR_BLUE 26
 #define COLOR_ALPHA 27
 #define COLOR_BLUE 28
 #define COLOR_GREEN 29
@@ -42,9 +46,12 @@ out vec4 color;
 //function prototypes
 vec4 useHSLFilter(vec4);
 vec3 rgbToHsl(vec3);
+float hue2rgb(float f1, float f2, float hue);
+vec3 hsl2rgb(vec3 hsl);
 vec3 hslToRgb(vec3);
 vec4 to8bitColor();
 vec4 toGrayscale();
+vec4 outline(vec4);
 
 void main(void){
 	//define base color (texture or default color)
@@ -54,9 +61,12 @@ void main(void){
 		
 		}else {
 			color = texture(tex_object, fs_in.tc);
-			/*if(color.a == 0){
-				color.rgba = vec4(1,0,0,1);
-			}*/
+			if(bool(settings_array[USE_OUTLINE])){
+				color = outline(vec4(settings_array[OUTLINE_COLOR_RED], 
+							settings_array[OUTLINE_COLOR_GREEN],
+							settings_array[OUTLINE_COLOR_BLUE], 
+							color.a));
+			}
 		}
 		
 		//set overlay color
@@ -77,6 +87,7 @@ void main(void){
 	if(bool(settings_array[USE_HSL_FILTER])){
 		color = useHSLFilter(vec4(rgbToHsl(vec3(settings_array[COLOR_FILTER_RED], settings_array[COLOR_FILTER_GREEN],
 											settings_array[COLOR_FILTER_BLUE])), color.a));
+		//color = useHSLFilter(vec4(0.33, 0.5, 0.5, color.a));
 	}else if(bool(settings_array[USE_RGB_FILTER])){
 		/*color = useHSLFilter(vec4(rgbToHsl(settings_array[COLOR_FILTER_RED], settings_array[COLOR_FILTER_GREEN],
 											settings_array[COLOR_FILTER_BLUE]), color.a));*/
@@ -90,6 +101,25 @@ void main(void){
 	//convert to grayscale
 	if(bool(settings_array[USE_GRAYSCALE])){
 		toGrayscale();
+	}
+}
+
+vec4 outline(vec4 outlineColor){
+	ivec2 texSize = textureSize(tex_object, 0);
+	float xStep = settings_array[USE_OUTLINE]/texSize.x;
+	float yStep = settings_array[USE_OUTLINE]/texSize.y;
+	
+	float alpha = 4*texture(tex_object, fs_in.tc).a;
+	alpha -= texture(tex_object, fs_in.tc + vec2( xStep, 0.0f ) ).a;
+	alpha -= texture(tex_object, fs_in.tc + vec2( -xStep, 0.0f ) ).a;
+	alpha -= texture(tex_object, fs_in.tc + vec2( 0.0f, yStep ) ).a;
+	alpha -= texture(tex_object, fs_in.tc + vec2( 0.0f, -yStep ) ).a;
+	
+	if(alpha < 0.3){
+		return texture(tex_object, fs_in.tc);
+	}else{
+		outlineColor.a = alpha;
+		return outlineColor;
 	}
 }
 
@@ -137,17 +167,56 @@ vec4 useHSLFilter(vec4 filterColor){
 	}
 	
 	//return color
-	return vec4(hslToRgb(hsl), color.a);
+	return vec4(hsl2rgb(hsl), color.a);
 }
 
 vec3 hslToRgb(vec3 hsl){
    float r = abs(hsl.x * 6.0 - 3.0) - 1.0;
    float g = 2.0 - abs(hsl.x * 6.0 - 2.0);
    float b = 2.0 - abs(hsl.x * 6.0 - 4.0);
-   vec3 rgb = clamp(vec3(r,g,b), 0.0, 1.0);
+   vec3 hrgb = clamp(vec3(r,g,b), 0.0, 1.0);
    float c = (1.0 - abs(2.0 * hsl.z - 1.0)) * hsl.y;
    
-   return (rgb - 0.5) * c + hsl.z;
+  	return  (hrgb - 0.5) * c + hsl.z;
+}
+
+float hue2rgb(float f1, float f2, float hue) {
+    if (hue < 0.0)
+        hue += 1.0;
+    else if (hue > 1.0)
+        hue -= 1.0;
+    float res;
+    if ((6.0 * hue) < 1.0)
+        res = f1 + (f2 - f1) * 6.0 * hue;
+    else if ((2.0 * hue) < 1.0)
+        res = f2;
+    else if ((3.0 * hue) < 2.0)
+        res = f1 + (f2 - f1) * ((2.0 / 3.0) - hue) * 6.0;
+    else
+        res = f1;
+    return res;
+}
+
+vec3 hsl2rgb(vec3 hsl) {
+    vec3 rgb;
+    
+    if (hsl.y == 0.0) {
+        rgb = vec3(hsl.z); // Luminance
+    } else {
+        float f2;
+        
+        if (hsl.z < 0.5)
+            f2 = hsl.z * (1.0 + hsl.y);
+        else
+            f2 = hsl.z + hsl.y - hsl.y * hsl.z;
+            
+        float f1 = 2.0 * hsl.z - f2;
+        
+        rgb.r = hue2rgb(f1, f2, hsl.x + (1.0/3.0));
+        rgb.g = hue2rgb(f1, f2, hsl.x);
+        rgb.b = hue2rgb(f1, f2, hsl.x - (1.0/3.0));
+    }   
+    return rgb;
 }
 
 vec3 rgbToHsl(vec3 col){
