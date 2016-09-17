@@ -119,6 +119,10 @@ public class GLCamera implements ICamera{
 		calculateScale();
 	}
 	
+	public Dimension getReferenceSize(){
+		return new Dimension((int) this.refWidth, (int) this.refHeight);
+	}
+	
 	public float getRefWidth(){
 		return this.refWidth;
 	}

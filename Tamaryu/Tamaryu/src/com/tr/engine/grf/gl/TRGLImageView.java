@@ -12,8 +12,6 @@ import com.tr.gl.core.Point3D;
 
 public class TRGLImageView extends TRGL2DRenderable implements ITRImageView {
 	
-	protected Point3D anchor = new Point3D(0,0,0);
-	
 	protected 	float[] data = new float[]{
 			//	   X	   Y	 Z			U	V
 	         1f,  1f, 0f, 	   1f, 1f,
@@ -85,27 +83,7 @@ public class TRGLImageView extends TRGL2DRenderable implements ITRImageView {
 
 	@Override
 	public void setAnchor(int x, int y, int z) {
-		this.anchor = new Point3D(x,y,z);
-	}
-
-	@Override
-	public float getAnchorX() {
-		return anchor.x;
-	}
-
-	@Override
-	public float getAnchorY() {
-		return anchor.y;
-	}
-
-	@Override
-	public float getAnchorZ() {
-		return anchor.z;
-	}
-
-	@Override
-	public Point3D getAnchor() {
-		return anchor;
+		super.setAnchor(x, y, z);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.tr.engine.grf;
 
+import com.jogamp.nativewindow.util.Dimension;
 
 public interface ICamera {
 	
@@ -15,6 +16,7 @@ public interface ICamera {
 
 	public void increaseRot(float x, float y, float z);
 	public void setReferenceSize(float sceneWidth, float sceneHeight);
+	public Dimension getReferenceSize();
 	
 	public void setNormalized(boolean norm);
 	

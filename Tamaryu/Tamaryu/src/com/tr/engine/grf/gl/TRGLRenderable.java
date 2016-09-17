@@ -21,6 +21,7 @@ public abstract class TRGLRenderable implements IRenderable {
 	//position
 	protected Point3D pos = new Point3D(0f,0f,0f);				//position of the object in the 3D world
 	protected Point3D offset = new Point3D(0,0,0);				//
+	protected Point3D anchor = new Point3D(0,0,0);
 	protected Point3D rot = new Point3D(0f,0f,0f);				//rotation of the object  (own zero point)
 	protected float width = 1, height = 1;						//
 	protected float scale = 1f;
@@ -154,6 +155,31 @@ public abstract class TRGLRenderable implements IRenderable {
 		
 	}
 	
+	@Override
+	public void setAnchor(float x, float y, float z) {
+		this.anchor = new Point3D(x,y,z);
+	}
+
+	@Override
+	public float getAnchorX() {
+		return anchor.x;
+	}
+
+	@Override
+	public float getAnchorY() {
+		return anchor.y;
+	}
+
+	@Override
+	public float getAnchorZ() {
+		return anchor.z;
+	}
+
+	@Override
+	public Point3D getAnchor() {
+		return anchor;
+	}
+	
 	protected void updateModelMatrix(GLCamera cam){
 		if(!normalized && cam == null){
 			updateMatrix = true;
@@ -188,9 +214,11 @@ public abstract class TRGLRenderable implements IRenderable {
 		tmp.loadIdentity();
 		tmp.scale(scale, scale, scale);
 		tmp.translate(x, y, z);
+		tmp.translate(anchor.x, anchor.y, anchor.z);
 		tmp.rotate((float)Math.toRadians(rot.x), 1, 0, 0);
 		tmp.rotate((float)Math.toRadians(rot.y), 0, 1, 0);
 		tmp.rotate((float)Math.toRadians(rot.z), 0, 0, 1);
+		tmp.translate(-anchor.x, -anchor.y, -anchor.z);
 		
 		//tmp.rotate(rot.x, 1, 0, 0);
 		//tmp.rotate(rot.y, 0, 1, 0);

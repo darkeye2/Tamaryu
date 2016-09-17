@@ -3,6 +3,7 @@ package com.tr.engine.grf;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.jogamp.nativewindow.util.Dimension;
 import com.tr.engine.input.EventComparator;
 import com.tr.engine.input.ITRGlobalMouseListener;
 import com.tr.engine.input.ITRKeyListener;
@@ -44,6 +45,10 @@ public abstract class TRScene {
 
 	public void setSceneSize(float sceneWidth, float sceneHeight) {
 		cam.setReferenceSize(sceneWidth, sceneHeight);
+	}
+	
+	public Dimension getSceneSize(){
+		return cam.getReferenceSize();
 	}
 	
 	public void setDnDManager(TRDragAndDropManager  dndm){

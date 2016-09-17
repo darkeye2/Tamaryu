@@ -60,4 +60,10 @@ public interface IRenderable extends Comparable<IRenderable>{
 	public int getID();
 	public IRenderable getComponentByName(String nn);
 	public IRenderable getComponentByID(String idid);
+	
+	public void setAnchor(float x, float y, float z);
+	public Point3D getAnchor();
+	public float getAnchorX();
+	public float getAnchorY();
+	public float getAnchorZ();
 }
