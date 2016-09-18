@@ -139,8 +139,18 @@ public abstract class TRGLRenderable implements IRenderable {
 		if(parent != null){
 			pos.add(parent.getAbsolutPosition());
 		}
-		pos.add(this.getPosition());
+		Point3D tmp = new Point3D(0,0,0);
+		tmp.add(this.getPosition());
+		tmp.mult(this.getAbsolutScale());
+		pos.add(tmp);
 		return pos;
+	}
+	
+	public float getAbsolutScale(){
+		if(parent != null){
+			return this.getScale()*parent.getAbsolutScale();
+		}
+		return this.getScale();
 	}
 	
 	protected void updateOffset(){
@@ -381,8 +391,8 @@ public abstract class TRGLRenderable implements IRenderable {
 		
 		if(getWidth()>0 && getHeight() > 0){
 			//System.out.println("Component Size: "+getWidth()+" x "+getHeight());
-			int xoff = (int) (cam.getWinWidth()*cam.getScale() - this.width);
-			int yoff = (int) (cam.getWinHeigth()*cam.getScale() - this.height);
+			int xoff = (int) (cam.getWinWidth()*cam.getScale() - this.width*this.getScale());
+			int yoff = (int) (cam.getWinHeigth()*cam.getScale() - this.height*this.getScale());
 			
 			//set y
 			if(positionFix == FIXED_POS_CENTER || positionFix == FIXED_POS_LEFT || positionFix == FIXED_POS_RIGHT){
@@ -398,7 +408,7 @@ public abstract class TRGLRenderable implements IRenderable {
 				xoff = 0;
 			}
 			
-			this.setPosition(xoff, yoff, this.getPosition().z);
+			this.setPosition(xoff/this.getScale(), yoff/this.getScale(), this.getPosition().z);
 			//System.out.println("Component Postion: "+this.getPosition()+" Scale: "+cam.getScale());
 			//System.out.println(cam.getScale());
 		}

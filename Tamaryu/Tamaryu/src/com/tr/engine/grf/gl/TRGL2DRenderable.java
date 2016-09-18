@@ -14,6 +14,7 @@ import com.tr.engine.grf.TRScene;
 import com.tr.gl.core.GLCamera;
 import com.tr.gl.core.GLProgramm;
 import com.tr.gl.core.GLTexture;
+import com.tr.gl.core.Point3D;
 import com.tr.gl.core.Semantic;
 
 public class TRGL2DRenderable extends TRGLRenderable {
@@ -495,8 +496,10 @@ public class TRGL2DRenderable extends TRGLRenderable {
 	@Override
 	public boolean isHit(float x, float y) {
 		if(hitbox != null){
-			if(x >= getAbsolutPosition().x+hitbox.x() && x <= getAbsolutPosition().x+hitbox.x()+(hitbox.maxX()*this.getScale())){
-				if(y >= getAbsolutPosition().y+hitbox.y() && y <= getAbsolutPosition().y+hitbox.y()+(hitbox.maxY()*this.getScale())){
+			Point3D ap = getAbsolutPosition();
+			float as = getAbsolutScale();
+			if(x >= (ap.x+hitbox.x()*as) && x <= (ap.x+hitbox.x()*as+hitbox.maxX()*as)){
+				if(y >= (ap.y+hitbox.y()*getScale()) && y <= (ap.y+hitbox.y()*getScale()+hitbox.maxY()*as)){
 					return true;
 				}
 			}

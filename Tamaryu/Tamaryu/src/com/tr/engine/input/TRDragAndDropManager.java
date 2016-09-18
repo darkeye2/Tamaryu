@@ -96,7 +96,7 @@ public class TRDragAndDropManager implements ITRGlobalMouseListener{
 		int yOff = e.y() - e.lastPos.getY();
 		for(TRDraggedObject tdo : dragObjects){
 			//System.out.println("Dragging ("+(i++)+"): ["+xOff+", "+yOff+"]");
-			tdo.r.increasePos(xOff, yOff, 0);
+			tdo.r.increasePos(xOff/tdo.r.getAbsolutScale(), yOff/tdo.r.getAbsolutScale(), 0);
 		}
 	}
 	
@@ -127,7 +127,7 @@ public class TRDragAndDropManager implements ITRGlobalMouseListener{
 	private void returnToStartPos(TRDraggedObject tdo, TRGlobalMouseEvent e){
 		int xOff = e.x() - tdo.startPos.getX();
 		int yOff = e.y() - tdo.startPos.getY();
-		tdo.r.increasePos(-xOff, -yOff, 0);
+		tdo.r.increasePos(-xOff/tdo.r.getAbsolutScale(), -yOff/tdo.r.getAbsolutScale(), 0);
 	}
 	
 	

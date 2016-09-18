@@ -70,9 +70,7 @@ public class TRGLImageView extends TRGL2DRenderable implements ITRImageView {
 	public void setSize(int w, int h) {
 		this.width = w;
 		this.height = h;
-		int x = (int) Math.max(0, this.getPosition().x);
-		int y = (int) Math.max(0, this.getPosition().y);
-		this.setHitbox(new Rect(x, y, (int)width, (int)height, null));
+		this.setHitbox(new Rect(0, 0, (int)width, (int)height, null));
 		this.updateModelMatrix(null);
 	}
 

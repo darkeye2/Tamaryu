@@ -41,6 +41,7 @@ public interface IRenderable extends Comparable<IRenderable>{
 	public void removeAll();
 	public void setRenderPropertie(TRRenderPropertie p);
 	public Point3D getAbsolutPosition();
+	public float getAbsolutScale();
 	public IRenderable getParent();
 	
 	public void setFixedPosition(int posConstant);
