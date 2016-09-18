@@ -46,6 +46,8 @@ public abstract class TRGLRenderable implements IRenderable {
 	protected volatile Object outLock = new Object();
 	protected volatile Object lock = new Object();
 	
+	protected volatile boolean removed = false;
+	
 	
 	public void setFixedPosition(int posConstant){
 		this.positionFix = posConstant;
@@ -270,7 +272,8 @@ public abstract class TRGLRenderable implements IRenderable {
 	@Override
 	public IRenderable removeComponent(IRenderable c) {
 		if(this.components.contains(c)){
-			((TRGLRenderable)c).parent = null;
+			c.setRemoved();
+			//((TRGLRenderable)c).parent = null;
 			synchronized(outLock){
 				this.outComponents.add((TRGLRenderable) c);
 				//System.out.println("Add cc to remove!");
@@ -278,6 +281,14 @@ public abstract class TRGLRenderable implements IRenderable {
 			return c;
 		}
 		return null;
+	}
+	
+	public boolean isRemoved(){
+		return this.removed;
+	}
+	
+	public void setRemoved(){
+		this.removed = true;
 	}
 
 	@Override

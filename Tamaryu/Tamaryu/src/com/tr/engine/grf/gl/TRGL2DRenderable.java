@@ -195,8 +195,12 @@ public class TRGL2DRenderable extends TRGLRenderable {
 		if(this.clip){
 			int x = (int) (this.getAbsolutPosition().x / ((GLCamera) scene.getCamera()).getAspectScale());
 			int y = (int) (this.getAbsolutPosition().y / ((GLCamera) scene.getCamera()).getAspectScale());
+			int w = (int) (this.getWidth() * this.getAbsolutScale() / ((GLCamera) scene.getCamera()).getAspectScale());
+			int h = (int) (this.getHeight() * this.getAbsolutScale() / ((GLCamera) scene.getCamera()).getAspectScale());
+			/*int x = (int) (this.getAbsolutPosition().x / ((GLCamera) scene.getCamera()).getAspectScale());
+			int y = (int) (this.getAbsolutPosition().y / ((GLCamera) scene.getCamera()).getAspectScale());
 			int w = (int) (this.getWidth() / ((GLCamera) scene.getCamera()).getAspectScale());
-			int h = (int) (this.getHeight() / ((GLCamera) scene.getCamera()).getAspectScale());
+			int h = (int) (this.getHeight() / ((GLCamera) scene.getCamera()).getAspectScale());*/
 		
 			return new Rect(x,y,w,h,null);
 		}

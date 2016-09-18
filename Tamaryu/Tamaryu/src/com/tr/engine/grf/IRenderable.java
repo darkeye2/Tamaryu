@@ -38,6 +38,8 @@ public interface IRenderable extends Comparable<IRenderable>{
 	public void increaseRot(float x, float  y, float z);
 	public void addComponent(IRenderable c);
 	public IRenderable removeComponent(IRenderable c);
+	public boolean isRemoved();
+	public void setRemoved();
 	public void removeAll();
 	public void setRenderPropertie(TRRenderPropertie p);
 	public Point3D getAbsolutPosition();
