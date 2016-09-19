@@ -1,6 +1,7 @@
 package com.tr.engine.sound;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import com.jogamp.openal.*;
 import com.jogamp.openal.util.ALut;
@@ -12,6 +13,8 @@ public final class AudioMaster
 	
 	private static boolean initialized = false;
 	private static boolean dataLoaded = false;
+	
+	private static float currentVolume = 1.0f;
 	
     private static final int MAX_SOURCES = 3;   
     private static String[] audios = new String[0];
@@ -75,7 +78,7 @@ public final class AudioMaster
     	{
     		al.alSourcei(sources[i], AL.AL_BUFFER, buffers[i]);
             al.alSourcef(sources[i], AL.AL_PITCH, 1.0f);
-            al.alSourcef(sources[i], AL.AL_GAIN, 1.0f);
+            al.alSourcef(sources[i], AL.AL_GAIN, currentVolume);
             al.alSourcefv(sources[i], AL.AL_POSITION, sourcePos[i], 0);
             al.alSourcefv(sources[i], AL.AL_POSITION, sourceVel[i], 0);
             al.alSourcei(sources[i], AL.AL_LOOPING, AL.AL_FALSE);
@@ -142,8 +145,7 @@ public final class AudioMaster
     	if(initialized)
     	{
 	    	al.alDeleteSources(MAX_SOURCES, sources, 0);
-	    	
-	    	
+	    		    	
 	        ALCcontext currentContext = alc.alcGetCurrentContext();
 	        ALCdevice currentDevice = alc.alcGetContextsDevice(currentContext);
 	    	
@@ -187,18 +189,64 @@ public final class AudioMaster
     public static void playSource(int sourceID)
     {
     	if(dataLoaded)
-		al.alSourcePlay(sources[sourceID]);
+    	{
+    		al.alSourcePlay(sources[sourceID]);
+       	}
     }
     
     public static void pauseSource(int sourceID)
     {
     	if(dataLoaded)
-    	al.alSourcePause(sources[sourceID]);
+    	{
+    		al.alSourcePause(sources[sourceID]);
+    	}
     }
     
     public static void stopSource(int sourceID)
     {
     	if(dataLoaded)
-    	al.alSourceStop(sources[sourceID]);
+    	{
+    		al.alSourceStop(sources[sourceID]);
+    	}
+    }
+    
+    public static void setVolume(float volumePercentage)
+    {
+    	if(volumePercentage >= 0.0f && volumePercentage <= 1.0f)
+    	{
+    		if(dataLoaded)
+    		{
+    			currentVolume = volumePercentage;
+    			for(int i = 0; i < sources.length; i++)
+    	    	{
+    				al.alSourcef(sources[i], AL.AL_GAIN, volumePercentage);
+    	    	}
+    		}
+    	}
+    }
+    
+    public static float getVolume()
+    {
+    	return currentVolume;
+    }
+    
+    public static void setLooping(int sourceID, boolean looping)
+    {
+    	if(looping)
+    	{
+    		al.alSourcei(sources[sourceID], AL.AL_LOOPING, AL.AL_TRUE);
+    	}
+    	else
+    	{
+    		al.alSourcei(sources[sourceID], AL.AL_LOOPING, AL.AL_FALSE);
+    	}
+    }
+    
+    public static boolean isPlaying(int sourceID)
+    {
+    	IntBuffer state = IntBuffer.allocate(1);
+		al.alGetSourcei(sources[sourceID], AL.AL_SOURCE_STATE, state);
+		
+		return (state.get(0) == AL.AL_PLAYING);
     }
 }
