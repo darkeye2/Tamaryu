@@ -2,6 +2,7 @@ package com.tr.engine.obj.state;
 
 import com.tr.engine.core.TRGameLooper;
 import com.tr.engine.grf.TRScene;
+import com.tr.engine.rewardsystem.ListenerForReward;
 
 public final class TRGameStateManager {
 	protected static TRScene scene = null;
@@ -9,6 +10,8 @@ public final class TRGameStateManager {
 	
 	protected static TRAbstractGameState curState = null;
 	protected static TRGameStateFactory factory = null;
+	
+	private static IGameStateEventListener[] arrayOfListeners = new IGameStateEventListener[]{ListenerForReward.getInstance()};
 	
 	public static void init(TRScene scene, TRGameLooper looper){
 		TRGameStateManager.scene = scene;
@@ -24,6 +27,11 @@ public final class TRGameStateManager {
 		}
 		curState = gs;
 		curState.load(scene, looper);
+		
+		for(IGameStateEventListener listener : arrayOfListeners)
+		{
+			listener.notifyGameStateChange(gs.getID());
+		}
 	}
 	
 	public static void setState(int gsId){

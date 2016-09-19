@@ -2,42 +2,28 @@ package com.tr.engine.rewardsystem;
 
 import java.util.Random;
 
-import com.tr.engine.inventory.IInventoryable;
 import com.tr.engine.inventory.InventoryItem;
 import com.tr.engine.inventory.InventorySystem;
-import com.tr.util.LanguageTranslator;
 
-public final class RewardManager
+final class RewardManager
 {
 	private static int pittyCounterForRare;
 	private static int pittyCounterForPremium;
 	private static int pittyCounterForLuxery;
 	
-	private static Random rngesus;
+	private static Random rngesus;	
 	
-	public static void initRewardManager()
+	static void initRewardManager()
 	{
 		//get Data from SaveFile/Server
 		RewardManager.pittyCounterForLuxery = 32;
 		RewardManager.pittyCounterForPremium = 32;
 		RewardManager.pittyCounterForRare = 32;
-	}
-	
-	public static void notifyAfterMiniGame(int time, int score)
-	{
 		
+		RewardManager.rngesus = new Random();
 	}
 	
-	public static void notifyAfterLogin()
-	{
-		//TODO get last Login-Time from SaveFile / Server
-		if(true)
-		{
-			RewardManager.createLootBox();
-		}
-	}
-	
-	public static void notifyLootBoxUse(String lootBoxName)
+	static void notifyLootBoxUse(String lootBoxName)
 	{
 		switch(lootBoxName)
 		{
@@ -57,7 +43,27 @@ public final class RewardManager
 		}
 	}
 	
-	private static void createLootBox()
+	static void notifyLootBoxUse(int lootBoxPositionID)
+	{
+		switch(lootBoxPositionID)
+		{
+		case(InventoryItem.LOOTBOX_LUXERY):
+			generateLuxeryLoot();
+			break;
+		case(InventoryItem.LOOTBOX_PREMIUM):
+			generatePremiumLoot();
+			break;
+		case(InventoryItem.LOOTBOX_RARE):
+			generateRareLoot();
+			break;
+		case(InventoryItem.LOOTBOX_COMMON):
+		default:
+			generateCommonLoot();
+			break;
+		}
+	}
+	
+	static void createLootBox()
 	{
 		InventorySystem.addItem(new LootBox(RewardManager.generateLootBoxRarity(), 1));
 	}
@@ -128,7 +134,7 @@ public final class RewardManager
 	//https://en.wikipedia.org/wiki/B._F._Skinner
 	//https://en.wikipedia.org/wiki/Behaviorism
 	//https://en.wikipedia.org/wiki/Reinforcement
-	
+	/*
 	public static void getTokenReward()
 	{
 		//Token Conditioning
@@ -162,4 +168,5 @@ public final class RewardManager
 	{
 		//fishing
 	}
+	*/
 }
