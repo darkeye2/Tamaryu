@@ -13,18 +13,25 @@ public class GlyphWord {
 	
 	public GlyphWord(String word, BitmapFont font){
 		char[] chars = word.toCharArray();
-		for(char c : chars){
-			addGlyph(c, font);
+		for(int i = 0; i < chars.length; i++){
+			addGlyph(chars[i], ((i+1)<chars.length)?chars[i+1]:-1, font);
 		}
 	}
 	
-	public void addGlyph(int c, BitmapFont font){
+	public void addGlyph(int c, int c2, BitmapFont font){
 		Glyph g = new Glyph();
 		g.gd = font.getGlyphData(c);
-		g.x = x + g.gd.xoffset;
-		g.y = y + g.gd.yoffset;
-		x += g.gd.width;
-		wordWidth += g.gd.width;
+		x += g.gd.xoffset;			//add offset
+		g.x = x;					//set image pos
+		g.y = y + g.gd.yoffset;		//set image pos for y (with offset)
+		x += g.gd.xadvance;			//add width to x pos in the word
+		
+		//check for kerning
+		if(c2 < -1){
+			x += font.getKerning(c, c2);
+		}
+		
+		wordWidth = x;
 		glyphs.add(g);
 	}
 	

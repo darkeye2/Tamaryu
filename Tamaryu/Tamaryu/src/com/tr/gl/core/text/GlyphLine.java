@@ -21,9 +21,9 @@ public class GlyphLine {
 		String[] words = line.split(" ");
 		for(int i = 0; i<words.length; i++){
 			if(i < words.length-1){
-				addWord(new GlyphWord(words[i], font));
-			}else{
 				addWord(new GlyphWord(words[i]+" ", font));
+			}else{
+				addWord(new GlyphWord(words[i], font));
 			}
 			
 		}

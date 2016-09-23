@@ -82,7 +82,7 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 				String[] words = line.split(" ");
 				
 				for(int i = 0; i<words.length; i++){
-					//System.out.println("LW: "+gl.lineWidth+" / MW: "+this.maxW);
+					boolean lineFull = false;
 					if(gl.lineWidth < this.maxW){
 						GlyphWord gw = null;
 						if(i < words.length-1){
@@ -90,20 +90,25 @@ public class TRGLLabel extends TRGL2DRenderable implements TRLabel{
 						}else{
 							gw = new GlyphWord(words[i], font);
 						}
-						//System.out.println("WW: "+gw.wordWidth);
+						
 						if((gl.lineWidth+gw.wordWidth) <= this.maxW || gl.lineWidth == 0){
 							gl.addWord(gw);
+						}else{
+							lineFull = true;
+							i--;
 						}
 					}
 					
-					//add line
-					gl.setYOffset(y);
-					glyphLines.add(gl);
-					
-					//update y;
-					y += font.getLineHeight();
-					
-					gl = new GlyphLine();
+					if(lineFull || (i+1) >= words.length){
+						//add line
+						gl.setYOffset(y);
+						glyphLines.add(gl);
+						
+						//update y;
+						y += font.getLineHeight();
+						
+						gl = new GlyphLine();
+					}
 				}
 			}
 			

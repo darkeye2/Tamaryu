@@ -271,6 +271,12 @@ public abstract class TRGLRenderable implements IRenderable {
 
 	@Override
 	public IRenderable removeComponent(IRenderable c) {
+		//System.out.println("Remove Component :"+c);
+		if(this.inComponents.contains(c)){
+			synchronized(inLock){
+				inComponents.remove(c);
+			}
+		}
 		if(this.components.contains(c)){
 			c.setRemoved();
 			//((TRGLRenderable)c).parent = null;
@@ -280,6 +286,7 @@ public abstract class TRGLRenderable implements IRenderable {
 			}
 			return c;
 		}
+	
 		return null;
 	}
 	

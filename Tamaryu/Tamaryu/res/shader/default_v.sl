@@ -28,8 +28,6 @@ out VS_OUT{
 
 void main(void){
 	//calculate position (mvp*pos)
-	//gl_Position = position * proj_matrix * view_matrix * model_matrix;
-	//gl_Position = position * model_matrix * view_matrix * proj_matrix;
 	gl_Position = proj_matrix * view_matrix * model_matrix * position;
 	
 	//set distance scale

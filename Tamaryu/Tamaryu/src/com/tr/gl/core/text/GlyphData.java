@@ -9,6 +9,7 @@ public class GlyphData {
 	public final int height;
 	public final int xoffset;
 	public final int yoffset;
+	public final int xadvance;
 
 	public GlyphData(String[] glyphDataFragments) {
 		String id = glyphDataFragments[1];
@@ -18,6 +19,7 @@ public class GlyphData {
 		String height = glyphDataFragments[5];
 		String xoffset = glyphDataFragments[6];
 		String yoffset = glyphDataFragments[7];
+		String xadvance = glyphDataFragments[8];
 
 		this.id = Integer.parseInt(id.replace("id=", ""));
 		this.x = Integer.parseInt(x.replace("x=", ""));
@@ -26,6 +28,7 @@ public class GlyphData {
 		this.height = Integer.parseInt(height.replace("height=", ""));
 		this.xoffset = Integer.parseInt(xoffset.replace("xoffset=", ""));
 		this.yoffset = Integer.parseInt(yoffset.replace("yoffset=", ""));
+		this.xadvance = Integer.parseInt(xadvance.replace("xadvance=", ""));
 		this.character = ""+((char)this.id);
 	}
 }

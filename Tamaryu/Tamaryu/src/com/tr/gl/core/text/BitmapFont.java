@@ -22,6 +22,7 @@ public class BitmapFont {
 	protected String fontName = "";
 	
 	private HashMap<Integer, GlyphData> glyphs = new HashMap<Integer, GlyphData>();
+	private HashMap<String, Integer> kerning = new HashMap<String, Integer>();
 	
 	public BitmapFont(String fntFile, String pngFile, boolean resource){
 		InputStream in = null;
@@ -54,15 +55,47 @@ public class BitmapFont {
 				
 				//read glyphdata
 				boolean stop = false;
+				String[] arr = null;
 				while(!stop && (line = br.readLine()) != null){
-					String[] arr = (cleanUpLine(line)).split(" ");
-					if(arr.length < 8 || !arr[0].equalsIgnoreCase("char")){
+					arr = (cleanUpLine(line)).split(" ");
+					if(arr == null || arr.length < 8 || !arr[0].equalsIgnoreCase("char")){
 						stop = true;
 						break;
 					}
 					GlyphData gd = new GlyphData(arr);
 					glyphs.put(gd.id, gd);
 				}
+				
+				//skip until kerning data
+				stop = false;
+				boolean found = false;
+				while(arr != null && !stop){
+					if(arr.length > 0 && arr[0].equalsIgnoreCase("kernings")){
+						stop = true;
+						found = true;
+					}
+					if((line = br.readLine()) == null){
+						stop = true;
+						continue;
+					}
+					arr = (cleanUpLine(line)).split(" ");
+				}
+				
+				//read kerning data
+				stop = false;
+				while(!stop && found && (line = br.readLine()) != null){
+					arr = (cleanUpLine(line)).split(" ");
+					if(arr == null || arr.length < 4 || !arr[0].equalsIgnoreCase("kerning")){
+						stop = true;
+						break;
+					}
+					
+					String name = arr[1].replace("first=", "")+"_"+arr[2].replace("second=", "");
+					int value = Integer.parseInt(arr[3].replace("amount=", ""));
+					kerning.put(name, value);
+				}
+					
+					
 				//System.out.println("Glyphs read: "+glyphs.size());
 				
 			} catch (IOException e) {
@@ -103,6 +136,15 @@ public class BitmapFont {
 			return glyphs.get(c);
 		}
 		return glyphs.get('a');
+	}
+	
+	public int getKerning(int f, int s){
+		String key = f+"_"+s;
+		if(kerning.containsKey(key)){
+			return kerning.get(key);
+		}
+		
+		return 0;
 	}
 	
 	private String cleanUpLine(String l){
