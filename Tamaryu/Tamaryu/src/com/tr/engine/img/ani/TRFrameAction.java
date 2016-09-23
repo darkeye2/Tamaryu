@@ -4,6 +4,7 @@ import com.tr.engine.img.TRImage;
 
 public class TRFrameAction {
 	public String path = "this";
+	public ITRAnimationView incRef = null;
 	public int rotX = 0;
 	public boolean rotXFlag = false;
 	public int rotY = 0;
@@ -20,6 +21,12 @@ public class TRFrameAction {
 	public boolean posYFlag = false;
 	public int h = 0;
 	public boolean hFlag = false;
+	public int incX = 0;
+	public boolean incXFlag = false;
+	public int incY = 0;
+	public boolean incYFlag = false;
+	public int incZ = 0;
+	public boolean incZFlag = false;
 	public String loadPath = "this";
 	public String loadName = "default";
 	public boolean loadFlag = false;
@@ -58,6 +65,30 @@ public class TRFrameAction {
 		if(posZFlag){
 			//System.out.println("Change z ("+v.getName()+") to: "+posZ);
 			v.setZ(posZ);
+		}
+		
+		if(incXFlag){
+			if(incRef != null){
+				v.setX(incRef.getPosition().x+incX);
+			}else{
+				v.setX(v.getPosition().x+incX);
+			}
+		}
+		
+		if(incYFlag){
+			if(incRef != null){
+				v.setY(incRef.getPosition().y+incX);
+			}else{
+				v.setY(v.getPosition().y+incX);
+			}
+		}
+		
+		if(incZFlag){
+			if(incRef != null){
+				v.setZ(incRef.getPosition().z+incX);
+			}else{
+				v.setZ(v.getPosition().z+incX);
+			}
 		}
 		
 		if(hFlag){
