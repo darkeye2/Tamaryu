@@ -16,7 +16,7 @@ public final class AudioMaster
 	
 	private static float currentVolume = 1.0f;
 	
-    private static final int MAX_SOURCES = 3;   
+    private static final int MAX_SOURCES = 30;   
     private static String[] audios = new String[0];
     private static int[] buffers = new int[audios.length];
     private static int[] sources = new int[MAX_SOURCES];
@@ -74,6 +74,7 @@ public final class AudioMaster
         	sources = new int[MAX_SOURCES];
         }
     	
+    	System.out.println("Buf Length: "+buffers.length);
     	for(int i = 0; i < buffers.length; i++)
     	{
     		al.alSourcei(sources[i], AL.AL_BUFFER, buffers[i]);
