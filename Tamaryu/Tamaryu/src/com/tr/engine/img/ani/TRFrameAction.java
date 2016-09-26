@@ -77,17 +77,17 @@ public class TRFrameAction {
 		
 		if(incYFlag){
 			if(incRef != null){
-				v.setY(incRef.getPosition().y+incX);
+				v.setY(incRef.getPosition().y+incY);
 			}else{
-				v.setY(v.getPosition().y+incX);
+				v.setY(v.getPosition().y+incY);
 			}
 		}
 		
 		if(incZFlag){
 			if(incRef != null){
-				v.setZ(incRef.getPosition().z+incX);
+				v.setZ(incRef.getPosition().z+incZ);
 			}else{
-				v.setZ(v.getPosition().z+incX);
+				v.setZ(v.getPosition().z+incZ);
 			}
 		}
 		
